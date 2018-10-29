@@ -32,8 +32,10 @@ namespace FaceAuth
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        private StorageFile storeFile;
-        private IRandomAccessStream stream;
+        private StorageFile _storeFile;
+
+        private IRandomAccessStream _stream;
+
         public MainPage()
         {
             this.InitializeComponent();
@@ -45,25 +47,23 @@ namespace FaceAuth
             capture.PhotoSettings.Format = CameraCaptureUIPhotoFormat.Jpeg;
             //capture.PhotoSettings.CroppedAspectRatio = new Size(3, 5);
             capture.PhotoSettings.MaxResolution = CameraCaptureUIMaxPhotoResolution.HighestAvailable;
-            storeFile = await capture.CaptureFileAsync(CameraCaptureUIMode.Photo);
-            if (storeFile != null)
+            _storeFile = await capture.CaptureFileAsync(CameraCaptureUIMode.Photo);
+
+            if (_storeFile != null)
             {
                 BitmapImage bimage = new BitmapImage();
-                stream = await storeFile.OpenAsync(FileAccessMode.Read);
-                // Test
-                Windows.Graphics.Imaging.BitmapDecoder decoder = await Windows.Graphics.Imaging.BitmapDecoder.CreateAsync(stream);
+                _stream = await _storeFile.OpenAsync(FileAccessMode.Read);
+  
+                Windows.Graphics.Imaging.BitmapDecoder decoder = await Windows.Graphics.Imaging.BitmapDecoder.CreateAsync(_stream);
                 Windows.Graphics.Imaging.PixelDataProvider pixelData = await decoder.GetPixelDataAsync();
                 byte[] bytes = pixelData.DetachPixelData();
 
-                // Test
-
-                bimage.SetSource(stream);
+                bimage.SetSource(_stream);
                 FacePhoto.Source = bimage;
 
                 var appView = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView();
                 appView.Title = "Detecting...";
 
-                // todo: Spin thread to contaqctAzure/ML and rener result
                 var task = new Task(() => WebApiProxy(bytes));
                 task.Start();
                 task.Wait();
@@ -81,15 +81,15 @@ namespace FaceAuth
                 fs.DefaultFileExtension = ".jpeg";
                 fs.SuggestedFileName = "Image" + DateTime.Today.ToString();
                 fs.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
-                fs.SuggestedSaveFile = storeFile;
+                fs.SuggestedSaveFile = _storeFile;
                 // Saving the file
                 var s = await fs.PickSaveFileAsync();
                 if (s != null)
                 {
-                    using (var dataReader = new DataReader(stream.GetInputStreamAt(0)))
+                    using (var dataReader = new DataReader(_stream.GetInputStreamAt(0)))
                     {
-                        await dataReader.LoadAsync((uint)stream.Size);
-                        byte[] buffer = new byte[(int)stream.Size];
+                        await dataReader.LoadAsync((uint)_stream.Size);
+                        byte[] buffer = new byte[(int)_stream.Size];
                         dataReader.ReadBytes(buffer);
                         await FileIO.WriteBytesAsync(s, buffer);
                     }
@@ -101,18 +101,6 @@ namespace FaceAuth
                 await messageDialog.ShowAsync();
             }
         }
-
-        //private async void WebApiProxy(string imagePath)
-        //{
-        //    var controllerUri = new Uri(@"http://localhost:5000/");
-
-        //    var visionClient = new VisionClient(controllerUri.AbsoluteUri);
-
-        //    var detectedFaces = await visionClient.IdentifyIndividualAsync(imagePath);
-
-        //    System.Diagnostics.Debug.Assert(detectedFaces == null);
-        //}
-
 
         private async void WebApiProxy(Byte [] imageAsBytes)
         {
@@ -129,6 +117,7 @@ namespace FaceAuth
         {
             FacePhoto.Source = null;
 
+            File.Delete(_storeFile.Path);
         }
     }
 }
