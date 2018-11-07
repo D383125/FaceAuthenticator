@@ -62,13 +62,24 @@ namespace FaceAuth
                 FacePhoto.Source = bimage;
 
                 var appView = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView();
+
                 appView.Title = "Detecting...";
 
-                var task = new Task(() => WebApiProxy(bytes));
-                task.Start();
-                task.Wait();
+                await WebApiProxy(bytes).ContinueWith((continutionTask) => 
+                {
+                    if (continutionTask.IsCompleted)
+                    {
+                        if (continutionTask.IsFaulted)
+                        {
+                            appView.Title = continutionTask.Exception.InnerException.Message;
+                        }
+                        else
+                        {
+                            appView.Title = $"Done. Deteched individual is {continutionTask.Result}"; // todo: put result name
+                        }
+                    }
 
-                appView.Title = "Done"; // todo: put result name
+                });
             }
         }
 
@@ -102,7 +113,7 @@ namespace FaceAuth
             }
         }
 
-        private async void WebApiProxy(Byte [] imageAsBytes)
+        private async Task<DetectedFace> WebApiProxy(Byte [] imageAsBytes)
         {
             var controllerUri = new Uri(@"http://localhost:5000/");
 
@@ -111,6 +122,8 @@ namespace FaceAuth
             var detectedFaces = await visionClient.IdentifyIndividualAsync(imageAsBytes);
 
             System.Diagnostics.Debug.Assert(detectedFaces == null);
+
+            return detectedFaces;
         }
 
         private void clearBtn_Click(object sender, RoutedEventArgs e)
