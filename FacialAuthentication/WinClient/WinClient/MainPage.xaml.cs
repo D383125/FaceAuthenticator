@@ -41,6 +41,8 @@ namespace FaceAuth
             this.InitializeComponent();
         }
 
+        // todo: Recuce size of image. Either save or see https://stackoverflow.com/questions/23926454/reducing-byte-size-of-jpeg-file
+
         private async void captureBtn_Click(object sender, RoutedEventArgs e)
         {
             CameraCaptureUI capture = new CameraCaptureUI();
@@ -53,7 +55,9 @@ namespace FaceAuth
             {
                 BitmapImage bimage = new BitmapImage();
                 _stream = await _storeFile.OpenAsync(FileAccessMode.Read);
-  
+
+                // File.WriteAllBytes(path, bytes);
+
                 Windows.Graphics.Imaging.BitmapDecoder decoder = await Windows.Graphics.Imaging.BitmapDecoder.CreateAsync(_stream);
                 Windows.Graphics.Imaging.PixelDataProvider pixelData = await decoder.GetPixelDataAsync();
                 byte[] bytes = pixelData.DetachPixelData();
@@ -112,6 +116,31 @@ namespace FaceAuth
                 await messageDialog.ShowAsync();
             }
         }
+
+        private void SaveToFile(byte [] bytes, string path)
+        {
+            File.WriteAllBytes( path, bytes);
+
+            //FileSavePicker fs = new FileSavePicker();
+            //fs.FileTypeChoices.Add("Image", new List<string>() { ".jpeg" });
+            //fs.DefaultFileExtension = ".jpeg";
+            //fs.SuggestedFileName = filename; // "Image" + DateTime.Today.ToString();
+            //fs.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
+            //fs.SuggestedSaveFile = _storeFile;
+            //// Saving the file
+            //var s = await fs.PickSaveFileAsync();
+            //if (s != null)
+            //{
+            //    using (var dataReader = new DataReader(_stream.GetInputStreamAt(0)))
+            //    {
+            //        await dataReader.LoadAsync((uint)_stream.Size);
+            //        byte[] buffer = new byte[(int)_stream.Size];
+            //        dataReader.ReadBytes(buffer);
+            //        await FileIO.WriteBytesAsync(s, buffer);
+            //    }
+            //}
+        }
+
 
         private async Task<DetectedFace> WebApiProxy(Byte [] imageAsBytes)
         {
