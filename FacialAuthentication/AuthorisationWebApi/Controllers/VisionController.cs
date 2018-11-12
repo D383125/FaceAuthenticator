@@ -104,15 +104,6 @@ namespace AuthorisationWebApi.Controllers
         [HttpPost()]
         public async Task<DetectedFace> Identify([FromBody] Byte [] personCaptureAsBytes)
         {
-            // todo: place in autofaced serviuce
-            // if byte array doesnt work pass as fle in uri from client.
-           
-            // Test
-            // personCaptureAsBytes = System.IO.File.ReadAllBytes(@"C:\Users\breen\Desktop\CCapture.jpg.jpeg");
-            // Test
-
-             //"https://westcentralus.api.cognitive.microsoft.com/face/v1.0";
-            // https://[location].api.cognitive.microsoft.com/face/v1.0/identify
             var faceServiceUri = new Uri(_baseUri);
 
             DetectedFace detectedFace = null;
@@ -132,23 +123,19 @@ namespace AuthorisationWebApi.Controllers
                     FaceAttributeType.Glasses, FaceAttributeType.Hair
                 };
 
+
             // Call the Face API.
             try
             {
-                using (Stream imageFileStream = new MemoryStream(personCaptureAsBytes))
+                 using (Stream imageFileStream = new MemoryStream(personCaptureAsBytes))
+                //using(var imageFileStream = System.IO.File.OpenRead(filename))
                 {
                     // The second argument specifies to return the faceId, while
                     // the third argument specifies not to return face landmarks.
 
-                     System.Diagnostics.Debugger.Break();
-
                     IList<DetectedFace> faceList = 
                         await faceClient.Face.DetectWithStreamAsync(
                             imageFileStream, true, false, faceAttributes);
-                    
-                    
-                     System.Diagnostics.Debugger.Break();
-
 
                     var detectedFaces = faceList.Count; 
 
@@ -162,24 +149,9 @@ namespace AuthorisationWebApi.Controllers
             }
             catch (APIErrorException aex)
             {
-                
-                     System.Diagnostics.Debugger.Break();
+                System.Diagnostics.Debug.WriteLine(aex);          
 
-                System.Diagnostics.Debug.WriteLine(aex);
-
-/* 
-                var filename  = "Temp.jpg";
-
-                System.IO.File.WriteAllBytes(filename, personCaptureAsBytes);
-
-                //var t = await MakeAnalysisRequest(filename);
-
-                 IList<DetectedFace> faceList =
-                    await faceClient.Face.DetectWithUrlAsync(
-                        filename, true, false, faceAttributes);
-  */              
-
-                throw aex;
+                throw;
             }
             catch(Exception)
             {

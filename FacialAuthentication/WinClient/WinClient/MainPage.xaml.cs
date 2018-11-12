@@ -22,6 +22,7 @@ using Windows.UI.Popups;
 using System.Threading.Tasks;
 using ClientProxy;
 using Windows.UI.ViewManagement;
+using Windows.Graphics.Imaging;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -53,23 +54,14 @@ namespace FaceAuth
 
             if (_storeFile != null)
             {
-                BitmapImage bimage = new BitmapImage();
-                _stream = await _storeFile.OpenAsync(FileAccessMode.Read);
 
-                // File.WriteAllBytes(path, bytes);
-
-                Windows.Graphics.Imaging.BitmapDecoder decoder = await Windows.Graphics.Imaging.BitmapDecoder.CreateAsync(_stream);
-                Windows.Graphics.Imaging.PixelDataProvider pixelData = await decoder.GetPixelDataAsync();
-                byte[] bytes = pixelData.DetachPixelData();
-
-                bimage.SetSource(_stream);
-                FacePhoto.Source = bimage;
+                var bytes = await SaveToFileAsync(_storeFile);
 
                 var appView = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView();
 
                 appView.Title = "Detecting...";
 
-                await WebApiProxy(bytes).ContinueWith((continutionTask) => 
+                await WebApiProxy(bytes).ContinueWith((continutionTask) =>
                 {
                     if (continutionTask.IsCompleted)
                     {
@@ -79,12 +71,12 @@ namespace FaceAuth
                         }
                         else
                         {
-                            appView.Title = $"Done. Deteched individual is {continutionTask.Result}"; // todo: put result name
-                        }
+                            appView.Title = $"Done. Individual is {continutionTask.Result.ToJson()}"; // todo: put result name
+                    }
                     }
 
                 });
-            }
+            }          
         }
 
         private async void saveBtn_Click(object sender, RoutedEventArgs e)
@@ -117,28 +109,24 @@ namespace FaceAuth
             }
         }
 
-        private void SaveToFile(byte [] bytes, string path)
+        private async Task<Byte[]> SaveToFileAsync(StorageFile file)
         {
-            File.WriteAllBytes( path, bytes);
+            Byte[] bytes = null;
+            //var picker = new FileOpenPicker();
+            //picker.ViewMode = PickerViewMode.Thumbnail;
+            //picker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
+            //picker.FileTypeFilter.Add(".jpeg");
+            //picker.FileTypeFilter.Add(".jpg");
+            //picker.FileTypeFilter.Add(".png");
+            if (file != null)
+            {
+                var stream = await file.OpenStreamForReadAsync();
+                bytes = new byte[(int)stream.Length];
+                stream.Read(bytes, 0, (int)stream.Length);
+                
+            }
 
-            //FileSavePicker fs = new FileSavePicker();
-            //fs.FileTypeChoices.Add("Image", new List<string>() { ".jpeg" });
-            //fs.DefaultFileExtension = ".jpeg";
-            //fs.SuggestedFileName = filename; // "Image" + DateTime.Today.ToString();
-            //fs.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
-            //fs.SuggestedSaveFile = _storeFile;
-            //// Saving the file
-            //var s = await fs.PickSaveFileAsync();
-            //if (s != null)
-            //{
-            //    using (var dataReader = new DataReader(_stream.GetInputStreamAt(0)))
-            //    {
-            //        await dataReader.LoadAsync((uint)_stream.Size);
-            //        byte[] buffer = new byte[(int)_stream.Size];
-            //        dataReader.ReadBytes(buffer);
-            //        await FileIO.WriteBytesAsync(s, buffer);
-            //    }
-            //}
+            return bytes;
         }
 
 
