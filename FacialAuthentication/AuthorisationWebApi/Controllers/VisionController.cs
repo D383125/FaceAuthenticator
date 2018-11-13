@@ -25,33 +25,7 @@ namespace AuthorisationWebApi.Controllers
         const string _baseUri = "https://australiaeast.api.cognitive.microsoft.com"; // work around for Resource not found
 
 
-        private const string _subscriptionKey = "77a68897922a41608473f4208b2a3f5c";
-/* 
-        [HttpGet]
-        public void Add()
-        {
-
-        }
-
-        
-        public Task<int> Get()
-        {
-            // In faceListListId and persistedFaceId
-            throw new NotImplementedException();
-        }
-
-
-        [HttpPatch]
-        public void Update()
-        {
-
-        }
-
-        [HttpDelete]
-        public void Delete()
-        {
-
-        }
+        private const string _subscriptionKey = "";
 
         // These methods will be ion service
         // Chain of Repso for detech, identify andd Validate
@@ -81,11 +55,6 @@ namespace AuthorisationWebApi.Controllers
             return Json(response);
         } 
 
-        [HttpPost("IdentifyEx")]
-        public async Task<JsonResult> IdentifyEx([FromBody] Byte [] personCaptureAsBytes)
-        {
-            throw new NotImplementedException();
-        }
 
         [HttpPost("Detect")]
         public async Task<JsonResult> Detect([FromBody] Byte [] personCaptureAsBytes)
@@ -99,7 +68,7 @@ namespace AuthorisationWebApi.Controllers
         {
             throw new NotImplementedException();
         }
-*/
+
 
         [HttpPost()]
         public async Task<DetectedFace> Identify([FromBody] Byte [] personCaptureAsBytes)
@@ -128,7 +97,6 @@ namespace AuthorisationWebApi.Controllers
             try
             {
                  using (Stream imageFileStream = new MemoryStream(personCaptureAsBytes))
-                //using(var imageFileStream = System.IO.File.OpenRead(filename))
                 {
                     // The second argument specifies to return the faceId, while
                     // the third argument specifies not to return face landmarks.

@@ -23,6 +23,7 @@ using System.Threading.Tasks;
 using ClientProxy;
 using Windows.UI.ViewManagement;
 using Windows.Graphics.Imaging;
+using System.Reflection;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -72,7 +73,7 @@ namespace FaceAuth
                         else
                         {
                             appView.Title = $"Done. Individual is {continutionTask.Result.ToJson()}"; // todo: put result name
-                    }
+                        }
                     }
 
                 });
@@ -129,7 +130,6 @@ namespace FaceAuth
             return bytes;
         }
 
-
         private async Task<DetectedFace> WebApiProxy(Byte [] imageAsBytes)
         {
             var controllerUri = new Uri(@"http://localhost:5000/");
@@ -148,6 +148,64 @@ namespace FaceAuth
             FacePhoto.Source = null;
 
             File.Delete(_storeFile.Path);
+        }
+
+        private void addPersonBtn_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void trainBtn_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private async void RenderResult(DetectedFace detectedFace)
+        {
+            if (detectedFace != null)
+            {
+                //var faceBitmap = new Bitmap imgBox.Image);
+
+                //using (var g = Graphics.FromImage(faceBitmap))
+                //{
+                //    // Alpha-black rectangle on entire image
+                //    g.FillRectangle(new SolidBrush(Color.FromArgb(200, 0, 0, 0)), g.ClipBounds);
+
+                //    var br = new SolidBrush(Color.FromArgb(200, Color.LightGreen));
+
+                //    // Loop each face recognized
+
+                //        var fr = detectedFace.FaceRectangle;
+                //        var fa = detectedFace.FaceAttributes;
+
+                //        // Get original face image (color) to overlap the grayed image
+                //        var faceRect = new Rectangle(fr.Left, fr.Top, fr.Width, fr.Height);
+                //        g.DrawImage(imgBox.Image, faceRect, faceRect, GraphicsUnit.Pixel);
+                //        g.DrawRectangle(Pens.LightGreen, faceRect);
+
+                //        // Loop face.FaceLandmarks properties for drawing landmark spots
+                //        var pts = new List<Point>();
+                //        Type type = detectedFace.FaceLandmarks.GetType();
+                //        foreach (PropertyInfo property in type.GetProperties())
+                //        {
+                //            g.DrawRectangle(Pens.LightGreen, GetRectangle((FeatureCoordinate)property.GetValue(detectedFace.FaceLandmarks, null)));
+                //        }
+
+                //        // Calculate where to position the detail rectangle
+                //        int rectTop = fr.Top + fr.Height + 10;
+                //        if (rectTop + 45 > faceBitmap.Height) rectTop = fr.Top - 30;
+
+                //        // Draw detail rectangle and write face informations                     
+                //        g.FillRectangle(br, fr.Left - 10, rectTop, fr.Width < 120 ? 120 : fr.Width + 20, 25);
+                //        g.DrawString(string.Format("{0:0.0} / {1} / {2}", fa.Age, fa.Gender, fa.Emotion.OrderByDescending(x => x.Value).First().Key),
+                //                     this.Font, Brushes.Black,
+                //                     fr.Left - 8,
+                //                     rectTop + 4);
+                    
+                //}
+
+                //imgBox.Image = faceBitmap;
+            }
         }
     }
 }
