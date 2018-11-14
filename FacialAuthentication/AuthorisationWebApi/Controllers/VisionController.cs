@@ -11,6 +11,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.CognitiveServices.Vision.Face;
 using Microsoft.Azure.CognitiveServices.Vision.Face.Models;
 
+using Authorization.Contracts;
+
+
 namespace AuthorisationWebApi.Controllers
 {
 
@@ -19,69 +22,61 @@ namespace AuthorisationWebApi.Controllers
     [Route("api/[controller]")]
     public class VisionController : Controller
     {
-        //const string _baseUri = "https://australiaeast.api.cognitive.microsoft.com/face/v1.0";
-
-
-        const string _baseUri = "https://australiaeast.api.cognitive.microsoft.com"; // work around for Resource not found
-
-
+        private const string _baseUri = "https://australiaeast.api.cognitive.microsoft.com"; // work around for Resource not found  
+        
         private const string _subscriptionKey = "";
+
+        private readonly IFaceClient _faceClient = new FaceClient(new ApiKeyServiceClientCredentials(_subscriptionKey), new DelegatingHandler[] { })
+        {
+            Endpoint = _baseUri
+        };
+
+        private readonly IVisionService _visionService;
+
+        public VisionController()
+        {
+            
+        }
+
+        //public VisionController(IVisionService visionService)
+        //{
+        //    _visionService = visionService;
+        //}
+
+        public async Task<string> Get()
+        {
+            return await Task<string>.Factory.StartNew(() => "ACK");
+        }
 
         // These methods will be ion service
         // Chain of Repso for detech, identify andd Validate
-        #region Place In Service/brokerware
+        //#region Place In Service/brokerware
         [HttpPost("Verify")]
-        public async Task<JsonResult> Verify([FromBody] Byte [] personCaptureAsBytes)
+        public async Task<VerifyResult> Verify(Guid faceId, Guid personId, string personGroupId = null)
         {
-            var client = new HttpClient();
-            var queryString = HttpUtility.ParseQueryString(string.Empty);
+            VerifyResult verifyResult = null;
 
-            // Request headers
-            client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", _subscriptionKey);
-
-            var uri = "https://westus.api.cognitive.microsoft.com/face/v1.0/identify?" + queryString;
-
-            HttpResponseMessage response;
-
-            // Request body
-           // byte[] byteData = Encoding.UTF8.GetBytes("{body}");
-
-            using (var content = new ByteArrayContent(personCaptureAsBytes))
-            {
-               content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-               response = await client.PostAsync(uri, content);
+            try
+            {              
+                verifyResult = 
+                        await _faceClient.Face.VerifyFaceToPersonAsync(faceId, personId, personGroupId);
             }
-            
-            return Json(response);
+            catch (APIErrorException aex)
+            {
+                System.Diagnostics.Debug.WriteLine(aex);          
+
+                throw;
+            }
+
+            return verifyResult;
         } 
 
 
         [HttpPost("Detect")]
-        public async Task<JsonResult> Detect([FromBody] Byte [] personCaptureAsBytes)
+        public async Task<DetectedFace> Detect([FromBody] Byte [] personCaptureAsBytes)
         {
-            throw new NotImplementedException();
-        }
-
-        
-        [HttpPost("FindSimilar")]
-        public async Task<JsonResult> FindSimilar([FromBody] Byte [] personCaptureAsBytes)
-        {
-            throw new NotImplementedException();
-        }
-
-
-        [HttpPost()]
-        public async Task<DetectedFace> Identify([FromBody] Byte [] personCaptureAsBytes)
-        {
-            var faceServiceUri = new Uri(_baseUri);
-
+            
             DetectedFace detectedFace = null;
-
-            IFaceClient faceClient = new FaceClient(
-            new ApiKeyServiceClientCredentials(_subscriptionKey),
-            new System.Net.Http.DelegatingHandler[] { });
-
-            faceClient.Endpoint = faceServiceUri.AbsoluteUri;
 
             // The list of Face attributes to return.
             IList<FaceAttributeType> faceAttributes =
@@ -102,7 +97,7 @@ namespace AuthorisationWebApi.Controllers
                     // the third argument specifies not to return face landmarks.
 
                     IList<DetectedFace> faceList = 
-                        await faceClient.Face.DetectWithStreamAsync(
+                        await _faceClient.Face.DetectWithStreamAsync(
                             imageFileStream, true, false, faceAttributes);
 
                     var detectedFaces = faceList.Count; 
@@ -121,152 +116,51 @@ namespace AuthorisationWebApi.Controllers
 
                 throw;
             }
-            catch(Exception)
+
+            return detectedFace;
+        }      
+        
+        [HttpPost("FindSimilar")]
+        public async Task<IEnumerable<SimilarFace>> FindSimilar(Guid faceId)
+        {
+            IList<SimilarFace> similarFacesResult = null;
+
+            try
             {
+                similarFacesResult = 
+                        await _faceClient.Face.FindSimilarAsync(faceId);
+            }
+            catch (APIErrorException aex)
+            {
+                System.Diagnostics.Debug.WriteLine(aex);          
+
                 throw;
             }
 
-            return detectedFace;
+            return similarFacesResult;
         }
 
 
-
-/// <summary>
-        /// Gets the analysis of the specified image by using the Face REST API.
-        /// </summary>
-        /// <param name="imageFilePath">The image file.</param>
-        static async void MakeAnalysisRequest(string imageFilePath)
+        [HttpPost("Identify")]
+        public async Task<IEnumerable<IdentifyResult>> Identify(Guid faceId, 
+                                                    string groupId, int? maxNumOfCandidatesReturned, double? confidenceThreshold)
         {
-            HttpClient client = new HttpClient();
+            IList<IdentifyResult> identifyResults = null;
 
-            // Request headers.
-            client.DefaultRequestHeaders.Add(
-                "Ocp-Apim-Subscription-Key", _subscriptionKey);
-
-            // Request parameters. A third optional parameter is "details".
-            string requestParameters = "returnFaceId=true&returnFaceLandmarks=false" +
-                "&returnFaceAttributes=age,gender,headPose,smile,facialHair,glasses," +
-                "emotion,hair,makeup,occlusion,accessories,blur,exposure,noise";
-
-            // Assemble the URI for the REST API Call.
-            string uri = _baseUri + @"/detect" + "?" + requestParameters;
-
-            HttpResponseMessage response;
-
-            // Request body. Posts a locally stored JPEG image.
-            byte[] byteData = GetImageAsByteArray(imageFilePath);
-
-            using (ByteArrayContent content = new ByteArrayContent(byteData))
+            // Call the Face API.
+            try
             {
-                // This example uses content type "application/octet-stream".
-                // The other content types you can use are "application/json"
-                // and "multipart/form-data".
-                content.Headers.ContentType =
-                    new MediaTypeHeaderValue("application/octet-stream");
-
-                // Execute the REST API call.
-                response = await client.PostAsync(uri, content);
-
-                // Get the JSON response.
-                string contentString = await response.Content.ReadAsStringAsync();
-
-                // Display the JSON response.
-                Console.WriteLine("\nResponse:\n");
-                Console.WriteLine(JsonPrettyPrint(contentString));
-                Console.WriteLine("\nPress Enter to exit...");
+                identifyResults = 
+                        await _faceClient.Face.IdentifyAsync( new [] { faceId }, groupId, null, maxNumOfCandidatesReturned, confidenceThreshold);
             }
-        }
-
-
-        /// <summary>
-        /// Returns the contents of the specified file as a byte array.
-        /// </summary>
-        /// <param name="imageFilePath">The image file to read.</param>
-        /// <returns>The byte array of the image data.</returns>
-        static byte[] GetImageAsByteArray(string imageFilePath)
-        {
-            using (FileStream fileStream =
-                new FileStream(imageFilePath, FileMode.Open, FileAccess.Read))
+            catch (APIErrorException aex)
             {
-                BinaryReader binaryReader = new BinaryReader(fileStream);
-                return binaryReader.ReadBytes((int)fileStream.Length);
-            }
-        }
+                System.Diagnostics.Debug.WriteLine(aex);          
 
-
-        /// <summary>
-        /// Formats the given JSON string by adding line breaks and indents.
-        /// </summary>
-        /// <param name="json">The raw JSON string to format.</param>
-        /// <returns>The formatted JSON string.</returns>
-        static string JsonPrettyPrint(string json)
-        {
-            if (string.IsNullOrEmpty(json))
-                return string.Empty;
-
-            json = json.Replace(Environment.NewLine, "").Replace("\t", "");
-
-            StringBuilder sb = new StringBuilder();
-            bool quote = false;
-            bool ignore = false;
-            int offset = 0;
-            int indentLength = 3;
-
-            foreach (char ch in json)
-            {
-                switch (ch)
-                {
-                    case '"':
-                        if (!ignore) quote = !quote;
-                        break;
-                    case '\'':
-                        if (quote) ignore = !ignore;
-                        break;
-                }
-
-                if (quote)
-                    sb.Append(ch);
-                else
-                {
-                    switch (ch)
-                    {
-                        case '{':
-                        case '[':
-                            sb.Append(ch);
-                            sb.Append(Environment.NewLine);
-                            sb.Append(new string(' ', ++offset * indentLength));
-                            break;
-                        case '}':
-                        case ']':
-                            sb.Append(Environment.NewLine);
-                            sb.Append(new string(' ', --offset * indentLength));
-                            sb.Append(ch);
-                            break;
-                        case ',':
-                            sb.Append(ch);
-                            sb.Append(Environment.NewLine);
-                            sb.Append(new string(' ', offset * indentLength));
-                            break;
-                        case ':':
-                            sb.Append(ch);
-                            sb.Append(' ');
-                            break;
-                        default:
-                            if (ch != ' ') sb.Append(ch);
-                            break;
-                    }
-                }
+                throw;
             }
 
-            return sb.ToString().Trim();
+            return identifyResults;
         }
-
-        //private void TryService(Byte [] stream)
-        //{
-
-        //    IFaceServiceClient faceServiceClient = new FaceServiceClient(_subscriptionKey);
-        //}
-
-      //  #endregion Place In Service/brokerware
     }
 }

@@ -29,6 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Authorization.Contracts\Authorization.Contracts.csproj" />
     <ProjectReference Include="..\Authorization.Models\Authorization.Models.csproj" />
   </ItemGroup>
 

@@ -4,9 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.IO;
 
 using Microsoft.Azure.CognitiveServices.Vision.Face;
 using Microsoft.Azure.CognitiveServices.Vision.Face.Models;
+using Authorization.Contracts;
 
 namespace AuthorisationWebApi.Controllers
 {
@@ -25,6 +27,24 @@ namespace AuthorisationWebApi.Controllers
             Endpoint = _baseUri
         };
 
+        private readonly IAdministrationVisionService _administrationVisionService;
+
+        public AdministrationController()
+        {
+            
+        }
+
+      //  public AdministrationController(IAdministrationVisionService administrationVisionService)
+      //  {
+       //     _administrationVisionService = administrationVisionService;
+       // }
+
+        public async Task<string> Get()
+        {
+            return await Task<string>.Factory.StartNew(() => "ACK");
+        }
+
+
         [HttpPost("AddGroup")]
         public async void AddGroup(string groupId, string groupName, string userData = null)
         {
@@ -36,6 +56,20 @@ namespace AuthorisationWebApi.Controllers
         {           
             await _faceClient.PersonGroupPerson.CreateAsync(groupId, personName, userData);
         }
+
+        [HttpPost("AddFaceToPerson")]
+        public async Task<PersistedFace> AddFaceToPerson(Guid personId, string groupId, byte [] faceImage, string userData = null)
+        {          
+            PersistedFace persistedFaceResult = null;
+
+            using(var ms = new MemoryStream(faceImage))
+            { 
+                persistedFaceResult = await _faceClient.PersonGroupPerson.AddFaceFromStreamAsync(groupId, personId, null, userData);
+            }
+
+            return persistedFaceResult;
+        }
+
 
         [HttpGet("Group")]
         public async Task<PersonGroup> Get(string groupId)
