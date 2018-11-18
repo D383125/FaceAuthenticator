@@ -10,6 +10,8 @@ using Microsoft.Azure.CognitiveServices.Vision.Face;
 using Microsoft.Azure.CognitiveServices.Vision.Face.Models;
 using Authorization.Contracts;
 
+using Newtonsoft.Json.Linq;
+
 namespace AuthorisationWebApi.Controllers
 {
     [Route("api/[controller]")]
@@ -20,7 +22,7 @@ namespace AuthorisationWebApi.Controllers
         //2. Delegate all these ops to a broker service
         const string _baseUri = "https://australiaeast.api.cognitive.microsoft.com"; // work around for Resource not found
         
-        private const string _subscriptionKey = "";
+        private const string _subscriptionKey = "77a68897922a41608473f4208b2a3f5c";
 
         private readonly IFaceClient _faceClient = new FaceClient(new ApiKeyServiceClientCredentials(_subscriptionKey), new DelegatingHandler[] { })
         {
@@ -46,15 +48,33 @@ namespace AuthorisationWebApi.Controllers
 
 
         [HttpPost("AddGroup")]
-        public async void AddGroup(string groupId, string groupName, string userData = null)
+        public async void AddGroup([FromBody] JObject requestData)
         {
-            await _faceClient.PersonGroup.CreateAsync(groupId, groupName, userData);
+            var groupId = requestData["groupId"].ToString();
+
+            var groupName = requestData["groupName"].ToString();
+
+            var userData = requestData["userData"];
+
+            var t = _faceClient.PersonGroup.GetAsync(groupId);
+
+            if(t.Id == 0)
+            {
+                await _faceClient.PersonGroup.CreateAsync(groupId,  groupName);
+            }
         }
 
         [HttpPost("AddPerson")]
-        public async void AddPerson(string personName, string groupId, string userData = null)
+        public async void AddPerson([FromBody]JObject requestData)
         {           
-            await _faceClient.PersonGroupPerson.CreateAsync(groupId, personName, userData);
+
+            var personName =  requestData["personName"].ToString();
+             
+            var groupId = requestData["groupId"].ToString();
+             
+            var userData = requestData["userData"];
+            
+            await _faceClient.PersonGroupPerson.CreateAsync(groupId, personName, userData?.ToString());
         }
 
         [HttpPost("AddFaceToPerson")]
