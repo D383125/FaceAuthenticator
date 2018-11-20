@@ -3,7 +3,7 @@
 
 namespace Authorization.Contracts
 {
-    public interface IVisionService
+    public interface IAudioService
     {
 
 

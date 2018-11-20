@@ -24,7 +24,7 @@ namespace AuthorisationWebApi.Controllers
     {
         private const string _baseUri = "https://australiaeast.api.cognitive.microsoft.com"; // work around for Resource not found  
         
-        private const string _subscriptionKey = "77a68897922a41608473f4208b2a3f5c";
+        private const string _subscriptionKey = "";
 
         private readonly IFaceClient _faceClient = new FaceClient(new ApiKeyServiceClientCredentials(_subscriptionKey), new DelegatingHandler[] { })
         {
@@ -38,10 +38,10 @@ namespace AuthorisationWebApi.Controllers
             
         }
 
-        //public VisionController(IVisionService visionService)
-        //{
-        //    _visionService = visionService;
-        //}
+        public VisionController(IVisionService visionService)
+        {
+            _visionService = visionService;
+        }
 
         public async Task<string> Get()
         {

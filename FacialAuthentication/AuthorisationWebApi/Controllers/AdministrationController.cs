@@ -22,7 +22,7 @@ namespace AuthorisationWebApi.Controllers
         //2. Delegate all these ops to a broker service
         const string _baseUri = "https://australiaeast.api.cognitive.microsoft.com"; // work around for Resource not found
         
-        private const string _subscriptionKey = "77a68897922a41608473f4208b2a3f5c";
+        private const string _subscriptionKey = "";
 
         private readonly IFaceClient _faceClient = new FaceClient(new ApiKeyServiceClientCredentials(_subscriptionKey), new DelegatingHandler[] { })
         {
@@ -65,16 +65,17 @@ namespace AuthorisationWebApi.Controllers
         }
 
         [HttpPost("AddPerson")]
-        public async void AddPerson([FromBody]JObject requestData)
+        public async Task<Person> AddPerson([FromBody]JObject requestData)
         {           
-
             var personName =  requestData["personName"].ToString();
              
             var groupId = requestData["groupId"].ToString();
              
             var userData = requestData["userData"];
-            
-            await _faceClient.PersonGroupPerson.CreateAsync(groupId, personName, userData?.ToString());
+        
+            var addedPerson = await _faceClient.PersonGroupPerson.CreateAsync(groupId, personName, userData?.ToString());
+
+            return addedPerson;
         }
 
         [HttpPost("AddFaceToPerson")]
@@ -84,7 +85,7 @@ namespace AuthorisationWebApi.Controllers
 
             using(var ms = new MemoryStream(faceImage))
             { 
-                persistedFaceResult = await _faceClient.PersonGroupPerson.AddFaceFromStreamAsync(groupId, personId, null, userData);
+                persistedFaceResult = await _faceClient.PersonGroupPerson.AddFaceFromStreamAsync(groupId, personId, ms, userData);
             }
 
             return persistedFaceResult;
