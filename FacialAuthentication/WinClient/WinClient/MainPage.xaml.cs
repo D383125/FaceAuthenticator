@@ -1,29 +1,16 @@
-﻿using System;
+﻿using ClientProxy;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
+//using System.Windows.Media.Imaging;
+using System.Threading.Tasks;
 using Windows.Media.Capture;
-using Windows.UI.Xaml.Media.Imaging;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.Storage.Streams;
 using Windows.UI.Popups;
-//using System.Windows.Media.Imaging;
-using System.Threading.Tasks;
-using ClientProxy;
-using Windows.UI.ViewManagement;
-using Windows.Graphics.Imaging;
-using System.Reflection;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -58,6 +45,8 @@ namespace FaceAuth
 
                 var bytes = await SaveToFileAsync(_storeFile);
 
+                string result = System.Text.Encoding.UTF8.GetString(bytes);
+
                 var appView = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView();
 
                 appView.Title = "Detecting...";
@@ -72,6 +61,22 @@ namespace FaceAuth
                         }
                         else
                         {
+                            // Chain. Now we need to identify detected face
+
+                            var detectedFace = continutionTask.Result.FaceId;
+                            // todo: log other attributes
+                            if(detectedFace != Guid.Empty)
+                            {
+                                // Train
+
+                                // Invoke identify
+
+                                // Then using candities fron resulr obrin person with final call 
+
+                            }
+
+
+
                             appView.Title = $"Done. Individual is {continutionTask.Result.ToJson()}"; // todo: put result name
                         }
                     }
@@ -135,7 +140,7 @@ namespace FaceAuth
             var controllerUri = new Uri(@"http://localhost:5000/");
 
             var visionClient = new VisionClient(controllerUri.AbsoluteUri);
-
+            // 1. Detect
             var detectedFaces = await visionClient.IdentifyIndividualAsync(imageAsBytes);
 
             System.Diagnostics.Debug.Assert(detectedFaces == null);
@@ -152,7 +157,7 @@ namespace FaceAuth
 
         private void addPersonBtn_Click(object sender, RoutedEventArgs e)
         {
-
+            // tpdp: Collect name etc
         }
 
         private void trainBtn_Click(object sender, RoutedEventArgs e)
@@ -206,6 +211,19 @@ namespace FaceAuth
 
                 //imgBox.Image = faceBitmap;
             }
+        }
+
+
+        private string EncodeImageAsBase64(byte [] image)
+        {
+            //byte[] imageArray = System.IO.File.ReadAllBytes(@"image file path");
+            return Convert.ToBase64String(image);
+        }
+
+        private static byte [] DecodeBase64AsBytesArray(string base64String)
+        {
+            // var img = Image.FromStream(new MemoryStream(Convert.FromBase64String(base64String)));
+            return Convert.FromBase64String(base64String);
         }
     }
 }

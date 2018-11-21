@@ -79,15 +79,28 @@ namespace AuthorisationWebApi.Controllers
         }
 
         [HttpPost("AddFaceToPerson")]
-        public async Task<PersistedFace> AddFaceToPerson(Guid personId, string groupId, byte [] faceImage, string userData = null)
-        {          
+        public async Task<PersistedFace> AddFaceToPerson([FromBody]JObject requestData)
+        {
+            Guid personId = Guid.Parse(requestData["personId"].ToString());
+            string groupId = requestData["groupId"].ToString();
+            byte[] faceImage = Convert.FromBase64String(requestData["faceCapture"].ToString());
+            string userData = null;
+
             PersistedFace persistedFaceResult = null;
 
+        try     
+        {
             using(var ms = new MemoryStream(faceImage))
             { 
                 persistedFaceResult = await _faceClient.PersonGroupPerson.AddFaceFromStreamAsync(groupId, personId, ms, userData);
             }
 
+        }
+        catch(APIErrorException ex)
+        {
+            System.Diagnostics.Debugger.Break();
+        }
+    
             return persistedFaceResult;
         }
 

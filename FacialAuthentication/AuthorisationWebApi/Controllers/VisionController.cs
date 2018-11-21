@@ -12,7 +12,7 @@ using Microsoft.Azure.CognitiveServices.Vision.Face;
 using Microsoft.Azure.CognitiveServices.Vision.Face.Models;
 
 using Authorization.Contracts;
-
+using Newtonsoft.Json.Linq;
 
 namespace AuthorisationWebApi.Controllers
 {
@@ -37,12 +37,12 @@ namespace AuthorisationWebApi.Controllers
         {
             
         }
-
+/* 
         public VisionController(IVisionService visionService)
         {
             _visionService = visionService;
         }
-
+*/
         public async Task<string> Get()
         {
             return await Task<string>.Factory.StartNew(() => "ACK");
@@ -52,14 +52,20 @@ namespace AuthorisationWebApi.Controllers
         // Chain of Repso for detech, identify andd Validate
         //#region Place In Service/brokerware
         [HttpPost("Verify")]
-        public async Task<VerifyResult> Verify(Guid faceId, Guid personId, string personGroupId = null)
+        public async Task<VerifyResult> Verify(JObject requestData)         
         {
             VerifyResult verifyResult = null;
+
+            var faceId = Guid.Parse(Convert.ToString(requestData["faceId"]));
+
+             var personId = Guid.Parse(Convert.ToString(requestData["personId"]));
+
+            var groupId = Convert.ToString(requestData["groupId"]);
 
             try
             {              
                 verifyResult = 
-                        await _faceClient.Face.VerifyFaceToPersonAsync(faceId, personId, personGroupId);
+                        await _faceClient.Face.VerifyFaceToPersonAsync(faceId, personId, groupId);
             }
             catch (APIErrorException aex)
             {
@@ -67,15 +73,17 @@ namespace AuthorisationWebApi.Controllers
 
                 throw;
             }
+            
 
             return verifyResult;
         } 
 
 
         [HttpPost("Detect")]
-        public async Task<DetectedFace> Detect([FromBody] Byte [] personCaptureAsBytes)
+        public async Task<DetectedFace> Detect([FromBody]JObject requestData)
         {
-            
+            byte [] faceCapture = Convert.FromBase64String(requestData["faceCaptureAsBase64"].ToString());
+
             DetectedFace detectedFace = null;
 
             // The list of Face attributes to return.
@@ -91,7 +99,7 @@ namespace AuthorisationWebApi.Controllers
             // Call the Face API.
             try
             {
-                 using (Stream imageFileStream = new MemoryStream(personCaptureAsBytes))
+                 using (Stream imageFileStream = new MemoryStream(faceCapture))
                 {
                     // The second argument specifies to return the faceId, while
                     // the third argument specifies not to return face landmarks.
@@ -107,7 +115,7 @@ namespace AuthorisationWebApi.Controllers
                         throw new ApplicationException($"{detectedFaces} people detected.");
                     }
 
-                    detectedFace = faceList.FirstOrDefault();
+                    detectedFace = faceList.First();
                 }
             }
             catch (APIErrorException aex)
