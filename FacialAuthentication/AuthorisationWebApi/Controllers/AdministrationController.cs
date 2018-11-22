@@ -11,6 +11,7 @@ using Microsoft.Azure.CognitiveServices.Vision.Face.Models;
 using Authorization.Contracts;
 
 using Newtonsoft.Json.Linq;
+using AuthorisationWebApi.ViewModel;
 
 namespace AuthorisationWebApi.Controllers
 {
@@ -22,7 +23,6 @@ namespace AuthorisationWebApi.Controllers
         //2. Delegate all these ops to a broker service
         const string _baseUri = "https://australiaeast.api.cognitive.microsoft.com"; // work around for Resource not found
         
-        private const string _subscriptionKey = "";
 
         private readonly IFaceClient _faceClient = new FaceClient(new ApiKeyServiceClientCredentials(_subscriptionKey), new DelegatingHandler[] { })
         {
@@ -47,7 +47,7 @@ namespace AuthorisationWebApi.Controllers
         }
 
 
-        [HttpPost("AddGroup")]
+        [HttpPost("[action]")]
         public async void AddGroup([FromBody] JObject requestData)
         {
             var groupId = requestData["groupId"].ToString();
@@ -64,7 +64,8 @@ namespace AuthorisationWebApi.Controllers
             }
         }
 
-        [HttpPost("AddPerson")]
+
+        [HttpPost("[action]")]
         public async Task<Person> AddPerson([FromBody]JObject requestData)
         {           
             var personName =  requestData["personName"].ToString();
@@ -77,8 +78,8 @@ namespace AuthorisationWebApi.Controllers
 
             return addedPerson;
         }
-
-        [HttpPost("AddFaceToPerson")]
+ /* 
+        [HttpPost("[action]")]
         public async Task<PersistedFace> AddFaceToPerson([FromBody]JObject requestData)
         {
             Guid personId = Guid.Parse(requestData["personId"].ToString());
@@ -103,39 +104,70 @@ namespace AuthorisationWebApi.Controllers
     
             return persistedFaceResult;
         }
+*/
+
+ 
+        [HttpPost("content/upload-image")]
+        public async Task<PersistedFace> PostAddFaceToPerson(AddFaceToPersonRequest addFaceToPersonRequest)
+        {
 
 
-        [HttpGet("Group")]
+            //Guid personId = Guid.Parse(requestData["personId"].ToString());
+            //string groupId = requestData["groupId"].ToString();
+            //byte[] faceImage = Convert.FromBase64String(requestData["faceCapture"].ToString());
+            string userData = null;
+
+            PersistedFace persistedFaceResult = null;
+
+            try
+            {
+                using (var ms = addFaceToPersonRequest.FaceImage.OpenReadStream())
+                {
+                    persistedFaceResult = await _faceClient.PersonGroupPerson.AddFaceFromStreamAsync(addFaceToPersonRequest.GroupId,
+                        addFaceToPersonRequest.PersonId, ms, userData);
+                }
+
+            }
+            catch (APIErrorException ex)
+            {
+                throw; // ex.Response.Content;
+            }
+
+            return persistedFaceResult;
+        }
+
+
+        [HttpGet("[action]")]
         public async Task<PersonGroup> Get(string groupId)
         {
             return await _faceClient.PersonGroup.GetAsync(groupId);
         }
 
-        [HttpGet("Person")] // route is specified - may only need Person
+        [HttpGet("[action]")] // route is specified - may only need Person
         public async Task<Person> GetPerson(Guid personId, string groupId)
         {
             return await _faceClient.PersonGroupPerson.GetAsync(groupId, personId);
         }
 
-        [HttpPatch("Person")]
+        [HttpPatch("[action]")]
         public async void UpdatePerson(Guid personId, string groupId, string userData = null)
         {
             await _faceClient.PersonGroupPerson.UpdateAsync(groupId, personId, userData);
         }
 
-        [HttpPatch("Group")]
+        [HttpPatch("[action]")]
         public async void UpdateGroup(string groupId, string groupName, string userData = null)
         {
             await _faceClient.PersonGroup.UpdateAsync(groupId, groupName, userData);
         }
 
-        [HttpDelete("Person")]
+        [HttpDelete("[action]")]
         public async void DeletePerson(Guid personId, string groupId)
         {
             await _faceClient.PersonGroupPerson.DeleteAsync(groupId, personId);
         }
 
-        [HttpDelete("Group")]
+        [HttpDelete("[action]")]
         public async void DeleteGroup(string groupId)
         {
             await _faceClient.PersonGroup.DeleteAsync(groupId);
