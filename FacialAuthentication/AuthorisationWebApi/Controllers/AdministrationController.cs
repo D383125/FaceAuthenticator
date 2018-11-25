@@ -22,7 +22,9 @@ namespace AuthorisationWebApi.Controllers
         // 1. Add DI
         //2. Delegate all these ops to a broker service
         const string _baseUri = "https://australiaeast.api.cognitive.microsoft.com"; // work around for Resource not found
-        
+
+        private const string _subscriptionKey = "";
+
 
         private readonly IFaceClient _faceClient = new FaceClient(new ApiKeyServiceClientCredentials(_subscriptionKey), new DelegatingHandler[] { })
         {
@@ -78,37 +80,10 @@ namespace AuthorisationWebApi.Controllers
 
             return addedPerson;
         }
- /* 
-        [HttpPost("[action]")]
-        public async Task<PersistedFace> AddFaceToPerson([FromBody]JObject requestData)
-        {
-            Guid personId = Guid.Parse(requestData["personId"].ToString());
-            string groupId = requestData["groupId"].ToString();
-            byte[] faceImage = Convert.FromBase64String(requestData["faceCapture"].ToString());
-            string userData = null;
-
-            PersistedFace persistedFaceResult = null;
-
-        try     
-        {
-            using(var ms = new MemoryStream(faceImage))
-            { 
-                persistedFaceResult = await _faceClient.PersonGroupPerson.AddFaceFromStreamAsync(groupId, personId, ms, userData);
-            }
-
-        }
-        catch(APIErrorException ex)
-        {
-            System.Diagnostics.Debugger.Break();
-        }
-    
-            return persistedFaceResult;
-        }
-*/
-
  
-        [HttpPost("content/upload-image")]
-        public async Task<PersistedFace> PostAddFaceToPerson(AddFaceToPersonRequest addFaceToPersonRequest)
+        //[HttpPost("content/upload-image")]
+        [HttpPost("[action]")]
+        public async Task<PersistedFace> AddFaceToPerson(AddFaceToPersonRequest addFaceToPersonRequest)
         {
 
 
@@ -126,7 +101,6 @@ namespace AuthorisationWebApi.Controllers
                     persistedFaceResult = await _faceClient.PersonGroupPerson.AddFaceFromStreamAsync(addFaceToPersonRequest.GroupId,
                         addFaceToPersonRequest.PersonId, ms, userData);
                 }
-
             }
             catch (APIErrorException ex)
             {
@@ -136,9 +110,8 @@ namespace AuthorisationWebApi.Controllers
             return persistedFaceResult;
         }
 
-
         [HttpGet("[action]")]
-        public async Task<PersonGroup> Get(string groupId)
+        public async Task<PersonGroup> GetGroup(string groupId)
         {
             return await _faceClient.PersonGroup.GetAsync(groupId);
         }

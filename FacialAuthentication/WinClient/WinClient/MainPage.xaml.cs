@@ -23,8 +23,9 @@ namespace FaceAuth
     {
         private StorageFile _storeFile;
 
-        private IRandomAccessStream _stream;
+        private Byte[] _capturedImageBytes;
 
+ 
         public MainPage()
         {
             this.InitializeComponent();
@@ -42,46 +43,11 @@ namespace FaceAuth
 
             if (_storeFile != null)
             {
+                _capturedImageBytes = await SaveToFileAsync(_storeFile);
 
-                var bytes = await SaveToFileAsync(_storeFile);
+                //string result = System.Text.Encoding.UTF8.GetString(bytes);
 
-                string result = System.Text.Encoding.UTF8.GetString(bytes);
-
-                var appView = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView();
-
-                appView.Title = "Detecting...";
-
-                await WebApiProxy(bytes).ContinueWith((continutionTask) =>
-                {
-                    if (continutionTask.IsCompleted)
-                    {
-                        if (continutionTask.IsFaulted)
-                        {
-                            appView.Title = continutionTask.Exception.InnerException.Message;
-                        }
-                        else
-                        {
-                            // Chain. Now we need to identify detected face
-
-                            var detectedFace = continutionTask.Result.FaceId;
-                            // todo: log other attributes
-                            if(detectedFace != Guid.Empty)
-                            {
-                                // Train
-
-                                // Invoke identify
-
-                                // Then using candities fron resulr obrin person with final call 
-
-                            }
-
-
-
-                            appView.Title = $"Done. Individual is {continutionTask.Result.ToJson()}"; // todo: put result name
-                        }
-                    }
-
-                });
+                authBtn.IsEnabled = true;
             }          
         }
 
@@ -99,10 +65,12 @@ namespace FaceAuth
                 var s = await fs.PickSaveFileAsync();
                 if (s != null)
                 {
-                    using (var dataReader = new DataReader(_stream.GetInputStreamAt(0)))
+                    IRandomAccessStream stream = null;
+
+                    using (var dataReader = new DataReader(stream.GetInputStreamAt(0)))
                     {
-                        await dataReader.LoadAsync((uint)_stream.Size);
-                        byte[] buffer = new byte[(int)_stream.Size];
+                        await dataReader.LoadAsync((uint)stream.Size);
+                        byte[] buffer = new byte[(int)stream.Size];
                         dataReader.ReadBytes(buffer);
                         await FileIO.WriteBytesAsync(s, buffer);
                     }
@@ -118,18 +86,12 @@ namespace FaceAuth
         private async Task<Byte[]> SaveToFileAsync(StorageFile file)
         {
             Byte[] bytes = null;
-            //var picker = new FileOpenPicker();
-            //picker.ViewMode = PickerViewMode.Thumbnail;
-            //picker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
-            //picker.FileTypeFilter.Add(".jpeg");
-            //picker.FileTypeFilter.Add(".jpg");
-            //picker.FileTypeFilter.Add(".png");
+
             if (file != null)
             {
                 var stream = await file.OpenStreamForReadAsync();
                 bytes = new byte[(int)stream.Length];
-                stream.Read(bytes, 0, (int)stream.Length);
-                
+                stream.Read(bytes, 0, (int)stream.Length);   
             }
 
             return bytes;
@@ -153,6 +115,8 @@ namespace FaceAuth
             FacePhoto.Source = null;
 
             File.Delete(_storeFile.Path);
+
+            authBtn.IsEnabled = false;
         }
 
         private void addPersonBtn_Click(object sender, RoutedEventArgs e)
@@ -164,6 +128,46 @@ namespace FaceAuth
         {
 
         }
+
+ 
+
+        private async void authBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var appView = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView();
+
+            appView.Title = "Detecting...";
+
+            await WebApiProxy(_capturedImageBytes).ContinueWith((continutionTask) =>
+            {
+                if (continutionTask.IsCompleted)
+                {
+                    if (continutionTask.IsFaulted)
+                    {
+                        appView.Title = continutionTask.Exception.InnerException.Message;
+                    }
+                    else
+                    {
+                        // Chain. Now we need to identify detected face
+
+                        var detectedFace = continutionTask.Result.FaceId;
+                        // todo: log other attributes
+                        if (detectedFace != Guid.Empty)
+                        {
+                            // Train
+
+                            // Invoke identify
+
+                            // Then using candities fron resulr obrin person with final call 
+
+                        }
+
+                        appView.Title = $"Done. Individual is {continutionTask.Result.ToJson()}"; // todo: put result name
+                    }
+                }
+
+            });
+        }
+
 
         private async void RenderResult(DetectedFace detectedFace)
         {
@@ -206,7 +210,7 @@ namespace FaceAuth
                 //                     this.Font, Brushes.Black,
                 //                     fr.Left - 8,
                 //                     rectTop + 4);
-                    
+
                 //}
 
                 //imgBox.Image = faceBitmap;
@@ -214,16 +218,17 @@ namespace FaceAuth
         }
 
 
-        private string EncodeImageAsBase64(byte [] image)
+        private string EncodeImageAsBase64(byte[] image)
         {
             //byte[] imageArray = System.IO.File.ReadAllBytes(@"image file path");
             return Convert.ToBase64String(image);
         }
 
-        private static byte [] DecodeBase64AsBytesArray(string base64String)
+        private static byte[] DecodeBase64AsBytesArray(string base64String)
         {
             // var img = Image.FromStream(new MemoryStream(Convert.FromBase64String(base64String)));
             return Convert.FromBase64String(base64String);
         }
+
     }
 }

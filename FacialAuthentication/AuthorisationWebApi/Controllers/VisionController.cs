@@ -23,8 +23,9 @@ namespace AuthorisationWebApi.Controllers
     public class VisionController : Controller
     {
         private const string _baseUri = "https://australiaeast.api.cognitive.microsoft.com"; // work around for Resource not found  
-        
+
         private const string _subscriptionKey = "";
+
 
         private readonly IFaceClient _faceClient = new FaceClient(new ApiKeyServiceClientCredentials(_subscriptionKey), new DelegatingHandler[] { })
         {
@@ -80,9 +81,9 @@ namespace AuthorisationWebApi.Controllers
 
 
         [HttpPost("Detect")]
-        public async Task<DetectedFace> Detect([FromBody]JObject requestData)
+        public async Task<DetectedFace> Detect([FromBody]byte [] faceCapture /* JObject requestData*/)
         {
-            byte [] faceCapture = Convert.FromBase64String(requestData["faceCaptureAsBase64"].ToString());
+            //byte [] faceCapture = Convert.FromBase64String(requestData["faceCaptureAsBase64"].ToString());
 
             DetectedFace detectedFace = null;
 

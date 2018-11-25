@@ -16,7 +16,7 @@ namespace AuthorisationWebApi.Controllers
     {
         private readonly ITrainingVisionService _trainingVisionService;
 
-
+        private const string _subscriptionKey = "";
 
         const string _baseUri = "https://australiaeast.api.cognitive.microsoft.com"; // work around for Resource not found
         

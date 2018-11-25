@@ -14,6 +14,7 @@
                 <AppBarButton x:Name="clearBtn" Label="Clear" Icon="Clear" Click="clearBtn_Click"></AppBarButton>
                 <AppBarButton x:Name="addPersonBtn" Label="AddPerson" Icon="Add" Click="addPersonBtn_Click"></AppBarButton>
                 <AppBarButton x:Name="trainBtn" Label="Train" Icon="Sync"  Click="trainBtn_Click"></AppBarButton>
+                <AppBarButton x:Name="authBtn" Label="Authenticate" Icon="People"  Click="authBtn_Click" IsEnabled="False" ></AppBarButton>
             </StackPanel>
         </AppBar>
     </Page.BottomAppBar>
