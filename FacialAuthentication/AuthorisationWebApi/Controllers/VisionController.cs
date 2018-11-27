@@ -111,7 +111,7 @@ namespace AuthorisationWebApi.Controllers
 
                     var detectedFaces = faceList.Count; 
 
-                    if(detectedFaces > 1)
+                    if(detectedFaces != 1)
                     {
                         throw new ApplicationException($"{detectedFaces} people detected.");
                     }

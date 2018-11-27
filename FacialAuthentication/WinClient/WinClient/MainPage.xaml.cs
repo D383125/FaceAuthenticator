@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 //using System.Windows.Media.Imaging;
 using System.Threading.Tasks;
 using Windows.Media.Capture;
@@ -11,6 +12,7 @@ using Windows.Storage.Streams;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media.Imaging;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -21,11 +23,20 @@ namespace FaceAuth
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        private const int GroupId = 1;
+
+        private const int ConfidenceThreshold = 1;
+
+        private const int MaxNoOfCandidates = 1;
+
         private StorageFile _storeFile;
 
         private Byte[] _capturedImageBytes;
 
- 
+        private readonly Uri _controllerUri = new Uri(@"http://localhost:5000/");
+
+
+
         public MainPage()
         {
             this.InitializeComponent();
@@ -45,6 +56,14 @@ namespace FaceAuth
             {
                 _capturedImageBytes = await SaveToFileAsync(_storeFile);
 
+                BitmapImage bimage = new BitmapImage();
+
+                var stream = await _storeFile.OpenAsync(FileAccessMode.Read);
+
+                bimage.SetSource(stream);
+
+                FacePhoto.Source = bimage;
+                
                 //string result = System.Text.Encoding.UTF8.GetString(bytes);
 
                 authBtn.IsEnabled = true;
@@ -97,17 +116,11 @@ namespace FaceAuth
             return bytes;
         }
 
-        private async Task<DetectedFace> WebApiProxy(Byte [] imageAsBytes)
+        private async Task<DetectedFace> DetectFace(Byte [] imageAsBytes)
         {
-            var controllerUri = new Uri(@"http://localhost:5000/");
-
-            var visionClient = new VisionClient(controllerUri.AbsoluteUri);
-            // 1. Detect
-            var detectedFaces = await visionClient.IdentifyIndividualAsync(imageAsBytes);
-
-            System.Diagnostics.Debug.Assert(detectedFaces == null);
-
-            return detectedFaces;
+            var visionClient = new Client(_controllerUri.AbsoluteUri);
+   
+            return await visionClient.ApiVisionDetectAsync(imageAsBytes);
         }
 
         private void clearBtn_Click(object sender, RoutedEventArgs e)
@@ -129,7 +142,25 @@ namespace FaceAuth
 
         }
 
- 
+
+        private async Task<System.Collections.ObjectModel.ObservableCollection<IdentifyResult>> IdentifyFaceAsync(Guid faceId, int groupId, int? confidenceThreshold, int? maxPersonsToReturn)
+        {
+            var visionClient = new Client(_controllerUri.AbsoluteUri);
+
+            // Then using candities fron resulr obrin person with final call 
+            return await visionClient.ApiVisionIdentifyAsync(faceId, GroupId.ToString(), null, null);
+        }
+
+
+        private async Task<Person> GetPersonAsync(Guid candidateId, int groupId = GroupId)
+        {
+            var visionClient = new Client(_controllerUri.AbsoluteUri);
+
+            return await visionClient.ApiAdministrationGetpersonAsync(candidateId, GroupId.ToString());
+        }
+
+
+
 
         private async void authBtn_Click(object sender, RoutedEventArgs e)
         {
@@ -137,32 +168,81 @@ namespace FaceAuth
 
             appView.Title = "Detecting...";
 
-            await WebApiProxy(_capturedImageBytes).ContinueWith((continutionTask) =>
+            await DetectFace(_capturedImageBytes).ContinueWith((continutionTask) =>
             {
-                if (continutionTask.IsCompleted)
+            if (continutionTask.IsCompleted)
+            {
+                if (continutionTask.IsFaulted)
                 {
-                    if (continutionTask.IsFaulted)
-                    {
-                        appView.Title = continutionTask.Exception.InnerException.Message;
-                    }
-                    else
-                    {
-                        // Chain. Now we need to identify detected face
+                    appView.Title = continutionTask.Exception.InnerException.Message;
+                }
+                else
+                {
+                    // Chain. Now we need to identify detected face
 
-                        var detectedFace = continutionTask.Result.FaceId;
-                        // todo: log other attributes
-                        if (detectedFace != Guid.Empty)
-                        {
+                    var detectedFaceId = continutionTask.Result.FaceId;
+                    // todo: log other attributes
+                    if (detectedFaceId != Guid.Empty)
+                    {
+                        // Invoke identify
+                        var visionClient = new Client(_controllerUri.AbsoluteUri);
+
+                        // Then using candities fron resulr obrin person with final call 
+                        var identifyResultTask = visionClient.ApiVisionIdentifyAsync(detectedFaceId.Value, GroupId.ToString(), null, null);
+
+                        identifyResultTask.ContinueWith((inneridentifyResultTask) =>
+                            {
+                                if(inneridentifyResultTask.Result.Any() && inneridentifyResultTask.Result.First().Candidates.Any())
+                                {
+                                    var candidateId = inneridentifyResultTask.Result.First().Candidates[0].PersonId;
+
+                                    var personTask = visionClient.ApiAdministrationGetpersonAsync(candidateId, GroupId.ToString());
+
+                                    personTask.ContinueWith((innerPersonTask) => 
+                                    {
+                                        if(innerPersonTask.Result.PersonId != Guid.Empty)
+                                        {
+                                            var result = $"Welcome {innerPersonTask.Result.Name}";
+
+                                            appView.Title = result;
+
+                                            MessageDialog messageDialog = new MessageDialog(result, "IDENTIFICATION COMPLETE");
+
+                                            messageDialog.ShowAsync();
+                                        }
+                                    });
+                                }
+                                else
+                                {
+                                    // todo: notify
+                                    var result = "Could not idenify person";
+
+                                    appView.Title = $"Done. {result}"; // todo: put result name
+
+                                    MessageDialog messageDialog = new MessageDialog(result, "IDENTIFICATION COMPLETE");
+
+                                    messageDialog.ShowAsync();
+                                }
+
+                            });
+
                             // Train
 
-                            // Invoke identify
+                        }
+                    else
+                        {
+                            // todo: notify
+                            var result = "Could not idenify person";
 
-                            // Then using candities fron resulr obrin person with final call 
+                            appView.Title = $"Done. {result}"; // todo: put result name
 
+                            MessageDialog messageDialog = new MessageDialog(result, "IDENTIFICATION COMPLETE");
+
+
+                            messageDialog.ShowAsync();
                         }
 
-                        appView.Title = $"Done. Individual is {continutionTask.Result.ToJson()}"; // todo: put result name
-                    }
+                                         }
                 }
 
             });
