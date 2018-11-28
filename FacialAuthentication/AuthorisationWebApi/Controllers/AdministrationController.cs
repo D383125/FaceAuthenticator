@@ -66,7 +66,7 @@ namespace AuthorisationWebApi.Controllers
             }
         }
 
-
+/* 
         [HttpPost("[action]")]
         public async Task<Person> AddPerson([FromBody]JObject requestData)
         {           
@@ -80,7 +80,18 @@ namespace AuthorisationWebApi.Controllers
 
             return addedPerson;
         }
- 
+ */
+
+
+        [HttpPost("[action]")]
+        public async Task<Person> AddPerson([FromBody]string personName, int groupId, object userData)
+        {           
+            var addedPerson = await _faceClient.PersonGroupPerson.CreateAsync(groupId.ToString(), personName, userData?.ToString());
+
+            return addedPerson;
+        }
+
+
         //[HttpPost("content/upload-image")]
         [HttpPost("[action]")]
         public async Task<PersistedFace> AddFaceToPerson(AddFaceToPersonRequest addFaceToPersonRequest)

@@ -93,15 +93,16 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ClientProxy\CleintProxy.cs" />
-    <Compile Include="MainPage.xaml.cs">
+    <Compile Include="ClientProxy\ClientProxy.cs" />
+    <Compile Include="ViewModel\MainPageViewModel.cs" />
+    <Compile Include="View\AddPersonDialog.xaml.cs">
+      <DependentUpon>AddPersonDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ViewModel\AddPersonViewModel.cs" />
-    <Compile Include="View\AddPerson.xaml.cs">
-      <DependentUpon>AddPerson.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="ViewModel\AddPersonDialogViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -123,13 +124,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="MainPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
+    <Page Include="View\AddPersonDialog.xaml">
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\AddPerson.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="View\MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
