@@ -21,13 +21,11 @@ namespace FaceAuth.ViewModel
             _groupId = groupId;
         }
 
-        public Task<Person> AddPerson(string personName, int groupId, string userData = null)
+        public async Task<Person> AddPerson(string personName, int groupId, string userData = null)
         {
-            var serviceClient = new Client(_webServiceUri.AbsoluteUri);
+            var serviceClient = new AdministrationClient(_webServiceUri.AbsoluteUri);
 
-            throw new NotImplementedException();
-            // return await serviceClient.ApiAdministrationAddpersonAsync(null); // todo: Get latest endpoiunt with swagger
-
+            return await serviceClient.AddPersonAsync(personName, groupId, userData);
         }
 
     }

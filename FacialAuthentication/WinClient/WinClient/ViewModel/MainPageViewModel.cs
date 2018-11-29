@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using ClientProxy;
 using System.Linq;
 using Windows.Media.Capture;
 using Windows.Storage;
@@ -12,6 +11,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
 using System.Collections.ObjectModel;
 
+using ClientProxy;
 
 namespace FaceAuth.ViewModel
 {
@@ -29,25 +29,24 @@ namespace FaceAuth.ViewModel
 
         public async Task<ObservableCollection<IdentifyResult>> IdentifyFaceAsync(Guid faceId, int groupId, int? confidenceThreshold, int? maxPersonsToReturn)
         {
-            var visionClient = new Client(_webServiceUri.AbsoluteUri);
+            var visionClient = new VisionClient(_webServiceUri.AbsoluteUri);
 
-            // Then using candities fron resulr obrin person with final call 
-            return await visionClient.ApiVisionIdentifyAsync(faceId, _groupId.ToString(), null, null);
+            return await visionClient.IdentifyAsync(faceId, _groupId.ToString(), null, null);
         }
 
 
         public async Task<Person> GetPersonAsync(Guid candidateId, int groupId)
         {
-            var visionClient = new Client(_webServiceUri.AbsoluteUri);
+            var visionClient = new AdministrationClient(_webServiceUri.AbsoluteUri);
 
-            return await visionClient.ApiAdministrationGetpersonAsync(candidateId, _groupId.ToString());
+            return await visionClient.GetPersonAsync(candidateId, _groupId.ToString());
         }
 
         public async Task<DetectedFace> DetectFaceAsync(Byte[] imageAsBytes)
         {
-            var visionClient = new Client(_webServiceUri.AbsoluteUri);
+            var visionClient = new VisionClient(_webServiceUri.AbsoluteUri);
 
-            return await visionClient.ApiVisionDetectAsync(imageAsBytes);
+            return await visionClient.DetectAsync(imageAsBytes);
         }
 
     }

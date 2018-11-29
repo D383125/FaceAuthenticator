@@ -53,6 +53,7 @@ namespace FaceAuth
             capture.PhotoSettings.Format = CameraCaptureUIPhotoFormat.Jpeg;
             //capture.PhotoSettings.CroppedAspectRatio = new Size(3, 5);
             capture.PhotoSettings.MaxResolution = CameraCaptureUIMaxPhotoResolution.HighestAvailable;
+
             _storeFile = await capture.CaptureFileAsync(CameraCaptureUIMode.Photo);
 
             if (_storeFile != null)
@@ -135,9 +136,11 @@ namespace FaceAuth
             await addPersonDialog.ShowAsync();
         }
 
-        private void trainBtn_Click(object sender, RoutedEventArgs e)
+        private async void trainBtn_Click(object sender, RoutedEventArgs e)
         {
+            TrainDialog trainDialog = new TrainDialog();
 
+            await trainDialog.ShowAsync();
         }
 
 

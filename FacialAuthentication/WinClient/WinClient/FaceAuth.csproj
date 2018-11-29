@@ -95,6 +95,7 @@
     </Compile>
     <Compile Include="ClientProxy\ClientProxy.cs" />
     <Compile Include="ViewModel\MainPageViewModel.cs" />
+    <Compile Include="ViewModel\TrainDialogViewModel.cs" />
     <Compile Include="View\AddPersonDialog.xaml.cs">
       <DependentUpon>AddPersonDialog.xaml</DependentUpon>
     </Compile>
@@ -103,6 +104,9 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModel\AddPersonDialogViewModel.cs" />
+    <Compile Include="View\TrainDialog.xaml.cs">
+      <DependentUpon>TrainDialog.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -131,6 +135,10 @@
     <Page Include="View\MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\TrainDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
