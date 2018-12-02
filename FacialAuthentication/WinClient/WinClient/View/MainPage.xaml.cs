@@ -32,7 +32,9 @@ namespace FaceAuth
 
         private const int MaxNoOfCandidates = 1;
 
-        private StorageFile _storeFile;
+        private volatile StorageFile _storeFile;
+
+        private const string CachedCaptureKey = "InSessionCapture"; 
 
         private Byte[] _capturedImageBytes;
 
@@ -43,6 +45,9 @@ namespace FaceAuth
         public MainPage()
         {
             this.InitializeComponent();
+
+            
+            // todo: clean ujp cache on unload
         }
 
         // todo: Recuce size of image. Either save or see https://stackoverflow.com/questions/23926454/reducing-byte-size-of-jpeg-file
@@ -54,7 +59,9 @@ namespace FaceAuth
             //capture.PhotoSettings.CroppedAspectRatio = new Size(3, 5);
             capture.PhotoSettings.MaxResolution = CameraCaptureUIMaxPhotoResolution.HighestAvailable;
 
-            _storeFile = await capture.CaptureFileAsync(CameraCaptureUIMode.Photo);
+             _storeFile = await capture.CaptureFileAsync(CameraCaptureUIMode.Photo);
+
+            CacheCaptureAsync(_storeFile);
 
             if (_storeFile != null)
             {
@@ -67,8 +74,6 @@ namespace FaceAuth
                 bimage.SetSource(stream);
 
                 FacePhoto.Source = bimage;
-                
-                //string result = System.Text.Encoding.UTF8.GetString(bytes);
 
                 authBtn.IsEnabled = true;
             }          
@@ -84,11 +89,11 @@ namespace FaceAuth
                 fs.SuggestedFileName = "Image" + DateTime.Today.ToString();
                 fs.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
                 fs.SuggestedSaveFile = _storeFile;
-                // Saving the file
+   
                 var s = await fs.PickSaveFileAsync();
                 if (s != null)
                 {
-                    IRandomAccessStream stream = null;
+                    IRandomAccessStream stream = await _storeFile.OpenReadAsync();
 
                     using (var dataReader = new DataReader(stream.GetInputStreamAt(0)))
                     {
@@ -126,12 +131,14 @@ namespace FaceAuth
 
             File.Delete(_storeFile.Path);
 
+            PurgeLocalCacheAsync();
+
             authBtn.IsEnabled = false;
         }
 
         private async void addPersonBtn_Click(object sender, RoutedEventArgs e)
         {
-            AddPersonDialog addPersonDialog = new AddPersonDialog();
+            AddPersonDialog addPersonDialog = new AddPersonDialog(_controllerUri);
 
             await addPersonDialog.ShowAsync();
         }
@@ -162,32 +169,68 @@ namespace FaceAuth
 
             var mainPageViewModel = new MainPageViewModel(_controllerUri, GroupId);
 
-            var detectFace = await mainPageViewModel.DetectFaceAsync(_capturedImageBytes);
+            var detectFace = await mainPageViewModel.DetectFaceAsync(_capturedImageBytes);           
 
-            if(detectFace.FaceId == Guid.Empty)
+            if(detectFace == null || detectFace.FaceId == Guid.Empty)
             {
-                message = "Failed to detect person";
+                message = $"Failed to recgonise you";
 
                 appView.Title = message;
 
-                ShowErrorAsync(message);
-
+                var addUnknownPerson = new MessageDialog(message, "Unrecognised Person");
+                
                 return;
             }
 
-            // var identifyResultTask = visionClient.ApiVisionIdentifyAsync(detectedFaceId.Value, GroupId.ToString(), null, null);
             var identifyResult = await mainPageViewModel.IdentifyFaceAsync(detectFace.FaceId.Value, GroupId, null, null);
 
-            // if(inneridentifyResultTask.Result.Any() && inneridentifyResultTask.Result.First().Candidates.Any())
             if(identifyResult == null || !identifyResult.Any() || !identifyResult.FirstOrDefault().Candidates.Any())
             {
-                message = $"Failed to identify person with FaceId {detectFace.FaceId.Value}";
+                message = $"Failed to identify FaceId {detectFace.FaceId.Value}. Do you wish to be added to the system?";
+
+                // todo: log {detectFace.ToJson()} in richtext window
 
                 appView.Title = message;
 
-                ShowErrorAsync(message);
+                // Customise dialog to ask to add person.
+                var addUnknownPersonDialog = new MessageDialog(message, "Add Unrecognised Person");
+
+                addUnknownPersonDialog.Commands.Add(new UICommand { Label = "Yes", Id = 0 });
+
+                addUnknownPersonDialog.Commands.Add(new UICommand { Label = "No", Id = 1 });
+
+                var addPersonChoice = await addUnknownPersonDialog.ShowAsync();
+
+                if(((int)addPersonChoice.Id) == 0)
+                {
+                    // save bitmap. Carry forward
+                    AddPersonDialog addPersonDialog = new AddPersonDialog(_controllerUri);
+
+                    // todo: invoke voice activation to register name via voice/nat luangue
+                    ContentDialogResult dialogResult = await addPersonDialog.ShowAsync();
+
+                    // todo: use proper MVP to obtain new person
+                    var bail = 10;
+                    while (addPersonDialog.NewlyCreatedPerson == null && --bail > 0)
+                    {
+                        await Task.Delay(1000);
+                    }
+
+                    // Add face to pertson and train
+                    var trainDialogViewModel = new TrainDialogViewModel(_controllerUri);
+
+                    trainDialogViewModel.Train(addPersonDialog.NewlyCreatedPerson.PersonId, GroupId, _capturedImageBytes);
+
+                    var getNewlyCreatedPerson = await mainPageViewModel.GetPersonAsync(addPersonDialog.NewlyCreatedPerson.PersonId, GroupId);
+
+                    MessageDialog confirmDialog = new MessageDialog($"{getNewlyCreatedPerson.Name} added.", "Add Person");
+
+                    await confirmDialog.ShowAsync();
+                }
+
 
                 return;
+
             }
 
             var candidateId = identifyResult.First().Candidates.First().PersonId;
@@ -205,7 +248,6 @@ namespace FaceAuth
                 return;
             }
 
-
             var result = $"Welcome {detectedPerson.Name}. You were identified with {identifyResult.First().Candidates.First().Confidence * 100} confidence.";
 
             appView.Title = result;
@@ -213,6 +255,27 @@ namespace FaceAuth
             var messageDialog = new MessageDialog(result, "IDENTIFICATION COMPLETE");
 
             await messageDialog.ShowAsync();
+        }
+
+        private async void CacheCaptureAsync(StorageFile file)
+        {
+            //Create dataFile.txt in LocalFolder and write “My text” to it 
+            StorageFolder localFolder = ApplicationData.Current.LocalFolder;
+            await file.CopyAsync(ApplicationData.Current.LocalFolder, CachedCaptureKey, NameCollisionOption.ReplaceExisting);
+        }
+
+        private async void PurgeLocalCacheAsync()
+        {
+            var localFolder = ApplicationData.Current.LocalFolder;
+
+            await localFolder.DeleteAsync(StorageDeleteOption.PermanentDelete);
+        }
+
+        private async Task<StorageFile> GetCachedFileAsync()
+        {
+            var localFolder = ApplicationData.Current.LocalFolder;
+
+            return await localFolder.GetFileAsync(CachedCaptureKey);
         }
 
 
@@ -276,6 +339,8 @@ namespace FaceAuth
             // var img = Image.FromStream(new MemoryStream(Convert.FromBase64String(base64String)));
             return Convert.FromBase64String(base64String);
         }
+
+
 
     }
 }

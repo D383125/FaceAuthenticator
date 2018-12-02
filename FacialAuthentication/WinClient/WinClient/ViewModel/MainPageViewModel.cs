@@ -12,6 +12,7 @@ using Windows.UI.Xaml.Media.Imaging;
 using System.Collections.ObjectModel;
 
 using ClientProxy;
+using Newtonsoft.Json.Linq;
 
 namespace FaceAuth.ViewModel
 {
@@ -48,6 +49,24 @@ namespace FaceAuth.ViewModel
 
             return await visionClient.DetectAsync(imageAsBytes);
         }
+
+        //public async Task<PersistedFace> AddFaceToPerson(Guid personId, int groupId, byte [] faceCapture)
+        //{           
+        //    var adminClient = new AdministrationClient(_webServiceUri.AbsoluteUri);
+
+        //    // todo: pass in primitives rather than json
+
+           
+        //    var asBase64 = Convert.ToBase64String(faceCapture);
+
+        //    string json = @"{ personId:" + personId + ", groupId: " + groupId + ", faceCapture:" + asBase64 + "}";
+
+        //    var request = JObject.Parse(json);
+
+        //    var persistedFace = await adminClient.AddFaceToPersonAsync(request);
+            
+        //}
+
 
     }
 }

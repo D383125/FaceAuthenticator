@@ -20,6 +20,13 @@
     </Page.BottomAppBar>
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <!-- <Image Name="captureImage" HorizontalAlignment="Left" Height="503"  VerticalAlignment="Top" Width="360"/> -->
-        <Image Name="FacePhoto" Stretch="Uniform" Margin="2,2,2,50" />
+        <Image Name="FacePhoto" Stretch="Uniform" Margin="2,2,2,192" />
+         
+        <RichTextBlock Name="debugConsole" HorizontalAlignment="Left" Height="100" Margin="68,813,0,0" VerticalAlignment="Top" Width="1365">
+            <Paragraph>
+                <Run Text=""/>
+            </Paragraph>
+        </RichTextBlock>
+        
     </Grid>
 </Page>

@@ -109,14 +109,7 @@ namespace AuthorisationWebApi.Controllers
                         await _faceClient.Face.DetectWithStreamAsync(
                             imageFileStream, true, false, faceAttributes);
 
-                    var detectedFaces = faceList.Count; 
-
-                    if(detectedFaces != 1)
-                    {
-                        throw new ApplicationException($"{detectedFaces} people detected.");
-                    }
-
-                    detectedFace = faceList.First();
+                    detectedFace = faceList.FirstOrDefault();
                 }
             }
             catch (APIErrorException aex)

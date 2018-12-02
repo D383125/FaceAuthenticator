@@ -100,7 +100,7 @@ namespace AuthorisationWebApi.Controllers
         //}
 
         [HttpPost("[action]")]
-        public async Task<PersistedFace> AddFaceToPerson(JObject requestData)
+       public async Task<PersistedFace> AddFaceToPerson(JObject requestData)
         {
             Guid personId = Guid.Parse(requestData["personId"].ToString());
 
