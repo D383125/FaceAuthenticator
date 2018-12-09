@@ -170,7 +170,9 @@
   <ItemGroup>
     <Reference Include="netstandard" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Model\" />
+  </ItemGroup>
   <PropertyGroup>
     <ValidateFrameworkCompatibility>false</ValidateFrameworkCompatibility>
   </PropertyGroup>

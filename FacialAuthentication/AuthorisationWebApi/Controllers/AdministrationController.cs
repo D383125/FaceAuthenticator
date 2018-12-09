@@ -136,7 +136,9 @@ namespace AuthorisationWebApi.Controllers
         [HttpGet("[action]")] // route is specified - may only need Person
         public async Task<Person> GetPerson(Guid personId, string groupId)
         {
-            return await _faceClient.PersonGroupPerson.GetAsync(groupId, personId);
+            var person = await _faceClient.PersonGroupPerson.GetAsync(groupId, personId);
+
+            return person;
         }
 
         [HttpPatch("[action]")]

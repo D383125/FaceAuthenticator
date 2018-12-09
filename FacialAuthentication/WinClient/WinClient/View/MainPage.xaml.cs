@@ -223,9 +223,9 @@ namespace FaceAuth
 
                     var getNewlyCreatedPerson = await mainPageViewModel.GetPersonAsync(addPersonDialog.NewlyCreatedPerson.PersonId, GroupId);
 
-                    MessageDialog confirmDialog = new MessageDialog($"{getNewlyCreatedPerson.Name} added.", "Add Person");
+                    //MessageDialog confirmDialog = new MessageDialog($"{getNewlyCreatedPerson.Name} added.", "Add Person");
 
-                    await confirmDialog.ShowAsync();
+                    //await confirmDialog.ShowAsync();
                 }
 
 
