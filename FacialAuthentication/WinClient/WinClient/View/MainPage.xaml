@@ -1,32 +1,29 @@
 ﻿<Page
     x:Class="FaceAuth.MainPage"
+    x:Name="Test"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:FaceAuth"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="using:FaceAuth.ViewModel"
     mc:Ignorable="d">
+    <Page.DataContext>
+        <vm:MainPageViewModel />
+    </Page.DataContext>
     <Page.BottomAppBar>
         <AppBar IsOpen="True" IsSticky="True">
             <StackPanel Orientation="Horizontal">
-                <AppBarButton x:Name="captureBtn" Label="Capture" Icon="Camera"  Click="captureBtn_Click"></AppBarButton>
-                <AppBarButton x:Name="saveBtn" Label="Save" Icon="Save" Click="saveBtn_Click"></AppBarButton>
-                <AppBarButton x:Name="clearBtn" Label="Clear" Icon="Clear" Click="clearBtn_Click"></AppBarButton>
+                <AppBarButton x:Name="captureBtn" Label="Capture" Icon="Camera" Command="{Binding CaptureCommand}"></AppBarButton>
+                <AppBarButton x:Name="saveBtn" Label="Save" Icon="Save" Command="{Binding SaveCommand}"></AppBarButton>
+                <AppBarButton x:Name="clearBtn" Label="Clear" Icon="Clear" Command="{Binding ClearCommand}"></AppBarButton>
                 <AppBarButton x:Name="addPersonBtn" Label="AddPerson" Icon="Add" Click="addPersonBtn_Click"></AppBarButton>
-                <AppBarButton x:Name="trainBtn" Label="Train" Icon="Sync"  Click="trainBtn_Click"></AppBarButton>
-                <AppBarButton x:Name="authBtn" Label="Authenticate" Icon="People"  Click="authBtn_Click" IsEnabled="False" ></AppBarButton>
+                <AppBarButton x:Name="trainBtn" Label="Train" Icon="Sync" Command="{Binding TrainCommand}"></AppBarButton>
+                <AppBarButton x:Name="authBtn" Label="Authenticate" Icon="People" Command="{Binding AuthenticateCommand}" IsEnabled="True" ></AppBarButton>
             </StackPanel>
         </AppBar>
     </Page.BottomAppBar>
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <!-- <Image Name="captureImage" HorizontalAlignment="Left" Height="503"  VerticalAlignment="Top" Width="360"/> -->
-        <Image Name="FacePhoto" Stretch="Uniform" Margin="2,2,2,192" />
-         
-        <RichTextBlock Name="debugConsole" HorizontalAlignment="Left" Height="100" Margin="68,813,0,0" VerticalAlignment="Top" Width="1365">
-            <Paragraph>
-                <Run Text=""/>
-            </Paragraph>
-        </RichTextBlock>
-        
+        <Image Name="FacePhoto" Source="{Binding CaptureImage}" Stretch="Uniform" Margin="2,2,2,192" />
     </Grid>
 </Page>

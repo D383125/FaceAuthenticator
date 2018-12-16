@@ -161,100 +161,100 @@ namespace FaceAuth
 
         private async void authBtn_Click(object sender, RoutedEventArgs e)
         {
-            var appView = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView();
+            //var appView = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView();
 
-            appView.Title = "Detecting...";
+            //appView.Title = "Detecting...";
 
-            string message;
+            //string message;
 
-            var mainPageViewModel = new MainPageViewModel(_controllerUri, GroupId);
+            //var mainPageViewModel = new MainPageViewModel(_controllerUri, GroupId);
 
-            var detectFace = await mainPageViewModel.DetectFaceAsync(_capturedImageBytes);           
+            //var detectFace = await mainPageViewModel.DetectFaceAsync(_capturedImageBytes);           
 
-            if(detectFace == null || detectFace.FaceId == Guid.Empty)
-            {
-                message = $"Failed to recgonise you";
+            //if(detectFace == null || detectFace.FaceId == Guid.Empty)
+            //{
+            //    message = $"Failed to recgonise you";
 
-                appView.Title = message;
+            //    appView.Title = message;
 
-                var addUnknownPerson = new MessageDialog(message, "Unrecognised Person");
+            //    var addUnknownPerson = new MessageDialog(message, "Unrecognised Person");
                 
-                return;
-            }
+            //    return;
+            //}
 
-            var identifyResult = await mainPageViewModel.IdentifyFaceAsync(detectFace.FaceId.Value, GroupId, null, null);
+            //var identifyResult = await mainPageViewModel.IdentifyFaceAsync(detectFace.FaceId.Value, GroupId, null, null);
 
-            if(identifyResult == null || !identifyResult.Any() || !identifyResult.FirstOrDefault().Candidates.Any())
-            {
-                message = $"Failed to identify FaceId {detectFace.FaceId.Value}. Do you wish to be added to the system?";
+            //if(identifyResult == null || !identifyResult.Any() || !identifyResult.FirstOrDefault().Candidates.Any())
+            //{
+            //    message = $"Failed to identify FaceId {detectFace.FaceId.Value}. Do you wish to be added to the system?";
 
-                // todo: log {detectFace.ToJson()} in richtext window
+            //    // todo: log {detectFace.ToJson()} in richtext window
 
-                appView.Title = message;
+            //    appView.Title = message;
 
-                // Customise dialog to ask to add person.
-                var addUnknownPersonDialog = new MessageDialog(message, "Add Unrecognised Person");
+            //    // Customise dialog to ask to add person.
+            //    var addUnknownPersonDialog = new MessageDialog(message, "Add Unrecognised Person");
 
-                addUnknownPersonDialog.Commands.Add(new UICommand { Label = "Yes", Id = 0 });
+            //    addUnknownPersonDialog.Commands.Add(new UICommand { Label = "Yes", Id = 0 });
 
-                addUnknownPersonDialog.Commands.Add(new UICommand { Label = "No", Id = 1 });
+            //    addUnknownPersonDialog.Commands.Add(new UICommand { Label = "No", Id = 1 });
 
-                var addPersonChoice = await addUnknownPersonDialog.ShowAsync();
+            //    var addPersonChoice = await addUnknownPersonDialog.ShowAsync();
 
-                if(((int)addPersonChoice.Id) == 0)
-                {
-                    // save bitmap. Carry forward
-                    AddPersonDialog addPersonDialog = new AddPersonDialog(_controllerUri);
+            //    if(((int)addPersonChoice.Id) == 0)
+            //    {
+            //        // save bitmap. Carry forward
+            //        AddPersonDialog addPersonDialog = new AddPersonDialog(_controllerUri);
 
-                    // todo: invoke voice activation to register name via voice/nat luangue
-                    ContentDialogResult dialogResult = await addPersonDialog.ShowAsync();
+            //        // todo: invoke voice activation to register name via voice/nat luangue
+            //        ContentDialogResult dialogResult = await addPersonDialog.ShowAsync();
 
-                    // todo: use proper MVP to obtain new person
-                    var bail = 10;
-                    while (addPersonDialog.NewlyCreatedPerson == null && --bail > 0)
-                    {
-                        await Task.Delay(1000);
-                    }
+            //        // todo: use proper MVP to obtain new person
+            //        var bail = 10;
+            //        while (addPersonDialog.NewlyCreatedPerson == null && --bail > 0)
+            //        {
+            //            await Task.Delay(1000);
+            //        }
 
-                    // Add face to pertson and train
-                    var trainDialogViewModel = new TrainDialogViewModel(_controllerUri);
+            //        // Add face to pertson and train
+            //        var trainDialogViewModel = new TrainDialogViewModel(_controllerUri);
 
-                    trainDialogViewModel.Train(addPersonDialog.NewlyCreatedPerson.PersonId, GroupId, _capturedImageBytes);
+            //        trainDialogViewModel.Train(addPersonDialog.NewlyCreatedPerson.PersonId, GroupId, _capturedImageBytes);
 
-                    var getNewlyCreatedPerson = await mainPageViewModel.GetPersonAsync(addPersonDialog.NewlyCreatedPerson.PersonId, GroupId);
+            //        var getNewlyCreatedPerson = await mainPageViewModel.GetPersonAsync(addPersonDialog.NewlyCreatedPerson.PersonId, GroupId);
 
                     //MessageDialog confirmDialog = new MessageDialog($"{getNewlyCreatedPerson.Name} added.", "Add Person");
 
                     //await confirmDialog.ShowAsync();
-                }
+            //    }
 
 
-                return;
+            //    return;
 
-            }
+            //}
 
-            var candidateId = identifyResult.First().Candidates.First().PersonId;
+            //var candidateId = identifyResult.First().Candidates.First().PersonId;
 
-            var detectedPerson = await mainPageViewModel.GetPersonAsync(candidateId, GroupId);
+            //var detectedPerson = await mainPageViewModel.GetPersonAsync(candidateId, GroupId);
 
-            if(detectedPerson == null || detectedPerson.PersonId == Guid.Empty)
-            {
-                message = $"Failed to find PersonId {candidateId} in the system.";
+            //if(detectedPerson == null || detectedPerson.PersonId == Guid.Empty)
+            //{
+            //    message = $"Failed to find PersonId {candidateId} in the system.";
 
-                appView.Title = message;
+            //    appView.Title = message;
 
-                ShowErrorAsync(message);
+            //    ShowErrorAsync(message);
 
-                return;
-            }
+            //    return;
+            //}
 
-            var result = $"Welcome {detectedPerson.Name}. You were identified with {identifyResult.First().Candidates.First().Confidence * 100} confidence.";
+            //var result = $"Welcome {detectedPerson.Name}. You were identified with {identifyResult.First().Candidates.First().Confidence * 100} confidence.";
 
-            appView.Title = result;
+            //appView.Title = result;
 
-            var messageDialog = new MessageDialog(result, "IDENTIFICATION COMPLETE");
+            //var messageDialog = new MessageDialog(result, "IDENTIFICATION COMPLETE");
 
-            await messageDialog.ShowAsync();
+            //await messageDialog.ShowAsync();
         }
 
         private async void CacheCaptureAsync(StorageFile file)
@@ -326,21 +326,6 @@ namespace FaceAuth
                 //imgBox.Image = faceBitmap;
             }
         }
-
-
-        private string EncodeImageAsBase64(byte[] image)
-        {
-            //byte[] imageArray = System.IO.File.ReadAllBytes(@"image file path");
-            return Convert.ToBase64String(image);
-        }
-
-        private static byte[] DecodeBase64AsBytesArray(string base64String)
-        {
-            // var img = Image.FromStream(new MemoryStream(Convert.FromBase64String(base64String)));
-            return Convert.FromBase64String(base64String);
-        }
-
-
 
     }
 }

@@ -1,0 +1,8 @@
+DataTier: 
+Table: AuthenticationResult: Id, Success, ConfidenceLEvel, AuthDataId 
+Table: AuthenticationData: Id, FaceId, Capture bytes
+
+DAL:
+DRaper
+
+

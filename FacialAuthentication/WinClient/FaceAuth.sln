@@ -9,11 +9,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FaceAuth", "WinClient\FaceA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthorizationWbApi.Tests", "..\AuthorizationWbApi.Tests\AuthorizationWbApi.Tests.csproj", "{4725FD3E-26A0-47DD-8440-18E484D9056D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authorization.Models", "..\Authorization.Models\Authorization.Models.csproj", "{F4C3E851-6EF4-41A5-9819-7855F3DFC250}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Authorization.Models", "..\Authorization.Models\Authorization.Models.csproj", "{F4C3E851-6EF4-41A5-9819-7855F3DFC250}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authorization.Contracts", "..\Authorization.Contracts\Authorization.Contracts.csproj", "{E6E710F9-7EE8-4677-A57C-40A4FFE6C61B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Authorization.Contracts", "..\Authorization.Contracts\Authorization.Contracts.csproj", "{E6E710F9-7EE8-4677-A57C-40A4FFE6C61B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authorization.DataAccessLevel", "..\Authorization.DataAccessLevel\Authorization.DataAccessLevel.csproj", "{3045C041-7D39-43C9-BD2E-EC1AB9CE9815}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Authorization.DataAccessLevel", "..\Authorization.DataAccessLevel\Authorization.DataAccessLevel.csproj", "{3045C041-7D39-43C9-BD2E-EC1AB9CE9815}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8EF5497E-5E23-4632-9D5E-BC2DD521E1CE}"
+	ProjectSection(SolutionItems) = preProject
+		Components.txt = Components.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

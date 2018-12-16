@@ -46,7 +46,7 @@ namespace FaceAuth.View
             // Raise event
             const int GroupId = 1;
 
-            AddPersonDialogViewModel addPersonDialogViewModel = new AddPersonDialogViewModel(_serviceUri, GroupId);
+            PersonViewModel addPersonDialogViewModel = new PersonViewModel(_serviceUri, GroupId);
 
             NewlyCreatedPerson = await addPersonDialogViewModel.AddPerson(personName, GroupId);
             

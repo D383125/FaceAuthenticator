@@ -43,7 +43,8 @@ namespace FaceAuth
         }
 
         // todo: Recuce size of image. Either save or see https://stackoverflow.com/questions/23926454/reducing-byte-size-of-jpeg-file
-
+        //command
+        //Obserable 
         private async void captureBtn_Click(object sender, RoutedEventArgs e)
         {
             CameraCaptureUI capture = new CameraCaptureUI();
@@ -70,6 +71,8 @@ namespace FaceAuth
             }          
         }
 
+        //command
+        //Obserable? 
         private async void saveBtn_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -102,6 +105,7 @@ namespace FaceAuth
             }
         }
 
+        // ViewModel
         private async Task<Byte[]> SaveToFileAsync(StorageFile file)
         {
             Byte[] bytes = null;
@@ -116,6 +120,7 @@ namespace FaceAuth
             return bytes;
         }
 
+        // ViewModel
         private async Task<DetectedFace> DetectFace(Byte [] imageAsBytes)
         {
             var visionClient = new Client(_controllerUri.AbsoluteUri);
@@ -123,6 +128,8 @@ namespace FaceAuth
             return await visionClient.ApiVisionDetectAsync(imageAsBytes);
         }
 
+        //command
+        //Obserable 
         private void clearBtn_Click(object sender, RoutedEventArgs e)
         {
             FacePhoto.Source = null;
@@ -132,11 +139,15 @@ namespace FaceAuth
             authBtn.IsEnabled = false;
         }
 
+        //command
+        //Obserable 
         private void addPersonBtn_Click(object sender, RoutedEventArgs e)
         {
             // tpdp: Collect name etc
         }
 
+        //command
+        //Obserable 
         private void trainBtn_Click(object sender, RoutedEventArgs e)
         {
 
@@ -161,7 +172,8 @@ namespace FaceAuth
 
 
 
-
+        //command
+        //Obserable 
         private async void authBtn_Click(object sender, RoutedEventArgs e)
         {
             var appView = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView();
@@ -248,67 +260,56 @@ namespace FaceAuth
             });
         }
 
+        
+        ////Obserable 
+        //private async void RenderResult(DetectedFace detectedFace)
+        //{
+        //    if (detectedFace != null)
+        //    {
+        //        //var faceBitmap = new Bitmap imgBox.Image);
 
-        private async void RenderResult(DetectedFace detectedFace)
-        {
-            if (detectedFace != null)
-            {
-                //var faceBitmap = new Bitmap imgBox.Image);
+        //        //using (var g = Graphics.FromImage(faceBitmap))
+        //        //{
+        //        //    // Alpha-black rectangle on entire image
+        //        //    g.FillRectangle(new SolidBrush(Color.FromArgb(200, 0, 0, 0)), g.ClipBounds);
 
-                //using (var g = Graphics.FromImage(faceBitmap))
-                //{
-                //    // Alpha-black rectangle on entire image
-                //    g.FillRectangle(new SolidBrush(Color.FromArgb(200, 0, 0, 0)), g.ClipBounds);
+        //        //    var br = new SolidBrush(Color.FromArgb(200, Color.LightGreen));
 
-                //    var br = new SolidBrush(Color.FromArgb(200, Color.LightGreen));
+        //        //    // Loop each face recognized
 
-                //    // Loop each face recognized
+        //        //        var fr = detectedFace.FaceRectangle;
+        //        //        var fa = detectedFace.FaceAttributes;
 
-                //        var fr = detectedFace.FaceRectangle;
-                //        var fa = detectedFace.FaceAttributes;
+        //        //        // Get original face image (color) to overlap the grayed image
+        //        //        var faceRect = new Rectangle(fr.Left, fr.Top, fr.Width, fr.Height);
+        //        //        g.DrawImage(imgBox.Image, faceRect, faceRect, GraphicsUnit.Pixel);
+        //        //        g.DrawRectangle(Pens.LightGreen, faceRect);
 
-                //        // Get original face image (color) to overlap the grayed image
-                //        var faceRect = new Rectangle(fr.Left, fr.Top, fr.Width, fr.Height);
-                //        g.DrawImage(imgBox.Image, faceRect, faceRect, GraphicsUnit.Pixel);
-                //        g.DrawRectangle(Pens.LightGreen, faceRect);
+        //        //        // Loop face.FaceLandmarks properties for drawing landmark spots
+        //        //        var pts = new List<Point>();
+        //        //        Type type = detectedFace.FaceLandmarks.GetType();
+        //        //        foreach (PropertyInfo property in type.GetProperties())
+        //        //        {
+        //        //            g.DrawRectangle(Pens.LightGreen, GetRectangle((FeatureCoordinate)property.GetValue(detectedFace.FaceLandmarks, null)));
+        //        //        }
 
-                //        // Loop face.FaceLandmarks properties for drawing landmark spots
-                //        var pts = new List<Point>();
-                //        Type type = detectedFace.FaceLandmarks.GetType();
-                //        foreach (PropertyInfo property in type.GetProperties())
-                //        {
-                //            g.DrawRectangle(Pens.LightGreen, GetRectangle((FeatureCoordinate)property.GetValue(detectedFace.FaceLandmarks, null)));
-                //        }
+        //        //        // Calculate where to position the detail rectangle
+        //        //        int rectTop = fr.Top + fr.Height + 10;
+        //        //        if (rectTop + 45 > faceBitmap.Height) rectTop = fr.Top - 30;
 
-                //        // Calculate where to position the detail rectangle
-                //        int rectTop = fr.Top + fr.Height + 10;
-                //        if (rectTop + 45 > faceBitmap.Height) rectTop = fr.Top - 30;
+        //        //        // Draw detail rectangle and write face informations                     
+        //        //        g.FillRectangle(br, fr.Left - 10, rectTop, fr.Width < 120 ? 120 : fr.Width + 20, 25);
+        //        //        g.DrawString(string.Format("{0:0.0} / {1} / {2}", fa.Age, fa.Gender, fa.Emotion.OrderByDescending(x => x.Value).First().Key),
+        //        //                     this.Font, Brushes.Black,
+        //        //                     fr.Left - 8,
+        //        //                     rectTop + 4);
 
-                //        // Draw detail rectangle and write face informations                     
-                //        g.FillRectangle(br, fr.Left - 10, rectTop, fr.Width < 120 ? 120 : fr.Width + 20, 25);
-                //        g.DrawString(string.Format("{0:0.0} / {1} / {2}", fa.Age, fa.Gender, fa.Emotion.OrderByDescending(x => x.Value).First().Key),
-                //                     this.Font, Brushes.Black,
-                //                     fr.Left - 8,
-                //                     rectTop + 4);
+        //        //}
 
-                //}
+        //        //imgBox.Image = faceBitmap;
+        //    }
+        //}
 
-                //imgBox.Image = faceBitmap;
-            }
-        }
-
-
-        private string EncodeImageAsBase64(byte[] image)
-        {
-            //byte[] imageArray = System.IO.File.ReadAllBytes(@"image file path");
-            return Convert.ToBase64String(image);
-        }
-
-        private static byte[] DecodeBase64AsBytesArray(string base64String)
-        {
-            // var img = Image.FromStream(new MemoryStream(Convert.FromBase64String(base64String)));
-            return Convert.FromBase64String(base64String);
-        }
 
     }
 }

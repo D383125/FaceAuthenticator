@@ -6,12 +6,14 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Title="Add Photos"
-    PrimaryButtonText="Browse"
+    Title="Add Training Data"
+    PrimaryButtonText="Browse Photos"
     SecondaryButtonText="Cancel"
     PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
     SecondaryButtonClick="ContentDialog_SecondaryButtonClick">
     <Grid Height="60">
-        <TextBox HorizontalAlignment="Left" Margin="14,10,0,0" TextWrapping="Wrap" Text="Enter Person's Name or Id" VerticalAlignment="Top"  Height="35" Width="270"/>
+
+        <TextBox HorizontalAlignment="Left" Margin="100,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top"  Height="35" Width="184"/>
+        <TextBlock HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="Add Name" VerticalAlignment="Top" Height="35"/>
     </Grid>
 </ContentDialog>

@@ -8,13 +8,13 @@ using ClientProxy;
 
 namespace FaceAuth.ViewModel
 {
-    class AddPersonDialogViewModel
+    class PersonViewModel
     {
         private readonly Uri _webServiceUri;
 
         private readonly int _groupId;
 
-        public AddPersonDialogViewModel(Uri webServiceUri, int groupId)
+        public PersonViewModel(Uri webServiceUri, int groupId)
         {
             _webServiceUri = webServiceUri;
 
