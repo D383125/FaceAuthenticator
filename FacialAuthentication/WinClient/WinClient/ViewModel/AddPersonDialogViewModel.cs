@@ -8,22 +8,22 @@ using ClientProxy;
 
 namespace FaceAuth.ViewModel
 {
-    class PersonViewModel
+    class AddPersonDialogViewModel
     {
-        private readonly Uri _serviceUri;
+        private readonly Uri _webServiceUri;
 
         private readonly int _groupId;
 
-        public PersonViewModel(Uri serviceUri, int groupId)
+        public AddPersonDialogViewModel(Uri webServiceUri, int groupId)
         {
-            _serviceUri = serviceUri;
+            _webServiceUri = webServiceUri;
 
             _groupId = groupId;
         }
 
         public async Task<Person> AddPerson(string personName, int groupId, string userData = null)
         {
-            var serviceClient = new AdministrationClient(_serviceUri.AbsoluteUri);
+            var serviceClient = new AdministrationClient(_webServiceUri.AbsoluteUri);
 
             return await serviceClient.AddPersonAsync(personName, groupId, userData);
         }

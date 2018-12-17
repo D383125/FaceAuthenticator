@@ -19,6 +19,7 @@
                 <AppBarButton x:Name="addPersonBtn" Label="AddPerson" Icon="Add" Click="addPersonBtn_Click"></AppBarButton>
                 <AppBarButton x:Name="trainBtn" Label="Train" Icon="Sync" Command="{Binding TrainCommand}"></AppBarButton>
                 <AppBarButton x:Name="authBtn" Label="Authenticate" Icon="People" Command="{Binding AuthenticateCommand}" IsEnabled="True" ></AppBarButton>
+                <AppBarButton x:Name="exitBtn" Label="Exit" Icon="Stop" Command="{Binding ExitApplicationCommand}" IsEnabled="True"></AppBarButton>
             </StackPanel>
         </AppBar>
     </Page.BottomAppBar>

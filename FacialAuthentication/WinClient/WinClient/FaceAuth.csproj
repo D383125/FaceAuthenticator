@@ -76,6 +76,7 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -94,18 +95,15 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="ClientProxy\ClientProxy.cs" />
-    <Compile Include="Model\Capture.cs" />
-    <Compile Include="Model\Face.cs" />
-    <Compile Include="Model\Person.cs" />
+    <Compile Include="Model\CaptureProvider.cs" />
+    <Compile Include="Model\FaceProvider.cs" />
+    <Compile Include="Model\PersonProvider.cs" />
+    <Compile Include="Model\TrainingProvider.cs" />
     <Compile Include="ViewModel\AddPersonPresenter.cs" />
-    <Compile Include="ViewModel\AuthenticatePresenter.cs" />
-    <Compile Include="ViewModel\CapturePresenter.cs" />
-    <Compile Include="ViewModel\DataContextRouter.cs" />
     <Compile Include="ViewModel\DelegateCommand.cs" />
     <Compile Include="ViewModel\MainPageViewModel.cs" />
     <Compile Include="ViewModel\ObservableObject.cs" />
-    <Compile Include="ViewModel\TrainDialogViewModel.cs" />
-    <Compile Include="ViewModel\TrainPresenter.cs" />
+    <Compile Include="ViewModel\StorageFileProvider.cs" />
     <Compile Include="View\AddPersonDialog.xaml.cs">
       <DependentUpon>AddPersonDialog.xaml</DependentUpon>
     </Compile>

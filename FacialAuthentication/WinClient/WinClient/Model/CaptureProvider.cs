@@ -6,14 +6,11 @@ using System.Threading.Tasks;
 
 namespace FaceAuth.Model
 {
-    public class Face
+    class CaptureProvider
     {
-        public Guid Id { get;  }
+        public CaptureProvider(byte [] image)
+        {
 
-        public Guid PersonId { get; }
-
-        public int GroupId { get;  }
-
-
+        }
     }
 }
