@@ -26,18 +26,10 @@ namespace FaceAuth
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        private const int GroupId = 1;
+        
+        //private const string CachedCaptureKey = "InSessionCapture"; 
 
-        private const int ConfidenceThreshold = 1;
-
-        private const int MaxNoOfCandidates = 1;
-
-        private volatile StorageFile _storeFile;
-
-        private const string CachedCaptureKey = "InSessionCapture"; 
-
-        private Byte[] _capturedImageBytes;
-
+        
         private readonly Uri _controllerUri = new Uri(@"http://localhost:5000/");
 
 
@@ -133,27 +125,27 @@ namespace FaceAuth
         //    authBtn.IsEnabled = false;
         //}
 
-        private async void addPersonBtn_Click(object sender, RoutedEventArgs e)
-        {
-            AddPersonDialog addPersonDialog = new AddPersonDialog(_controllerUri);
+        //private async void addPersonBtn_Click(object sender, RoutedEventArgs e)
+        //{
+        //    var addPersonDialog = new AddPersonDialog();
 
-            await addPersonDialog.ShowAsync();
-        }
+        //    await addPersonDialog.ShowAsync();
+        //}
 
-        private async void trainBtn_Click(object sender, RoutedEventArgs e)
-        {
-            TrainDialog trainDialog = new TrainDialog();
+        //private async void trainBtn_Click(object sender, RoutedEventArgs e)
+        //{
+        //    TrainDialog trainDialog = new TrainDialog();
 
-            await trainDialog.ShowAsync();
-        }
+        //    await trainDialog.ShowAsync();
+        //}
 
 
-        private async void ShowErrorAsync(string message)
-        {
-            var messageDialog = new MessageDialog(message);
+        //private async void ShowErrorAsync(string message)
+        //{
+        //    var messageDialog = new MessageDialog(message);
 
-            await messageDialog.ShowAsync();
-        }
+        //    await messageDialog.ShowAsync();
+        //}
 
 
         private async void authBtn_Click(object sender, RoutedEventArgs e)

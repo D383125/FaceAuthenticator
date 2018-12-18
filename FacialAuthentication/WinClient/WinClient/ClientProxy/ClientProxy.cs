@@ -4,6 +4,8 @@
 // </auto-generated>
 //----------------------
 
+using System;
+
 namespace ClientProxy
 {
     #pragma warning disable // Disable all warnings
@@ -1285,7 +1287,7 @@ namespace ClientProxy
                         if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
+                           // throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
                         }
             
                         return default(DetectedFace);
@@ -3784,7 +3786,11 @@ namespace ClientProxy
             if (handler != null) 
                 handler(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
         }
-    
+
+        internal object First()
+        {
+            throw new NotImplementedException();
+        }
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.11.0.0 (Newtonsoft.Json v9.0.0.0)")]

@@ -11,6 +11,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
 using System.Collections.ObjectModel;
 
+using Autofac;
 using ClientProxy;
 using Newtonsoft.Json.Linq;
 using System.Windows.Input;
@@ -27,35 +28,35 @@ namespace FaceAuth.ViewModel
     {
         // Alibibaba - Chinese face detection 
 
-  //      private const int GroupId = 1;
-
- //       private const int ConfidenceThreshold = 1;
-
- //       private const int MaxNoOfCandidates = 1;
-
-   //     private volatile StorageFile _storeFile;
-
+        //private readonly Uri _controllerUri = new Uri(@"http://localhost:5000/");
         
-//        private Byte[] _capturedImageBytes;
 
-        private readonly Uri _controllerUri = new Uri(@"http://localhost:5000/");
-
-
-
-        public MainPageViewModel()
+        public MainPageViewModel(/*Uri controllerUri*/)
         {
-
+        //    _controllerUri = controllerUri;
         }
 
         private BitmapImage _bitmapImage;
         public BitmapImage CaptureImage
         {
-            get { return _bitmapImage; }
+            get => _bitmapImage; 
             set
             {
                 _bitmapImage = value;
 
                 RaisePropertyChangedEvent(nameof(CaptureImage));
+            }
+        }
+
+        private string _authenticationStatus;
+        public string AuthenticationStatus
+        {
+            get => _authenticationStatus;
+            set
+            {
+                _authenticationStatus = value;
+
+                RaisePropertyChangedEvent(nameof(AuthenticationStatus));
             }
         }
 
@@ -97,7 +98,7 @@ namespace FaceAuth.ViewModel
 
         private async void ShowAddPersonDialogAsync()
         {
-            var addPersonDialog = new AddPersonDialog(_controllerUri);
+            var addPersonDialog = new AddPersonDialog();
 
             await addPersonDialog.ShowAsync();
         }
@@ -105,12 +106,7 @@ namespace FaceAuth.ViewModel
         private void ClearCapture()
         {
             CaptureImage = null;
-            //FacePhoto.Source = null;
-
-            //var stroageFile = await GetCachedFileAsync();
-
-            //File.Delete(stroageFile.Path);
-
+            
             StorageFileProvider.PurgeLocalCacheAsync();
 
             //authBtn.IsEnabled = false;
@@ -120,6 +116,7 @@ namespace FaceAuth.ViewModel
         {
             try
             {
+                AuthenticationStatus = "Saving...";
                 var storageFile = await StorageFileProvider.GetCachedFileAsync(); 
                 FileSavePicker fs = new FileSavePicker();
                 fs.FileTypeChoices.Add("Image", new List<string>() { ".jpeg" });
@@ -149,10 +146,14 @@ namespace FaceAuth.ViewModel
 
                 await messageDialog.ShowAsync();
             }
+
+            AuthenticationStatus = "Done";
         }
 
         private async void CaptureFace()
         {
+            AuthenticationStatus = "Capturing...";
+
             // todo: move into seperate class
             var capture = new CameraCaptureUI();
 
@@ -166,8 +167,6 @@ namespace FaceAuth.ViewModel
 
             if (storeFile != null)
             {
-                //var capturedImageBytes = await StorageFileProvider.SaveToFileAsync(storeFile);
-
                 BitmapImage bimage = new BitmapImage();
 
                 var stream = await storeFile.OpenAsync(FileAccessMode.Read);
@@ -176,6 +175,8 @@ namespace FaceAuth.ViewModel
 
                 CaptureImage = bimage;
             }
+
+            AuthenticationStatus = "Done";
         }
 
         private async void DetectFaceAsync()
@@ -183,52 +184,65 @@ namespace FaceAuth.ViewModel
             //var appView = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView();
 
             //appView.Title = "Detecting...";
-            
+            AuthenticationStatus = "Detecting..."; 
             // todo: Use DI to new up model providers
-       
+
             var storeFile = await StorageFileProvider.GetCachedFileAsync();
 
             var capturedImageBytes = await StorageFileProvider.SaveToFileAsync(storeFile);
-
+            
             var detectedFace = await InternalDetectFaceAsync(capturedImageBytes);
+
+            string message;
+
+            if (detectedFace == null || detectedFace.FaceId == Guid.Empty)
+            {
+                message = $"Failed to detect a person in the capture. Please see log for details.";
+
+                AuthenticationStatus = "Failed";
+
+                var detectionFailedDialog = new MessageDialog(message, "Detection Failed");
+
+                await detectionFailedDialog.ShowAsync();
+
+                return;
+            }
 
             var identifyResult = await InternalIdentifyFaceAsync(detectedFace);
 
             Person detectedPerson = null;
-
-            string message;
-
+ 
             if (identifyResult == null || !identifyResult.Any() || !identifyResult.FirstOrDefault().Candidates.Any())
             {
                 message = $"Failed to identify FaceId {detectedFace.FaceId.Value}. Do you wish to be added to the system?";
 
-                //    // todo: log {detectFace.ToJson()} in richtext window
+                AuthenticationStatus = message;
 
-                //    appView.Title = message;
-
-                //    // Customise dialog to ask to add person.
+                // todo [low]: log {detectFace.ToJson()} in richtext window
+                //var json = @"{ personId:" + personId + ", groupId: " + groupId + ", faceCapture:" + asBase64 + "}";
+                
                 detectedPerson = await AddUnIdentifiedPersonAsync(message, capturedImageBytes);
+
+                if (detectedFace == null) // User has decided not to add person or couldnt be done.
+                    return;
             }
             else
             {
                 detectedPerson = await InternalIdentifyPerson(identifyResult);
 
-                if (detectedPerson == null || detectedPerson.PersonId == Guid.Empty)
+                if (detectedPerson?.PersonId == Guid.Empty)
                 {
                     message = $"Failed to find PersonId {identifyResult.FirstOrDefault().Candidates.First()} in the system.";
-
-                    //appView.Title = message;
 
                     ShowErrorAsync(message);
                 }
                 else
                 {
                     message = $"Welcome {detectedPerson.Name}. You were identified with {identifyResult.First().Candidates.First().Confidence * 100} confidence.";
-
                 }
             }
-            
-            //appView.Title = result;
+
+            AuthenticationStatus = message;
 
             var messageDialog = new MessageDialog(message, "IDENTIFICATION COMPLETE");
 
@@ -238,33 +252,16 @@ namespace FaceAuth.ViewModel
 
         private async Task<DetectedFace> InternalDetectFaceAsync(Byte [] capturedImageBytes)
         {
-            // DETECT
-            var faceProvider = new FaceProvider(_controllerUri);
+            var faceProvider = App.Container.Resolve<FaceProvider>();
 
-            var detectedFace = await faceProvider.DetectAsync(capturedImageBytes);
-
-            if (detectedFace == null || detectedFace.FaceId == Guid.Empty)
-            {
-                var message = $"Failed to recgonise you";
-
-                //    appView.Title = message;
-
-                var addUnknownPerson = new MessageDialog(message, "Unrecognised Person");
-
-                return null;
-            }
-
-            return detectedFace;
+            return await faceProvider.DetectAsync(capturedImageBytes);
         }
 
         private async Task<ObservableCollection<IdentifyResult>> InternalIdentifyFaceAsync(DetectedFace detectedFace, int groupId = 1)
         {
-            // IDENIFTY
-            var faceProvider = new FaceProvider(_controllerUri);
+            var faceProvider = App.Container.Resolve<FaceProvider>();
 
             return await faceProvider.IdentifyAsync(detectedFace.FaceId.Value, groupId, null, null);
-
-            // IDENIFTY
         }
 
         private async Task<Person> AddUnIdentifiedPersonAsync(string message, Byte[] capturedImageBytes, int groupId = 1)
@@ -282,12 +279,11 @@ namespace FaceAuth.ViewModel
             if (((int)addPersonChoice.Id) == 0)
             {
                 // save bitmap. Carry forward
-                AddPersonDialog addPersonDialog = new AddPersonDialog(_controllerUri);
+                AddPersonDialog addPersonDialog = new AddPersonDialog();
 
                 // todo: invoke voice activation to register name via voice/nat luangue
                 ContentDialogResult dialogResult = await addPersonDialog.ShowAsync();
 
-                // todo: use proper MVP to obtain new person
                 var bail = 10;
                 while (addPersonDialog.NewlyCreatedPerson == null && --bail > 0)
                 {
@@ -295,13 +291,13 @@ namespace FaceAuth.ViewModel
                 }
 
                 // Add face to pertson and train
-                var trainingProvider = new TrainingProvider(_controllerUri);
+                var trainingProvider = App.Container.Resolve<TrainingProvider>();
 
                 trainingProvider.Train(addPersonDialog.NewlyCreatedPerson.PersonId, groupId, capturedImageBytes);
 
-                await Task.Delay(1000);
+                var personProvider = App.Container.Resolve<PersonProvider>();
 
-                var personProvider = new PersonProvider(_controllerUri);
+                await Task.Delay(1000);
 
                 newlyCreatedPerson = await personProvider.GetPersonAsync(addPersonDialog.NewlyCreatedPerson.PersonId, groupId);
 
@@ -315,17 +311,11 @@ namespace FaceAuth.ViewModel
 
         private async Task<Person> InternalIdentifyPerson(ObservableCollection<IdentifyResult> identifyResult, int groupId = 1)
         {
-            // GET PERSON
-            var personProvider = new PersonProvider(_controllerUri);
+            var personProvider = App.Container.Resolve<PersonProvider>();
 
             var candidateId = identifyResult.First().Candidates.First().PersonId;
 
-            var detectedPerson = await personProvider.GetPersonAsync(candidateId, groupId);
-            
-            return detectedPerson;
-
-            // GET PERSON
-
+            return await personProvider.GetPersonAsync(candidateId, groupId);
         }
 
 
@@ -342,45 +332,5 @@ namespace FaceAuth.ViewModel
 
             await messageDialog.ShowAsync();
         }
-
-        //public async Task<ObservableCollection<IdentifyResult>> IdentifyFaceAsync(Guid faceId, int groupId, int? confidenceThreshold, int? maxPersonsToReturn)
-        //{
-        //    var visionClient = new VisionClient(_webServiceUri.AbsoluteUri);
-
-        //    return await visionClient.IdentifyAsync(faceId, _groupId.ToString(), null, null);
-        //}
-
-
-        //public async Task<Person> GetPersonAsync(Guid candidateId, int groupId)
-        //{
-        //    var visionClient = new AdministrationClient(_webServiceUri.AbsoluteUri);
-
-        //    return await visionClient.GetPersonAsync(candidateId, _groupId.ToString());
-        //}
-
-        //public async Task<DetectedFace> DetectFaceAsync(Byte[] imageAsBytes)
-        //{
-        //    var visionClient = new VisionClient(_webServiceUri.AbsoluteUri);
-
-        //    return await visionClient.DetectAsync(imageAsBytes);
-        //}
-
-        //public async Task<PersistedFace> AddFaceToPerson(Guid personId, int groupId, byte [] faceCapture)
-        //{           
-        //    var adminClient = new AdministrationClient(_webServiceUri.AbsoluteUri);
-
-        //    // todo: pass in primitives rather than json
-
-
-        //    var asBase64 = Convert.ToBase64String(faceCapture);
-
-        //    string json = @"{ personId:" + personId + ", groupId: " + groupId + ", faceCapture:" + asBase64 + "}";
-
-        //    var request = JObject.Parse(json);
-
-        //    var persistedFace = await adminClient.AddFaceToPersonAsync(request);
-
-        //}
-
     }
 }

@@ -15,6 +15,11 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
+using FaceAuth.View;
+using FaceAuth.ViewModel;
+using FaceAuth.Model;
+using Autofac;
+
 namespace FaceAuth
 {
     /// <summary>
@@ -30,6 +35,33 @@ namespace FaceAuth
         {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
+            // register Autofac classes
+            Container = ConfigureServices();
+
+        }
+
+        public static IContainer Container { get; private set; }
+
+        private static IContainer ConfigureServices()
+        {
+            var controllerUri = new Uri(@"http://localhost:5000/"); // todo: [low] Read from config file
+
+            var containerBuilder = new ContainerBuilder();
+
+            containerBuilder.RegisterInstance(new MainPageViewModel() );
+
+            containerBuilder.RegisterType<PersonViewModel>();
+
+            containerBuilder.RegisterType(typeof(StorageFileProvider));
+
+            containerBuilder.RegisterInstance(new PersonProvider(controllerUri));
+
+            containerBuilder.RegisterInstance(new TrainingProvider(controllerUri));
+
+            containerBuilder.RegisterInstance(new FaceProvider(controllerUri));
+            
+            return containerBuilder.Build();
+
         }
 
         /// <summary>

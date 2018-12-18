@@ -31,9 +31,9 @@ namespace FaceAuth.View
         public Person NewlyCreatedPerson { get; private set; }
 
 
-        public AddPersonDialog(Uri serviceUri)
+        public AddPersonDialog()
         {
-            _serviceUri = serviceUri;
+            //_serviceUri = serviceUri;
 
             this.InitializeComponent();
         }

@@ -8,5 +8,7 @@ namespace FaceAuth.ViewModel
 {
     class AddPersonPresenter : ObservableObject
     {
+
+
     }
 }

@@ -8,7 +8,7 @@ namespace FaceAuth.Model
 {
     class CaptureProvider
     {
-        public CaptureProvider(byte [] image)
+        public CaptureProvider()
         {
 
         }
