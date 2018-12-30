@@ -5,16 +5,17 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Net.Http;
 
-using Authorization.Contracts;
 using Microsoft.Azure.CognitiveServices.Vision.Face;
 using Microsoft.Azure.CognitiveServices.Vision.Face.Models;
+
+using Authorisation.Core.Services;
 
 namespace AuthorisationWebApi.Controllers
 {
    [Route("api/[controller]")]
     public class TrainingController : Controller 
     {
-        private readonly ITrainingVisionService _trainingVisionService;
+        private readonly ICognitiveAdminService _cognitiveAdminService;
 
         private const string _subscriptionKey = "";
 
@@ -30,10 +31,11 @@ namespace AuthorisationWebApi.Controllers
         {
             
         }
-        //public TrainingController(ITrainingVisionService trainingVisionService)
-        //{
-        //    _trainingVisionService = trainingVisionService;
-        //}
+
+        public TrainingController(ICognitiveAdminService cognitiveAdminService)
+        {
+            _cognitiveAdminService = cognitiveAdminService;
+        }
 
         public async Task<string> Get()
         {

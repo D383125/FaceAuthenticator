@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
-using Authorization.Contracts;
 
 namespace AuthorisationWebApi.Controllers
 {
@@ -12,7 +11,7 @@ namespace AuthorisationWebApi.Controllers
     public class AudioController : Controller
     {
 
-        private readonly ISpeechService _speechService;
+      //  private readonly ISpeechService _speechService;
 
         public AudioController()
         {

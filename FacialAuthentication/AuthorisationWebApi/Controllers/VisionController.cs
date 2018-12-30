@@ -7,12 +7,12 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.CognitiveServices.Vision.Face;
 using Microsoft.Azure.CognitiveServices.Vision.Face.Models;
-
-using Authorization.Contracts;
 using Newtonsoft.Json.Linq;
+using Authorisation.Core.Services;
 
 namespace AuthorisationWebApi.Controllers
 {
@@ -32,18 +32,18 @@ namespace AuthorisationWebApi.Controllers
             Endpoint = _baseUri
         };
 
-        private readonly IVisionService _visionService;
+        private readonly ICognitiveFaceService _cognitiveFaceService;
 
         public VisionController()
         {
             
         }
-/* 
-        public VisionController(IVisionService visionService)
+ 
+        public VisionController(ICognitiveFaceService cognitiveFaceService)
         {
-            _visionService = visionService;
+            _cognitiveFaceService = cognitiveFaceService;
         }
-*/
+
         public async Task<string> Get()
         {
             return await Task<string>.Factory.StartNew(() => "ACK");

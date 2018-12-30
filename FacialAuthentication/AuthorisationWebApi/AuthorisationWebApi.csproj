@@ -28,8 +28,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Authorization.Contracts\Authorization.Contracts.csproj" />
-    <ProjectReference Include="..\Authorization.Models\Authorization.Models.csproj" />
+    <Folder Include="Validation\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Authorisation.Adaptor\Authorisation.Adaptor.csproj" />
+    <ProjectReference Include="..\Authorisation.Core\Authorisation.Core.csproj" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

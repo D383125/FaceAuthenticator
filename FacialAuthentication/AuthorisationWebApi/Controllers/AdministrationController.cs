@@ -8,10 +8,10 @@ using System.IO;
 
 using Microsoft.Azure.CognitiveServices.Vision.Face;
 using Microsoft.Azure.CognitiveServices.Vision.Face.Models;
-using Authorization.Contracts;
 
 using Newtonsoft.Json.Linq;
 using AuthorisationWebApi.ViewModel;
+using Authorisation.Core.Services;
 
 namespace AuthorisationWebApi.Controllers
 {
@@ -31,17 +31,17 @@ namespace AuthorisationWebApi.Controllers
             Endpoint = _baseUri
         };
 
-        private readonly IAdministrationVisionService _administrationVisionService;
+       private readonly ICognitiveAdminService _cognitiveAdminService;
 
         public AdministrationController()
         {
             
         }
 
-      //  public AdministrationController(IAdministrationVisionService administrationVisionService)
-      //  {
-       //     _administrationVisionService = administrationVisionService;
-       // }
+        public AdministrationController(ICognitiveAdminService cognitiveAdminService)
+        {
+            _cognitiveAdminService = cognitiveAdminService;
+        }
 
         public async Task<string> Get()
         {

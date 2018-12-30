@@ -1,5 +1,5 @@
 using AuthorisationWebApi.Services;
-using Authorization.Models.Extensions;
+using AuthorisationWebApi.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
