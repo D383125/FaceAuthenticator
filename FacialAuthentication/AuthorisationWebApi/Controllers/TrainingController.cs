@@ -27,11 +27,6 @@ namespace AuthorisationWebApi.Controllers
             Endpoint = _baseUri
         };
 
-        public TrainingController()
-        {
-            
-        }
-
         public TrainingController(ICognitiveAdminService cognitiveAdminService)
         {
             _cognitiveAdminService = cognitiveAdminService;

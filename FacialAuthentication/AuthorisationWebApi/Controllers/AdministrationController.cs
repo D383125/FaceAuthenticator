@@ -31,12 +31,7 @@ namespace AuthorisationWebApi.Controllers
             Endpoint = _baseUri
         };
 
-       private readonly ICognitiveAdminService _cognitiveAdminService;
-
-        public AdministrationController()
-        {
-            
-        }
+        private readonly ICognitiveAdminService _cognitiveAdminService;
 
         public AdministrationController(ICognitiveAdminService cognitiveAdminService)
         {

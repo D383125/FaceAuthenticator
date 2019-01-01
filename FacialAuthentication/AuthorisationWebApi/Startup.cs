@@ -4,7 +4,12 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
+
 using Microsoft.Extensions.DependencyInjection;
+using Autofac.Extensions.DependencyInjection;
+using Autofac;
+using Authorisation.Core;
+using Authorisation.Infrastructure;
 
 namespace AuthorisationWebApi
 {
@@ -15,12 +20,14 @@ namespace AuthorisationWebApi
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
+        public IConfiguration Configuration { get; private set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public System.IServiceProvider ConfigureServices(IServiceCollection services)
         {
             services.ConfigureCors();
+
+            return services.RegisterServicesViaAutofac();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

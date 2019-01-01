@@ -9,21 +9,26 @@ using Authorisation.Core;
 using Autofac;
 
 using Swashbuckle.AspNetCore.Swagger;
+using Authorisation.Infrastructure;
+using Authorisation.Adaptor;
+using Autofac.Extensions.DependencyInjection;
 
 namespace AuthorisationWebApi.Services
 {
     public static class ServiceExtensions
     {
 
-        public static void RegisterServices(this IServiceCollection services)
+        public static System.IServiceProvider RegisterServicesViaAutofac(this IServiceCollection services)
         {
             var builder = new ContainerBuilder();
 
+            builder.Populate(services);
+
             builder.RegisterModule(new CoreModule());
-            //builder.RegisterModule(new InfrastructureModule());
 
-            // todo: Start here. Register WebAPi types and impliment modules referenc3ed above.
+            builder.RegisterModule(new InfrastructureModule());
 
+            return new AutofacServiceProvider(builder.Build());
         }
 
         public static void ConfigureCors(this IServiceCollection services)

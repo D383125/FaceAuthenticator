@@ -1,10 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Autofac;
 
 namespace Authorisation.Infrastructure
 {
-    class InfrastructureModule
+    public class InfrastructureModule : Autofac.Module
     {
+        protected override void Load(ContainerBuilder builder)
+        {
+            base.Load(builder);
+        }
+
     }
 }

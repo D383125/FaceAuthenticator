@@ -33,11 +33,6 @@ namespace AuthorisationWebApi.Controllers
         };
 
         private readonly ICognitiveFaceService _cognitiveFaceService;
-
-        public VisionController()
-        {
-            
-        }
  
         public VisionController(ICognitiveFaceService cognitiveFaceService)
         {
