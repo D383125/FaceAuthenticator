@@ -12,6 +12,8 @@ using Microsoft.Azure.CognitiveServices.Vision.Face.Models;
 using Newtonsoft.Json.Linq;
 using AuthorisationWebApi.ViewModel;
 using Authorisation.Core.Services;
+using Authorisation.Adaptor.Request;
+using Authorisation.Adaptor.Response;
 
 namespace AuthorisationWebApi.Controllers
 {
@@ -63,11 +65,17 @@ namespace AuthorisationWebApi.Controllers
 
 
         [HttpPost("[action]")]
-        public async Task<Person> AddPerson([FromBody]string personName, int groupId, object userData)
-        {           
-            var addedPerson = await _faceClient.PersonGroupPerson.CreateAsync(groupId.ToString(), personName, userData?.ToString());
+        public async Task<IAddPersonResponse> AddPerson([FromBody]string personName, int groupId, object userData)
+        {
+            //todo: mapping
+            var request = new AddPersonRequest
+            {
+                GroupId = groupId,
+                PersonName = personName,
+                UserData = userData
+            };
 
-            return addedPerson;
+            return await _cognitiveAdminService.Handle(request);
         }
 
         

@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-
-using Authorisation.Adaptor.Requests;
-using Authorisation.Adaptor.Responses;
+using System.Threading.Tasks;
+using Authorisation.Adaptor.Request;
+using Authorisation.Adaptor.Response;
 
 namespace Authorisation.Core.Services
 {
     public interface ICognitiveFaceService
-    {       
-        IDetectFaceResponse Handle(IDetectFaceRequest detectFaceRequest);
+    {
+        Task<IDetectFaceResponse> Handle(IDetectFaceRequest detectFaceRequest);
 
-        IVerifyPersonResponse Handle(IVerifyPersonRequest verifyPersonRequest);
+        Task<IVerifyPersonResponse> Handle(IVerifyPersonRequest verifyPersonRequest);
 
-        IIdentifyFaceResponse Handle(IIdentifyFaceRequest identifyFaceRequest);
+        Task<IEnumerable<IIdentifyFaceResponse>> Handle(IIdentifyFaceRequest identifyFaceRequest);
     }
 }

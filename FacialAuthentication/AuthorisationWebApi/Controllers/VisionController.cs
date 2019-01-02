@@ -13,6 +13,8 @@ using Microsoft.Azure.CognitiveServices.Vision.Face;
 using Microsoft.Azure.CognitiveServices.Vision.Face.Models;
 using Newtonsoft.Json.Linq;
 using Authorisation.Core.Services;
+using Authorisation.Adaptor.Request;
+using Authorisation.Adaptor.Response;
 
 namespace AuthorisationWebApi.Controllers
 {
@@ -48,74 +50,75 @@ namespace AuthorisationWebApi.Controllers
         // Chain of Repso for detech, identify andd Validate
         //#region Place In Service/brokerware
         [HttpPost("Verify")]
-        public async Task<VerifyResult> Verify(JObject requestData)         
+        public async Task<IVerifyPersonResponse> Verify(Guid faceId, Guid personId, int groupId)         
         {
-            VerifyResult verifyResult = null;
-
-            var faceId = Guid.Parse(Convert.ToString(requestData["faceId"]));
-
-             var personId = Guid.Parse(Convert.ToString(requestData["personId"]));
-
-            var groupId = Convert.ToString(requestData["groupId"]);
-
-            try
-            {              
-                verifyResult = 
-                        await _faceClient.Face.VerifyFaceToPersonAsync(faceId, personId, groupId);
-            }
-            catch (APIErrorException aex)
+            // map
+            var request = new VerifyPersonRequest
             {
-                System.Diagnostics.Debug.WriteLine(aex);          
+                FaceId = faceId,
+                PersonId = personId,
+                GroupId = groupId
+            };
 
-                throw;
-            }
-            
+            return await _cognitiveFaceService.Handle(request);
+        }
 
-            return verifyResult;
-        } 
 
 
         [HttpPost("Detect")]
-        public async Task<DetectedFace> Detect([FromBody]byte [] faceCapture /* JObject requestData*/)
+        public async Task<IDetectFaceResponse> Detect([FromBody]byte[] faceCapture)
         {
-            //byte [] faceCapture = Convert.FromBase64String(requestData["faceCaptureAsBase64"].ToString());
+            // validation
 
-            DetectedFace detectedFace = null;
+            // USe infrasturcute to convert
+            var detectFaceRequest = new DetectFaceRequest(faceCapture);
 
-            // The list of Face attributes to return.
-            IList<FaceAttributeType> faceAttributes =
-                new FaceAttributeType[]
-                {
-                    FaceAttributeType.Gender, FaceAttributeType.Age,
-                    FaceAttributeType.Smile, FaceAttributeType.Emotion,
-                    FaceAttributeType.Glasses, FaceAttributeType.Hair
-                };
+            // convert otJson response
+            return await _cognitiveFaceService.Handle(detectFaceRequest);
+        }
 
 
-            // Call the Face API.
-            try
-            {
-                 using (Stream imageFileStream = new MemoryStream(faceCapture))
-                {
-                    // The second argument specifies to return the faceId, while
-                    // the third argument specifies not to return face landmarks.
+        //[HttpPost("Detect")]
+        //public async Task<DetectedFace> Detect([FromBody]byte [] faceCapture /* JObject requestData*/)
+        //{
+        //    //byte [] faceCapture = Convert.FromBase64String(requestData["faceCaptureAsBase64"].ToString());
 
-                    IList<DetectedFace> faceList = 
-                        await _faceClient.Face.DetectWithStreamAsync(
-                            imageFileStream, true, false, faceAttributes);
+        //    DetectedFace detectedFace = null;
 
-                    detectedFace = faceList.FirstOrDefault();
-                }
-            }
-            catch (APIErrorException aex)
-            {
-                System.Diagnostics.Debug.WriteLine(aex);          
+        //    // The list of Face attributes to return.
+        //    IList<FaceAttributeType> faceAttributes =
+        //        new FaceAttributeType[]
+        //        {
+        //            FaceAttributeType.Gender, FaceAttributeType.Age,
+        //            FaceAttributeType.Smile, FaceAttributeType.Emotion,
+        //            FaceAttributeType.Glasses, FaceAttributeType.Hair
+        //        };
 
-                throw;
-            }
 
-            return detectedFace;
-        }      
+        //    // Call the Face API.
+        //    try
+        //    {
+        //         using (Stream imageFileStream = new MemoryStream(faceCapture))
+        //        {
+        //            // The second argument specifies to return the faceId, while
+        //            // the third argument specifies not to return face landmarks.
+
+        //            IList<DetectedFace> faceList = 
+        //                await _faceClient.Face.DetectWithStreamAsync(
+        //                    imageFileStream, true, false, faceAttributes);
+
+        //            detectedFace = faceList.FirstOrDefault();
+        //        }
+        //    }
+        //    catch (APIErrorException aex)
+        //    {
+        //        System.Diagnostics.Debug.WriteLine(aex);          
+
+        //        throw;
+        //    }
+
+        //    return detectedFace;
+        //}      
         
         [HttpPost("FindSimilar")]
         public async Task<IEnumerable<SimilarFace>> FindSimilar(Guid faceId)
@@ -139,25 +142,40 @@ namespace AuthorisationWebApi.Controllers
 
 
         [HttpPost("Identify")]
-        public async Task<IEnumerable<IdentifyResult>> Identify(Guid faceId, 
+        public async Task<IEnumerable<IIdentifyFaceResponse>> Identify(Guid faceId,
                                                     string groupId, int? maxNumOfCandidatesReturned, double? confidenceThreshold)
         {
-            IList<IdentifyResult> identifyResults = null;
-
-            // Call the Face API.
-            try
+            var identifyFaceRequest = new IdentifyFaceRequest
             {
-                identifyResults = 
-                        await _faceClient.Face.IdentifyAsync( new [] { faceId }, groupId, null, maxNumOfCandidatesReturned, confidenceThreshold);
-            }
-            catch (APIErrorException aex)
-            {
-                System.Diagnostics.Debug.WriteLine(aex);          
+                FaceId = faceId,
+                GroupId = groupId,
+                MaxNumOfCandidates = maxNumOfCandidatesReturned,
+                ConfidenceThreshold = confidenceThreshold
+            };
 
-                throw;
-            }
-
-            return identifyResults;
+            return await _cognitiveFaceService.Handle(identifyFaceRequest);
         }
+
+        //[HttpPost("Identify")]
+        //public async Task<IEnumerable<IdentifyResult>> Identify(Guid faceId, 
+        //                                            string groupId, int? maxNumOfCandidatesReturned, double? confidenceThreshold)
+        //{
+        //    IList<IdentifyResult> identifyResults = null;
+
+        //    // Call the Face API.
+        //    try
+        //    {
+        //        identifyResults = 
+        //                await _faceClient.Face.IdentifyAsync( new [] { faceId }, groupId, null, maxNumOfCandidatesReturned, confidenceThreshold);
+        //    }
+        //    catch (APIErrorException aex)
+        //    {
+        //        System.Diagnostics.Debug.WriteLine(aex);          
+
+        //        throw;
+        //    }
+
+        //    return identifyResults;
+        //}
     }
 }

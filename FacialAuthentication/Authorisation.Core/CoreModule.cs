@@ -10,9 +10,9 @@ namespace Authorisation.Core
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<ICognitiveFaceService>();
+            builder.RegisterType<CognitiveFaceService>().As<ICognitiveFaceService>();
 
-            builder.RegisterType<ICognitiveAdminService>();
+            builder.RegisterType<CognitiveAdminService>().As<ICognitiveAdminService>();
 
             base.Load(builder);
         }

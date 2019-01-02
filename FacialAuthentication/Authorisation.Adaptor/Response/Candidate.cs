@@ -4,10 +4,11 @@ using System.Text;
 
 namespace Authorisation.Adaptor.Response
 {
-    public interface IVerifyPersonResponse
+    public struct Candidate
     {
-        double Confidence { get; }
+        public Guid PersonId { get; set; }
 
-        bool IsIdentical { get; }
+        public double Confidence { get; set; }
+
     }
 }

@@ -6,5 +6,10 @@ namespace Authorisation.Adaptor.Request
 {
     public interface IAddPersonRequest
     {
+        int GroupId { get; }
+
+        string PersonName { get;}
+
+        object UserData { get; }
     }
 }
