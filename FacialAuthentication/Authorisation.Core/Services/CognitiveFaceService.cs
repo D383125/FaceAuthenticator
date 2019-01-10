@@ -1,15 +1,14 @@
-﻿using Authorisation.Adaptor.Request;
-using Authorisation.Adaptor.Response;
-using Microsoft.Azure.CognitiveServices.Vision.Face;
-using Microsoft.Azure.CognitiveServices.Vision.Face.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Diagnostics;
+
+using Authorisation.Adaptor.Request;
+using Authorisation.Adaptor.Response;
+using Microsoft.Azure.CognitiveServices.Vision.Face;
+using Microsoft.Azure.CognitiveServices.Vision.Face.Models;
 
 namespace Authorisation.Core.Services
 {
@@ -17,7 +16,7 @@ namespace Authorisation.Core.Services
     {
         private const string _baseUri = "https://australiaeast.api.cognitive.microsoft.com";  
 
-        private const string _subscriptionKey = "";
+        private const string _subscriptionKey = "0998c75abb2342c492ef4506dee28217";
 
         private readonly IFaceClient _faceClient = new FaceClient(new ApiKeyServiceClientCredentials(_subscriptionKey), new DelegatingHandler[] { })
         {
@@ -28,11 +27,6 @@ namespace Authorisation.Core.Services
         {
 
         }
-
-        //public CognitiveFaceService(string baseUri = "https://australiaeast.api.cognitive.microsoft.com")
-        //{
-        //    //_baseUri = baseUri;
-        //}
 
         public async Task<IDetectFaceResponse> Handle(IDetectFaceRequest detectFaceRequest)
         {
@@ -61,7 +55,7 @@ namespace Authorisation.Core.Services
                         await _faceClient.Face.DetectWithStreamAsync(
                             imageFileStream, true, false, faceAttributes);
 
-                    detectedFace = faceList.FirstOrDefault();
+                    detectedFace = faceList.FirstOrDefault();                    
                 }
             }
             catch (APIErrorException aex)
@@ -89,38 +83,31 @@ namespace Authorisation.Core.Services
                 if (!Debugger.IsAttached)
                     Debugger.Launch();
 
-                System.Diagnostics.Debug.WriteLine(aex);
+                Debug.WriteLine(aex);
 
                 throw;
             }
-
 
             return new VerifyPersonResponse(verifyResult);
         }
 
         public async Task<IEnumerable<IIdentifyFaceResponse>> Handle(IIdentifyFaceRequest identifyFaceRequest)
         {
-            IList<IdentifyResult> identifyResults = null;
-
-            // Call the Face API.
-            try
-            {
-                identifyResults =
+            var identifyResults =
                         await _faceClient.Face.IdentifyAsync(new[] { identifyFaceRequest.FaceId }, identifyFaceRequest.GroupId, null, identifyFaceRequest.MaxNumOfCandidates,
-                        identifyFaceRequest.ConfidenceThreshold);
-            }
-            catch (APIErrorException aex)
-            {
-                if (!Debugger.IsAttached)
-                    Debugger.Launch();
-
-
-                throw;
-            }
+                        identifyFaceRequest.ConfidenceThreshold);            
 
             var result = identifyResults.Select(r => new IdentifyFaceResponse(r));                               
 
             return result;
+        }
+
+        public async Task<IFindSimilarFacesResponse> Handle(IFindSimilarFacesRequest findSimilarFacesRequest)
+        {
+            var similarFacesResult =
+                        await _faceClient.Face.FindSimilarAsync(findSimilarFacesRequest.PrinciplaFaceId);
+
+            return new FindSimilarFacesResponse(similarFacesResult);
         }
     }
 }

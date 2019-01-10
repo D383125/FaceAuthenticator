@@ -9,7 +9,7 @@ using ClientProxy;
 
 namespace FaceAuth.Model
 {
-    public class PersonProvider // : INotifyPropertyChanged
+    public sealed class PersonProvider
     {
         Guid? Id { get; }
         public string Name { get;}
@@ -29,12 +29,9 @@ namespace FaceAuth.Model
         {
             var visionClient = new AdministrationClient(_serviceUri.AbsoluteUri);
 
-            return await visionClient.GetPersonAsync(candidateId, groupId.ToString());
+            var getPersonResponse = await visionClient.GetPersonAsync(candidateId, groupId.ToString());
+
+            return new Person(getPersonResponse);
         }
-
-
-
-
-        // public event PropertyChangedEventHandler PropertyChanged;
     }
 }

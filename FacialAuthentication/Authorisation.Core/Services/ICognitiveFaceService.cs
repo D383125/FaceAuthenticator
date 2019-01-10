@@ -14,5 +14,7 @@ namespace Authorisation.Core.Services
         Task<IVerifyPersonResponse> Handle(IVerifyPersonRequest verifyPersonRequest);
 
         Task<IEnumerable<IIdentifyFaceResponse>> Handle(IIdentifyFaceRequest identifyFaceRequest);
+
+        Task<IFindSimilarFacesResponse> Handle(IFindSimilarFacesRequest findSimilarFacesRequest);
     }
 }

@@ -4,8 +4,8 @@ using System.Text;
 
 namespace Authorisation.Adaptor.Request
 {
-    public interface ITrainGroupRequest
+    public class TrainGroupRequest : ITrainGroupRequest
     {
-        int GroupId { get; }
+        public int GroupId { get; set; }
     }
 }

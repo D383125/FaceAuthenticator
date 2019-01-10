@@ -12,13 +12,9 @@ using Windows.UI.Xaml.Media.Imaging;
 using System.Collections.ObjectModel;
 
 using Autofac;
-using ClientProxy;
-using Newtonsoft.Json.Linq;
 using System.Windows.Input;
-using System.IO;
 using FaceAuth.View;
 using FaceAuth.Model;
-using Windows.Foundation;
 using System.Collections.Generic;
 
 namespace FaceAuth.ViewModel
@@ -26,14 +22,8 @@ namespace FaceAuth.ViewModel
     // Type breches SRP?
     public class MainPageViewModel : ObservableObject
     {
-        // Alibibaba - Chinese face detection 
-
-        //private readonly Uri _controllerUri = new Uri(@"http://localhost:5000/");
-        
-
-        public MainPageViewModel(/*Uri controllerUri*/)
+        public MainPageViewModel()
         {
-        //    _controllerUri = controllerUri;
         }
 
         private BitmapImage _bitmapImage;
@@ -257,7 +247,7 @@ namespace FaceAuth.ViewModel
             return await faceProvider.DetectAsync(capturedImageBytes);
         }
 
-        private async Task<ObservableCollection<IdentifyResult>> InternalIdentifyFaceAsync(DetectedFace detectedFace, int groupId = 1)
+        private async Task<ObservableCollection<IdentifyFaceResult>> InternalIdentifyFaceAsync(DetectedFace detectedFace, int groupId = 1)
         {
             var faceProvider = App.Container.Resolve<FaceProvider>();
 
@@ -301,7 +291,7 @@ namespace FaceAuth.ViewModel
 
                 newlyCreatedPerson = await personProvider.GetPersonAsync(addPersonDialog.NewlyCreatedPerson.PersonId, groupId);
 
-                MessageDialog confirmDialog = new MessageDialog($"{newlyCreatedPerson.Name} added.", "Add Person");
+                var confirmDialog = new MessageDialog($"{newlyCreatedPerson.Name} added.", "Add Person");
 
                 await confirmDialog.ShowAsync();
             }
@@ -309,7 +299,7 @@ namespace FaceAuth.ViewModel
             return newlyCreatedPerson;
         }
 
-        private async Task<Person> InternalIdentifyPerson(ObservableCollection<IdentifyResult> identifyResult, int groupId = 1)
+        private async Task<Person> InternalIdentifyPerson(ObservableCollection<IdentifyFaceResult> identifyResult, int groupId = 1)
         {
             var personProvider = App.Container.Resolve<PersonProvider>();
 

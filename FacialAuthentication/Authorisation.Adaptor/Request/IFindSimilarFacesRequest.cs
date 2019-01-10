@@ -4,8 +4,9 @@ using System.Text;
 
 namespace Authorisation.Adaptor.Request
 {
-    public interface ITrainGroupRequest
+    public interface IFindSimilarFacesRequest
     {
-        int GroupId { get; }
+        Guid PrinciplaFaceId { get;}
+
     }
 }

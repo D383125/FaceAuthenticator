@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using ClientProxy;
+using FaceAuth.Model;
 
 namespace FaceAuth.ViewModel
 {
@@ -25,7 +26,9 @@ namespace FaceAuth.ViewModel
         {
             var serviceClient = new AdministrationClient(_serviceUri.AbsoluteUri);
 
-            return await serviceClient.AddPersonAsync(personName, groupId, userData);
+            var addPersonResponse = await serviceClient.AddPersonAsync(personName, groupId, userData);
+
+            return new Person(addPersonResponse);
         }
 
     }

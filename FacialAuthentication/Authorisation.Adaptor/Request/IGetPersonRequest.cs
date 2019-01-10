@@ -6,5 +6,8 @@ namespace Authorisation.Adaptor.Request
 {
     public interface IGetPersonRequest
     {
+        int GroupId { get; }
+
+        Guid PersonId { get; }
     }
 }

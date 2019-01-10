@@ -8,10 +8,11 @@ using System.Diagnostics;
 
 using ClientProxy;
 using Newtonsoft.Json.Linq;
+using Autofac;
 
 namespace FaceAuth.Model
 {
-    sealed class TrainingProvider
+    public sealed class TrainingProvider
     {
         private readonly Uri _serviceUri;
 
@@ -22,8 +23,8 @@ namespace FaceAuth.Model
 
         public async void Train(Guid personId, int groupId, Byte[] image)
         {
-            var adminClient = new AdministrationClient(_serviceUri.AbsoluteUri);
-
+            var adminClient = App.Container.Resolve<AdministrationClient>();
+            
             // Add face to person.
             var asBase64 = Convert.ToBase64String(image);
 
@@ -31,19 +32,20 @@ namespace FaceAuth.Model
 
             var request = JObject.Parse(json);
 
-            var persistedFace = await adminClient.AddFaceToPersonAsync(request);
+            var persistedFaceResponse = await adminClient.AddFaceToPersonAsync(request);
+
+            var persistedFace = new PersistedFace(persistedFaceResponse);
 
             Debug.WriteLine($"{persistedFace.PersistedFaceId} added.");
 
-
-            var trainingClient = new TrainingClient(_serviceUri.AbsoluteUri); // todo: AutoFac
+            var trainingClient = App.Container.Resolve<TrainingClient>();
 
             await trainingClient.TrainAsync(groupId.ToString());
         }
 
         public async void Train(Guid personId, int groupId, string photosPath)
         {
-            var adminClient = new AdministrationClient(_serviceUri.AbsoluteUri);
+            var adminClient = App.Container.Resolve<AdministrationClient>();
 
             var photos = Directory.EnumerateFiles(photosPath, "*.jpg");
 
@@ -58,12 +60,14 @@ namespace FaceAuth.Model
 
                 var request = JObject.Parse(json);
 
-                var persistedFace = await adminClient.AddFaceToPersonAsync(request);
+                var persistedFaceResponse = await adminClient.AddFaceToPersonAsync(request);
+
+                var persistedFace = new PersistedFace(persistedFaceResponse);
 
                 Debug.WriteLine($"{persistedFace.PersistedFaceId} added.");
             }
 
-            var trainingClient = new TrainingClient(_serviceUri.AbsoluteUri); // todo: AutoFac
+            var trainingClient = App.Container.Resolve<TrainingClient>();
 
             await trainingClient.TrainAsync(groupId.ToString());
         }

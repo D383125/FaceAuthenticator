@@ -6,5 +6,10 @@ namespace Authorisation.Adaptor.Response
 {
     public interface IGetPersonResponse
     {
+        string Name { get;}
+
+        Guid PersonId { get; }
+
+        IEnumerable<Guid> PersistedFaceIds { get; }
     }
 }

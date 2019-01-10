@@ -268,10 +268,10 @@ namespace FaceAuth
         //}
 
 
-        private async void RenderResult(DetectedFace detectedFace)
-        {
-            if (detectedFace != null)
-            {
+      //  private async void RenderResult(DetectedFace detectedFace)
+      //  {
+        //    if (detectedFace != null)
+        //    {
                 //var faceBitmap = new Bitmap imgBox.Image);
 
                 //using (var g = Graphics.FromImage(faceBitmap))
@@ -313,8 +313,8 @@ namespace FaceAuth
                 //}
 
                 //imgBox.Image = faceBitmap;
-            }
-        }
+          //  }
+        //}
 
     }
 }

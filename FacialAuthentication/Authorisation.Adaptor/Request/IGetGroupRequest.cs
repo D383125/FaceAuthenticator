@@ -4,13 +4,8 @@ using System.Text;
 
 namespace Authorisation.Adaptor.Request
 {
-    public interface IAddFaceToPersonRequest
+    public interface IGetGroupRequest
     {
-        byte[] faceCapture { get; }
-
         int GroupId { get; }
-
-        Guid PersonId { get; }
-
     }
 }

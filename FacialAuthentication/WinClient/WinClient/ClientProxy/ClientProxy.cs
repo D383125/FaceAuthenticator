@@ -90,14 +90,14 @@ namespace ClientProxy
                             } 
                             catch (System.Exception exception_) 
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", (int)response_.StatusCode, responseData_, headers_, exception_);
+                                throw;
                             }
                         }
                         else
                         if (status_ != "200" && status_ != "204")
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new Exception("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").");
                         }
             
                         return default(string);
@@ -117,80 +117,14 @@ namespace ClientProxy
         }
     
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task AddGroupAsync(object requestData)
-        {
-            return AddGroupAsync(requestData, System.Threading.CancellationToken.None);
-        }
-    
-        /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        public async System.Threading.Tasks.Task AddGroupAsync(object requestData, System.Threading.CancellationToken cancellationToken)
-        {
-            var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Administration/AddGroup");
-    
-            var client_ = new System.Net.Http.HttpClient();
-            try
-            {
-                using (var request_ = new System.Net.Http.HttpRequestMessage())
-                {
-                    var content_ = new System.Net.Http.StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(requestData, _settings.Value));
-                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
-                    request_.Content = content_;
-                    request_.Method = new System.Net.Http.HttpMethod("POST");
-    
-                    PrepareRequest(client_, request_, urlBuilder_);
-                    var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
-                    PrepareRequest(client_, request_, url_);
-    
-                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                    try
-                    {
-                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
-                        if (response_.Content != null && response_.Content.Headers != null)
-                        {
-                            foreach (var item_ in response_.Content.Headers)
-                                headers_[item_.Key] = item_.Value;
-                        }
-    
-                        ProcessResponse(client_, response_);
-    
-                        var status_ = ((int)response_.StatusCode).ToString();
-                        if (status_ == "200") 
-                        {
-                            return;
-                        }
-                        else
-                        if (status_ != "200" && status_ != "204")
-                        {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
-                        }
-                    }
-                    finally
-                    {
-                        if (response_ != null)
-                            response_.Dispose();
-                    }
-                }
-            }
-            finally
-            {
-                if (client_ != null)
-                    client_.Dispose();
-            }
-        }
-    
-        /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<Person> AddPersonAsync(string personName, int groupId, object userData)
+        public System.Threading.Tasks.Task<IAddPersonResponse> AddPersonAsync(string personName, int groupId, object userData)
         {
             return AddPersonAsync(personName, groupId, userData, System.Threading.CancellationToken.None);
         }
     
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        public async System.Threading.Tasks.Task<Person> AddPersonAsync(string personName, int groupId, object userData, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<IAddPersonResponse> AddPersonAsync(string personName, int groupId, object userData, System.Threading.CancellationToken cancellationToken)
         {
             if (groupId == null)
                 throw new System.ArgumentNullException("groupId");
@@ -233,25 +167,25 @@ namespace ClientProxy
                         if (status_ == "200") 
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
-                            var result_ = default(Person); 
+                            var result_ = default(IAddPersonResponse); 
                             try
                             {
-                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<Person>(responseData_, _settings.Value);
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<IAddPersonResponse>(responseData_, _settings.Value);
                                 return result_; 
                             } 
                             catch (System.Exception exception_) 
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", (int)response_.StatusCode, responseData_, headers_, exception_);
+                                throw new Exception("Could not deserialize the response body.");
                             }
                         }
                         else
                         if (status_ != "200" && status_ != "204")
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new Exception("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").");
                         }
             
-                        return default(Person);
+                        return default(IAddPersonResponse);
                     }
                     finally
                     {
@@ -268,14 +202,14 @@ namespace ClientProxy
         }
     
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<PersistedFace> AddFaceToPersonAsync(object requestData)
+        public System.Threading.Tasks.Task<IAddFaceToPersonResponse> AddFaceToPersonAsync(object requestData)
         {
             return AddFaceToPersonAsync(requestData, System.Threading.CancellationToken.None);
         }
     
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        public async System.Threading.Tasks.Task<PersistedFace> AddFaceToPersonAsync(object requestData, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<IAddFaceToPersonResponse> AddFaceToPersonAsync(object requestData, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Administration/AddFaceToPerson?");
@@ -312,25 +246,25 @@ namespace ClientProxy
                         if (status_ == "200") 
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
-                            var result_ = default(PersistedFace); 
+                            var result_ = default(IAddFaceToPersonResponse); 
                             try
                             {
-                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<PersistedFace>(responseData_, _settings.Value);
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<IAddFaceToPersonResponse>(responseData_, _settings.Value);
                                 return result_; 
                             } 
                             catch (System.Exception exception_) 
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", (int)response_.StatusCode, responseData_, headers_, exception_);
+                                throw;// new SwaggerException("Could not deserialize the response body.", (int)response_.StatusCode, responseData_, headers_, exception_);
                             }
                         }
                         else
                         if (status_ != "200" && status_ != "204")
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new Exception("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").");
                         }
             
-                        return default(PersistedFace);
+                        return default(IAddFaceToPersonResponse);
                     }
                     finally
                     {
@@ -347,14 +281,14 @@ namespace ClientProxy
         }
     
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<PersonGroup> GetGroupAsync(string groupId)
+        public System.Threading.Tasks.Task<IGetGroupResponse> GetGroupAsync(string groupId)
         {
             return GetGroupAsync(groupId, System.Threading.CancellationToken.None);
         }
     
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        public async System.Threading.Tasks.Task<PersonGroup> GetGroupAsync(string groupId, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<IGetGroupResponse> GetGroupAsync(string groupId, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Administration/GetGroup?");
@@ -390,25 +324,25 @@ namespace ClientProxy
                         if (status_ == "200") 
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
-                            var result_ = default(PersonGroup); 
+                            var result_ = default(IGetGroupResponse); 
                             try
                             {
-                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<PersonGroup>(responseData_, _settings.Value);
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<IGetGroupResponse>(responseData_, _settings.Value);
                                 return result_; 
                             } 
                             catch (System.Exception exception_) 
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", (int)response_.StatusCode, responseData_, headers_, exception_);
+                                throw;// new SwaggerException("Could not deserialize the response body.", (int)response_.StatusCode, responseData_, headers_, exception_);
                             }
                         }
                         else
                         if (status_ != "200" && status_ != "204")
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new Exception("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").");
                         }
             
-                        return default(PersonGroup);
+                        return default(IGetGroupResponse);
                     }
                     finally
                     {
@@ -425,14 +359,14 @@ namespace ClientProxy
         }
     
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<Person> GetPersonAsync(System.Guid personId, string groupId)
+        public System.Threading.Tasks.Task<IGetPersonResponse> GetPersonAsync(System.Guid personId, string groupId)
         {
             return GetPersonAsync(personId, groupId, System.Threading.CancellationToken.None);
         }
     
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        public async System.Threading.Tasks.Task<Person> GetPersonAsync(System.Guid personId, string groupId, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<IGetPersonResponse> GetPersonAsync(System.Guid personId, string groupId, System.Threading.CancellationToken cancellationToken)
         {
             if (personId == null)
                 throw new System.ArgumentNullException("personId");
@@ -455,9 +389,7 @@ namespace ClientProxy
                     var url_ = urlBuilder_.ToString();
                     request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
                     PrepareRequest(client_, request_, url_);
-
-                    // var response = await client_.GetAsync(request_.RequestUri).ConfigureAwait(false);
-
+    
                     var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
                     try
                     {
@@ -474,309 +406,25 @@ namespace ClientProxy
                         if (status_ == "200") 
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
-                            var result_ = default(Person); 
+                            var result_ = default(IGetPersonResponse); 
                             try
                             {
-                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<Person>(responseData_, _settings.Value);
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<IGetPersonResponse>(responseData_, _settings.Value);
                                 return result_; 
                             } 
                             catch (System.Exception exception_) 
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", (int)response_.StatusCode, responseData_, headers_, exception_);
+                                throw;// new SwaggerException("Could not deserialize the response body.", (int)response_.StatusCode, responseData_, headers_, exception_);
                             }
                         }
                         else
                         if (status_ != "200" && status_ != "204")
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new Exception("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").");
                         }
             
-                        return default(Person);
-                    }
-                    finally
-                    {
-                        if (response_ != null)
-                            response_.Dispose();
-                    }
-                }
-            }
-            catch(System.Exception ex)
-            {
-                System.Diagnostics.Debugger.Break();
-                throw;
-            }
-            finally
-            {
-                if (client_ != null)
-                    client_.Dispose();
-            }
-        }
-    
-        /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task UpdatePersonAsync(System.Guid personId, string groupId, string userData)
-        {
-            return UpdatePersonAsync(personId, groupId, userData, System.Threading.CancellationToken.None);
-        }
-    
-        /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        public async System.Threading.Tasks.Task UpdatePersonAsync(System.Guid personId, string groupId, string userData, System.Threading.CancellationToken cancellationToken)
-        {
-            if (personId == null)
-                throw new System.ArgumentNullException("personId");
-    
-            var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Administration/UpdatePerson?");
-            urlBuilder_.Append("personId=").Append(System.Uri.EscapeDataString(ConvertToString(personId, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
-            urlBuilder_.Append("groupId=").Append(System.Uri.EscapeDataString(groupId != null ? ConvertToString(groupId, System.Globalization.CultureInfo.InvariantCulture) : "")).Append("&");
-            if (userData != null) 
-            {
-                urlBuilder_.Append("userData=").Append(System.Uri.EscapeDataString(ConvertToString(userData, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
-            }
-            urlBuilder_.Length--;
-    
-            var client_ = new System.Net.Http.HttpClient();
-            try
-            {
-                using (var request_ = new System.Net.Http.HttpRequestMessage())
-                {
-                    request_.Content = new System.Net.Http.StringContent(string.Empty, System.Text.Encoding.UTF8, "application/json");
-                    request_.Method = new System.Net.Http.HttpMethod("PATCH");
-    
-                    PrepareRequest(client_, request_, urlBuilder_);
-                    var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
-                    PrepareRequest(client_, request_, url_);
-    
-                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                    try
-                    {
-                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
-                        if (response_.Content != null && response_.Content.Headers != null)
-                        {
-                            foreach (var item_ in response_.Content.Headers)
-                                headers_[item_.Key] = item_.Value;
-                        }
-    
-                        ProcessResponse(client_, response_);
-    
-                        var status_ = ((int)response_.StatusCode).ToString();
-                        if (status_ == "200") 
-                        {
-                            return;
-                        }
-                        else
-                        if (status_ != "200" && status_ != "204")
-                        {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
-                        }
-                    }
-                    finally
-                    {
-                        if (response_ != null)
-                            response_.Dispose();
-                    }
-                }
-            }
-            finally
-            {
-                if (client_ != null)
-                    client_.Dispose();
-            }
-        }
-    
-        /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task UpdateGroupAsync(string groupId, string groupName, string userData)
-        {
-            return UpdateGroupAsync(groupId, groupName, userData, System.Threading.CancellationToken.None);
-        }
-    
-        /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        public async System.Threading.Tasks.Task UpdateGroupAsync(string groupId, string groupName, string userData, System.Threading.CancellationToken cancellationToken)
-        {
-            var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Administration/UpdateGroup?");
-            urlBuilder_.Append("groupId=").Append(System.Uri.EscapeDataString(groupId != null ? ConvertToString(groupId, System.Globalization.CultureInfo.InvariantCulture) : "")).Append("&");
-            urlBuilder_.Append("groupName=").Append(System.Uri.EscapeDataString(groupName != null ? ConvertToString(groupName, System.Globalization.CultureInfo.InvariantCulture) : "")).Append("&");
-            if (userData != null) 
-            {
-                urlBuilder_.Append("userData=").Append(System.Uri.EscapeDataString(ConvertToString(userData, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
-            }
-            urlBuilder_.Length--;
-    
-            var client_ = new System.Net.Http.HttpClient();
-            try
-            {
-                using (var request_ = new System.Net.Http.HttpRequestMessage())
-                {
-                    request_.Content = new System.Net.Http.StringContent(string.Empty, System.Text.Encoding.UTF8, "application/json");
-                    request_.Method = new System.Net.Http.HttpMethod("PATCH");
-    
-                    PrepareRequest(client_, request_, urlBuilder_);
-                    var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
-                    PrepareRequest(client_, request_, url_);
-    
-                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                    try
-                    {
-                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
-                        if (response_.Content != null && response_.Content.Headers != null)
-                        {
-                            foreach (var item_ in response_.Content.Headers)
-                                headers_[item_.Key] = item_.Value;
-                        }
-    
-                        ProcessResponse(client_, response_);
-    
-                        var status_ = ((int)response_.StatusCode).ToString();
-                        if (status_ == "200") 
-                        {
-                            return;
-                        }
-                        else
-                        if (status_ != "200" && status_ != "204")
-                        {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
-                        }
-                    }
-                    finally
-                    {
-                        if (response_ != null)
-                            response_.Dispose();
-                    }
-                }
-            }
-            finally
-            {
-                if (client_ != null)
-                    client_.Dispose();
-            }
-        }
-    
-        /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task DeletePersonAsync(System.Guid personId, string groupId)
-        {
-            return DeletePersonAsync(personId, groupId, System.Threading.CancellationToken.None);
-        }
-    
-        /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        public async System.Threading.Tasks.Task DeletePersonAsync(System.Guid personId, string groupId, System.Threading.CancellationToken cancellationToken)
-        {
-            if (personId == null)
-                throw new System.ArgumentNullException("personId");
-    
-            var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Administration/DeletePerson?");
-            urlBuilder_.Append("personId=").Append(System.Uri.EscapeDataString(ConvertToString(personId, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
-            urlBuilder_.Append("groupId=").Append(System.Uri.EscapeDataString(groupId != null ? ConvertToString(groupId, System.Globalization.CultureInfo.InvariantCulture) : "")).Append("&");
-            urlBuilder_.Length--;
-    
-            var client_ = new System.Net.Http.HttpClient();
-            try
-            {
-                using (var request_ = new System.Net.Http.HttpRequestMessage())
-                {
-                    request_.Method = new System.Net.Http.HttpMethod("DELETE");
-    
-                    PrepareRequest(client_, request_, urlBuilder_);
-                    var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
-                    PrepareRequest(client_, request_, url_);
-    
-                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                    try
-                    {
-                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
-                        if (response_.Content != null && response_.Content.Headers != null)
-                        {
-                            foreach (var item_ in response_.Content.Headers)
-                                headers_[item_.Key] = item_.Value;
-                        }
-    
-                        ProcessResponse(client_, response_);
-    
-                        var status_ = ((int)response_.StatusCode).ToString();
-                        if (status_ == "200") 
-                        {
-                            return;
-                        }
-                        else
-                        if (status_ != "200" && status_ != "204")
-                        {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
-                        }
-                    }
-                    finally
-                    {
-                        if (response_ != null)
-                            response_.Dispose();
-                    }
-                }
-            }
-            finally
-            {
-                if (client_ != null)
-                    client_.Dispose();
-            }
-        }
-    
-        /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task DeleteGroupAsync(string groupId)
-        {
-            return DeleteGroupAsync(groupId, System.Threading.CancellationToken.None);
-        }
-    
-        /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        public async System.Threading.Tasks.Task DeleteGroupAsync(string groupId, System.Threading.CancellationToken cancellationToken)
-        {
-            var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Administration/DeleteGroup?");
-            urlBuilder_.Append("groupId=").Append(System.Uri.EscapeDataString(groupId != null ? ConvertToString(groupId, System.Globalization.CultureInfo.InvariantCulture) : "")).Append("&");
-            urlBuilder_.Length--;
-    
-            var client_ = new System.Net.Http.HttpClient();
-            try
-            {
-                using (var request_ = new System.Net.Http.HttpRequestMessage())
-                {
-                    request_.Method = new System.Net.Http.HttpMethod("DELETE");
-    
-                    PrepareRequest(client_, request_, urlBuilder_);
-                    var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
-                    PrepareRequest(client_, request_, url_);
-    
-                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                    try
-                    {
-                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
-                        if (response_.Content != null && response_.Content.Headers != null)
-                        {
-                            foreach (var item_ in response_.Content.Headers)
-                                headers_[item_.Key] = item_.Value;
-                        }
-    
-                        ProcessResponse(client_, response_);
-    
-                        var status_ = ((int)response_.StatusCode).ToString();
-                        if (status_ == "200") 
-                        {
-                            return;
-                        }
-                        else
-                        if (status_ != "200" && status_ != "204")
-                        {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
-                        }
+                        return default(IGetPersonResponse);
                     }
                     finally
                     {
@@ -905,14 +553,14 @@ namespace ClientProxy
                             } 
                             catch (System.Exception exception_) 
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", (int)response_.StatusCode, responseData_, headers_, exception_);
+                                throw;// new SwaggerException("Could not deserialize the response body.", (int)response_.StatusCode, responseData_, headers_, exception_);
                             }
                         }
                         else
                         if (status_ != "200" && status_ != "204")
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new Exception("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").");
                         }
             
                         return default(string);
@@ -932,14 +580,14 @@ namespace ClientProxy
         }
     
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<TrainingStatus> TrainAsync(string groupId)
+        public System.Threading.Tasks.Task<ITrainGroupResponse> TrainAsync(string groupId)
         {
             return TrainAsync(groupId, System.Threading.CancellationToken.None);
         }
     
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        public async System.Threading.Tasks.Task<TrainingStatus> TrainAsync(string groupId, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<ITrainGroupResponse> TrainAsync(string groupId, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Training/Train?");
@@ -975,25 +623,25 @@ namespace ClientProxy
                         if (status_ == "200") 
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
-                            var result_ = default(TrainingStatus); 
+                            var result_ = default(ITrainGroupResponse); 
                             try
                             {
-                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<TrainingStatus>(responseData_, _settings.Value);
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ITrainGroupResponse>(responseData_, _settings.Value);
                                 return result_; 
                             } 
                             catch (System.Exception exception_) 
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", (int)response_.StatusCode, responseData_, headers_, exception_);
+                                throw; // new SwaggerException("Could not deserialize the response body.", (int)response_.StatusCode, responseData_, headers_, exception_);
                             }
                         }
                         else
                         if (status_ != "200" && status_ != "204")
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new Exception("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").");
                         }
             
-                        return default(TrainingStatus);
+                        return default(ITrainGroupResponse);
                     }
                     finally
                     {
@@ -1122,14 +770,14 @@ namespace ClientProxy
                             } 
                             catch (System.Exception exception_) 
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", (int)response_.StatusCode, responseData_, headers_, exception_);
+                                throw new Exception("Could not deserialize the response body.");
                             }
                         }
                         else
                         if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
+                            throw new Exception("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").");
                         }
             
                         return default(string);
@@ -1149,18 +797,29 @@ namespace ClientProxy
         }
     
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<VerifyResult> VerifyAsync(object requestData)
+        public System.Threading.Tasks.Task<IVerifyPersonResponse> VerifyAsync(System.Guid faceId, System.Guid personId, int groupId)
         {
-            return VerifyAsync(requestData, System.Threading.CancellationToken.None);
+            return VerifyAsync(faceId, personId, groupId, System.Threading.CancellationToken.None);
         }
     
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        public async System.Threading.Tasks.Task<VerifyResult> VerifyAsync(object requestData, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<IVerifyPersonResponse> VerifyAsync(System.Guid faceId, System.Guid personId, int groupId, System.Threading.CancellationToken cancellationToken)
         {
+            if (faceId == null)
+                throw new System.ArgumentNullException("faceId");
+    
+            if (personId == null)
+                throw new System.ArgumentNullException("personId");
+    
+            if (groupId == null)
+                throw new System.ArgumentNullException("groupId");
+    
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Vision/Verify?");
-            urlBuilder_.Append("requestData=").Append(System.Uri.EscapeDataString(requestData != null ? ConvertToString(requestData, System.Globalization.CultureInfo.InvariantCulture) : "")).Append("&");
+            urlBuilder_.Append("faceId=").Append(System.Uri.EscapeDataString(ConvertToString(faceId, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            urlBuilder_.Append("personId=").Append(System.Uri.EscapeDataString(ConvertToString(personId, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            urlBuilder_.Append("groupId=").Append(System.Uri.EscapeDataString(ConvertToString(groupId, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
             urlBuilder_.Length--;
     
             var client_ = new System.Net.Http.HttpClient();
@@ -1193,25 +852,25 @@ namespace ClientProxy
                         if (status_ == "200") 
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
-                            var result_ = default(VerifyResult); 
+                            var result_ = default(IVerifyPersonResponse); 
                             try
                             {
-                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<VerifyResult>(responseData_, _settings.Value);
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<IVerifyPersonResponse>(responseData_, _settings.Value);
                                 return result_; 
                             } 
                             catch (System.Exception exception_) 
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", (int)response_.StatusCode, responseData_, headers_, exception_);
+                                throw new Exception("Could not deserialize the response body.");
                             }
                         }
                         else
                         if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
+                            throw new Exception("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").");
                         }
             
-                        return default(VerifyResult);
+                        return default(IVerifyPersonResponse);
                     }
                     finally
                     {
@@ -1228,14 +887,14 @@ namespace ClientProxy
         }
     
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<DetectedFace> DetectAsync(byte[] faceCapture)
+        public System.Threading.Tasks.Task<IDetectFaceResponse> DetectAsync(byte[] faceCapture)
         {
             return DetectAsync(faceCapture, System.Threading.CancellationToken.None);
         }
     
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        public async System.Threading.Tasks.Task<DetectedFace> DetectAsync(byte[] faceCapture, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<IDetectFaceResponse> DetectAsync(byte[] faceCapture, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Vision/Detect");
@@ -1272,25 +931,25 @@ namespace ClientProxy
                         if (status_ == "200") 
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
-                            var result_ = default(DetectedFace); 
+                            var result_ = default(IDetectFaceResponse); 
                             try
                             {
-                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<DetectedFace>(responseData_, _settings.Value);
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<IDetectFaceResponse>(responseData_, _settings.Value);
                                 return result_; 
                             } 
                             catch (System.Exception exception_) 
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", (int)response_.StatusCode, responseData_, headers_, exception_);
+                                throw new Exception("Could not deserialize the response body.");
                             }
                         }
                         else
                         if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
-                           // throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
+                            throw new Exception("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").");
                         }
             
-                        return default(DetectedFace);
+                        return default(IDetectFaceResponse);
                     }
                     finally
                     {
@@ -1307,14 +966,14 @@ namespace ClientProxy
         }
     
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<System.Collections.ObjectModel.ObservableCollection<SimilarFace>> FindSimilarAsync(System.Guid faceId)
+        public System.Threading.Tasks.Task<IFindSimilarFacesResponse> FindSimilarAsync(System.Guid faceId)
         {
             return FindSimilarAsync(faceId, System.Threading.CancellationToken.None);
         }
     
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        public async System.Threading.Tasks.Task<System.Collections.ObjectModel.ObservableCollection<SimilarFace>> FindSimilarAsync(System.Guid faceId, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<IFindSimilarFacesResponse> FindSimilarAsync(System.Guid faceId, System.Threading.CancellationToken cancellationToken)
         {
             if (faceId == null)
                 throw new System.ArgumentNullException("faceId");
@@ -1354,25 +1013,25 @@ namespace ClientProxy
                         if (status_ == "200") 
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
-                            var result_ = default(System.Collections.ObjectModel.ObservableCollection<SimilarFace>); 
+                            var result_ = default(IFindSimilarFacesResponse); 
                             try
                             {
-                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<System.Collections.ObjectModel.ObservableCollection<SimilarFace>>(responseData_, _settings.Value);
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<IFindSimilarFacesResponse>(responseData_, _settings.Value);
                                 return result_; 
                             } 
                             catch (System.Exception exception_) 
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", (int)response_.StatusCode, responseData_, headers_, exception_);
+                                throw new Exception("Could not deserialize the response body.");
                             }
                         }
                         else
                         if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
+                            throw new Exception("The HTTP status code of the response was not expected (");
                         }
             
-                        return default(System.Collections.ObjectModel.ObservableCollection<SimilarFace>);
+                        return default(IFindSimilarFacesResponse);
                     }
                     finally
                     {
@@ -1389,14 +1048,14 @@ namespace ClientProxy
         }
     
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<System.Collections.ObjectModel.ObservableCollection<IdentifyResult>> IdentifyAsync(System.Guid faceId, string groupId, int? maxNumOfCandidatesReturned, double? confidenceThreshold)
+        public System.Threading.Tasks.Task<System.Collections.ObjectModel.ObservableCollection<IIdentifyFaceResponse>> IdentifyAsync(System.Guid faceId, string groupId, int? maxNumOfCandidatesReturned, double? confidenceThreshold)
         {
             return IdentifyAsync(faceId, groupId, maxNumOfCandidatesReturned, confidenceThreshold, System.Threading.CancellationToken.None);
         }
     
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        public async System.Threading.Tasks.Task<System.Collections.ObjectModel.ObservableCollection<IdentifyResult>> IdentifyAsync(System.Guid faceId, string groupId, int? maxNumOfCandidatesReturned, double? confidenceThreshold, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<System.Collections.ObjectModel.ObservableCollection<IIdentifyFaceResponse>> IdentifyAsync(System.Guid faceId, string groupId, int? maxNumOfCandidatesReturned, double? confidenceThreshold, System.Threading.CancellationToken cancellationToken)
         {
             if (faceId == null)
                 throw new System.ArgumentNullException("faceId");
@@ -1439,25 +1098,25 @@ namespace ClientProxy
                         if (status_ == "200") 
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
-                            var result_ = default(System.Collections.ObjectModel.ObservableCollection<IdentifyResult>); 
+                            var result_ = default(System.Collections.ObjectModel.ObservableCollection<IIdentifyFaceResponse>); 
                             try
                             {
-                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<System.Collections.ObjectModel.ObservableCollection<IdentifyResult>>(responseData_, _settings.Value);
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<System.Collections.ObjectModel.ObservableCollection<IIdentifyFaceResponse>>(responseData_, _settings.Value);
                                 return result_; 
                             } 
                             catch (System.Exception exception_) 
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", (int)response_.StatusCode, responseData_, headers_, exception_);
+                                throw new Exception("Could not deserialize the response body.");
                             }
                         }
                         else
                         if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
+                            throw new Exception("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").");
                         }
             
-                        return default(System.Collections.ObjectModel.ObservableCollection<IdentifyResult>);
+                        return default(System.Collections.ObjectModel.ObservableCollection<IIdentifyFaceResponse>);
                     }
                     finally
                     {
@@ -1509,47 +1168,17 @@ namespace ClientProxy
     
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.11.0.0 (Newtonsoft.Json v9.0.0.0)")]
-    public partial class NameAndUserDataContract : System.ComponentModel.INotifyPropertyChanged
+    public abstract partial class IAddPersonResponse : System.ComponentModel.INotifyPropertyChanged
     {
-        private string _name;
-        private string _userData;
-    
-        [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Name
-        {
-            get { return _name; }
-            set 
-            {
-                if (_name != value)
-                {
-                    _name = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("userData", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string UserData
-        {
-            get { return _userData; }
-            set 
-            {
-                if (_userData != value)
-                {
-                    _userData = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
     
         public string ToJson() 
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this);
         }
         
-        public static NameAndUserDataContract FromJson(string data)
+        public static IAddPersonResponse FromJson(string data)
         {
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<NameAndUserDataContract>(data);
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<IAddPersonResponse>(data);
         }
     
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
@@ -1564,48 +1193,17 @@ namespace ClientProxy
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.11.0.0 (Newtonsoft.Json v9.0.0.0)")]
-    public partial class Person : NameAndUserDataContract, System.ComponentModel.INotifyPropertyChanged
+    public abstract partial class IAddFaceToPersonResponse : System.ComponentModel.INotifyPropertyChanged
     {
-        private System.Guid _personId;
-        private System.Collections.ObjectModel.ObservableCollection<System.Guid> _persistedFaceIds;
-    
-        [Newtonsoft.Json.JsonProperty("personId", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public System.Guid PersonId
-        {
-            get { return _personId; }
-            set 
-            {
-                if (_personId != value)
-                {
-                    _personId = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("persistedFaceIds", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.ObjectModel.ObservableCollection<System.Guid> PersistedFaceIds
-        {
-            get { return _persistedFaceIds; }
-            set 
-            {
-                if (_persistedFaceIds != value)
-                {
-                    _persistedFaceIds = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
     
         public string ToJson() 
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this);
         }
         
-        public static Person FromJson(string data)
+        public static IAddFaceToPersonResponse FromJson(string data)
         {
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Person>(data);
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<IAddFaceToPersonResponse>(data);
         }
     
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
@@ -1620,48 +1218,17 @@ namespace ClientProxy
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.11.0.0 (Newtonsoft.Json v9.0.0.0)")]
-    public partial class PersistedFace : System.ComponentModel.INotifyPropertyChanged
+    public abstract partial class IGetGroupResponse : System.ComponentModel.INotifyPropertyChanged
     {
-        private System.Guid _persistedFaceId;
-        private string _userData;
-    
-        [Newtonsoft.Json.JsonProperty("persistedFaceId", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public System.Guid PersistedFaceId
-        {
-            get { return _persistedFaceId; }
-            set 
-            {
-                if (_persistedFaceId != value)
-                {
-                    _persistedFaceId = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("userData", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string UserData
-        {
-            get { return _userData; }
-            set 
-            {
-                if (_userData != value)
-                {
-                    _userData = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
     
         public string ToJson() 
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this);
         }
         
-        public static PersistedFace FromJson(string data)
+        public static IGetGroupResponse FromJson(string data)
         {
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<PersistedFace>(data);
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<IGetGroupResponse>(data);
         }
     
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
@@ -1676,32 +1243,17 @@ namespace ClientProxy
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.11.0.0 (Newtonsoft.Json v9.0.0.0)")]
-    public partial class PersonGroup : NameAndUserDataContract, System.ComponentModel.INotifyPropertyChanged
+    public abstract partial class IGetPersonResponse : System.ComponentModel.INotifyPropertyChanged
     {
-        private string _personGroupId;
-    
-        [Newtonsoft.Json.JsonProperty("personGroupId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string PersonGroupId
-        {
-            get { return _personGroupId; }
-            set 
-            {
-                if (_personGroupId != value)
-                {
-                    _personGroupId = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
     
         public string ToJson() 
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this);
         }
         
-        public static PersonGroup FromJson(string data)
+        public static IGetPersonResponse FromJson(string data)
         {
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<PersonGroup>(data);
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<IGetPersonResponse>(data);
         }
     
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
@@ -1716,95 +1268,17 @@ namespace ClientProxy
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.11.0.0 (Newtonsoft.Json v9.0.0.0)")]
-    public partial class TrainingStatus : System.ComponentModel.INotifyPropertyChanged
+    public abstract partial class ITrainGroupResponse : System.ComponentModel.INotifyPropertyChanged
     {
-        private TrainingStatusType _status;
-        private System.DateTime _createdDateTime;
-        private System.DateTime? _lastActionDateTime;
-        private System.DateTime? _lastSuccessfulTrainingDateTime;
-        private string _message;
-    
-        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public TrainingStatusType Status
-        {
-            get { return _status; }
-            set 
-            {
-                if (_status != value)
-                {
-                    _status = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("createdDateTime", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public System.DateTime CreatedDateTime
-        {
-            get { return _createdDateTime; }
-            set 
-            {
-                if (_createdDateTime != value)
-                {
-                    _createdDateTime = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("lastActionDateTime", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.DateTime? LastActionDateTime
-        {
-            get { return _lastActionDateTime; }
-            set 
-            {
-                if (_lastActionDateTime != value)
-                {
-                    _lastActionDateTime = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("lastSuccessfulTrainingDateTime", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.DateTime? LastSuccessfulTrainingDateTime
-        {
-            get { return _lastSuccessfulTrainingDateTime; }
-            set 
-            {
-                if (_lastSuccessfulTrainingDateTime != value)
-                {
-                    _lastSuccessfulTrainingDateTime = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Message
-        {
-            get { return _message; }
-            set 
-            {
-                if (_message != value)
-                {
-                    _message = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
     
         public string ToJson() 
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this);
         }
         
-        public static TrainingStatus FromJson(string data)
+        public static ITrainGroupResponse FromJson(string data)
         {
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<TrainingStatus>(data);
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<ITrainGroupResponse>(data);
         }
     
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
@@ -1819,64 +1293,17 @@ namespace ClientProxy
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.11.0.0 (Newtonsoft.Json v9.0.0.0)")]
-    public enum TrainingStatusType
+    public abstract partial class IVerifyPersonResponse : System.ComponentModel.INotifyPropertyChanged
     {
-        [System.Runtime.Serialization.EnumMember(Value = "nonstarted")]
-        Nonstarted = 0,
-    
-        [System.Runtime.Serialization.EnumMember(Value = "running")]
-        Running = 1,
-    
-        [System.Runtime.Serialization.EnumMember(Value = "succeeded")]
-        Succeeded = 2,
-    
-        [System.Runtime.Serialization.EnumMember(Value = "failed")]
-        Failed = 3,
-    
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.11.0.0 (Newtonsoft.Json v9.0.0.0)")]
-    public partial class VerifyResult : System.ComponentModel.INotifyPropertyChanged
-    {
-        private bool _isIdentical;
-        private double _confidence;
-    
-        [Newtonsoft.Json.JsonProperty("isIdentical", Required = Newtonsoft.Json.Required.Always)]
-        public bool IsIdentical
-        {
-            get { return _isIdentical; }
-            set 
-            {
-                if (_isIdentical != value)
-                {
-                    _isIdentical = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("confidence", Required = Newtonsoft.Json.Required.Always)]
-        public double Confidence
-        {
-            get { return _confidence; }
-            set 
-            {
-                if (_confidence != value)
-                {
-                    _confidence = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
     
         public string ToJson() 
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this);
         }
         
-        public static VerifyResult FromJson(string data)
+        public static IVerifyPersonResponse FromJson(string data)
         {
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<VerifyResult>(data);
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<IVerifyPersonResponse>(data);
         }
     
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
@@ -1891,77 +1318,17 @@ namespace ClientProxy
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.11.0.0 (Newtonsoft.Json v9.0.0.0)")]
-    public partial class DetectedFace : System.ComponentModel.INotifyPropertyChanged
+    public abstract partial class IDetectFaceResponse : System.ComponentModel.INotifyPropertyChanged
     {
-        private System.Guid? _faceId;
-        private FaceRectangle _faceRectangle;
-        private FaceLandmarks _faceLandmarks;
-        private FaceAttributes _faceAttributes;
-    
-        [Newtonsoft.Json.JsonProperty("faceId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Guid? FaceId
-        {
-            get { return _faceId; }
-            set 
-            {
-                if (_faceId != value)
-                {
-                    _faceId = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("faceRectangle", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public FaceRectangle FaceRectangle
-        {
-            get { return _faceRectangle; }
-            set 
-            {
-                if (_faceRectangle != value)
-                {
-                    _faceRectangle = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("faceLandmarks", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public FaceLandmarks FaceLandmarks
-        {
-            get { return _faceLandmarks; }
-            set 
-            {
-                if (_faceLandmarks != value)
-                {
-                    _faceLandmarks = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("faceAttributes", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public FaceAttributes FaceAttributes
-        {
-            get { return _faceAttributes; }
-            set 
-            {
-                if (_faceAttributes != value)
-                {
-                    _faceAttributes = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
     
         public string ToJson() 
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this);
         }
         
-        public static DetectedFace FromJson(string data)
+        public static IDetectFaceResponse FromJson(string data)
         {
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<DetectedFace>(data);
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<IDetectFaceResponse>(data);
         }
     
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
@@ -1976,77 +1343,17 @@ namespace ClientProxy
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.11.0.0 (Newtonsoft.Json v9.0.0.0)")]
-    public partial class FaceRectangle : System.ComponentModel.INotifyPropertyChanged
+    public abstract partial class IFindSimilarFacesResponse : System.ComponentModel.INotifyPropertyChanged
     {
-        private int _width;
-        private int _height;
-        private int _left;
-        private int _top;
-    
-        [Newtonsoft.Json.JsonProperty("width", Required = Newtonsoft.Json.Required.Always)]
-        public int Width
-        {
-            get { return _width; }
-            set 
-            {
-                if (_width != value)
-                {
-                    _width = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("height", Required = Newtonsoft.Json.Required.Always)]
-        public int Height
-        {
-            get { return _height; }
-            set 
-            {
-                if (_height != value)
-                {
-                    _height = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("left", Required = Newtonsoft.Json.Required.Always)]
-        public int Left
-        {
-            get { return _left; }
-            set 
-            {
-                if (_left != value)
-                {
-                    _left = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("top", Required = Newtonsoft.Json.Required.Always)]
-        public int Top
-        {
-            get { return _top; }
-            set 
-            {
-                if (_top != value)
-                {
-                    _top = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
     
         public string ToJson() 
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this);
         }
         
-        public static FaceRectangle FromJson(string data)
+        public static IFindSimilarFacesResponse FromJson(string data)
         {
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<FaceRectangle>(data);
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<IFindSimilarFacesResponse>(data);
         }
     
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
@@ -2061,422 +1368,17 @@ namespace ClientProxy
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.11.0.0 (Newtonsoft.Json v9.0.0.0)")]
-    public partial class FaceLandmarks : System.ComponentModel.INotifyPropertyChanged
+    public abstract partial class IIdentifyFaceResponse : System.ComponentModel.INotifyPropertyChanged
     {
-        private Coordinate _pupilLeft;
-        private Coordinate _pupilRight;
-        private Coordinate _noseTip;
-        private Coordinate _mouthLeft;
-        private Coordinate _mouthRight;
-        private Coordinate _eyebrowLeftOuter;
-        private Coordinate _eyebrowLeftInner;
-        private Coordinate _eyeLeftOuter;
-        private Coordinate _eyeLeftTop;
-        private Coordinate _eyeLeftBottom;
-        private Coordinate _eyeLeftInner;
-        private Coordinate _eyebrowRightInner;
-        private Coordinate _eyebrowRightOuter;
-        private Coordinate _eyeRightInner;
-        private Coordinate _eyeRightTop;
-        private Coordinate _eyeRightBottom;
-        private Coordinate _eyeRightOuter;
-        private Coordinate _noseRootLeft;
-        private Coordinate _noseRootRight;
-        private Coordinate _noseLeftAlarTop;
-        private Coordinate _noseRightAlarTop;
-        private Coordinate _noseLeftAlarOutTip;
-        private Coordinate _noseRightAlarOutTip;
-        private Coordinate _upperLipTop;
-        private Coordinate _upperLipBottom;
-        private Coordinate _underLipTop;
-        private Coordinate _underLipBottom;
-    
-        [Newtonsoft.Json.JsonProperty("pupilLeft", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Coordinate PupilLeft
-        {
-            get { return _pupilLeft; }
-            set 
-            {
-                if (_pupilLeft != value)
-                {
-                    _pupilLeft = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("pupilRight", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Coordinate PupilRight
-        {
-            get { return _pupilRight; }
-            set 
-            {
-                if (_pupilRight != value)
-                {
-                    _pupilRight = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("noseTip", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Coordinate NoseTip
-        {
-            get { return _noseTip; }
-            set 
-            {
-                if (_noseTip != value)
-                {
-                    _noseTip = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("mouthLeft", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Coordinate MouthLeft
-        {
-            get { return _mouthLeft; }
-            set 
-            {
-                if (_mouthLeft != value)
-                {
-                    _mouthLeft = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("mouthRight", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Coordinate MouthRight
-        {
-            get { return _mouthRight; }
-            set 
-            {
-                if (_mouthRight != value)
-                {
-                    _mouthRight = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("eyebrowLeftOuter", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Coordinate EyebrowLeftOuter
-        {
-            get { return _eyebrowLeftOuter; }
-            set 
-            {
-                if (_eyebrowLeftOuter != value)
-                {
-                    _eyebrowLeftOuter = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("eyebrowLeftInner", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Coordinate EyebrowLeftInner
-        {
-            get { return _eyebrowLeftInner; }
-            set 
-            {
-                if (_eyebrowLeftInner != value)
-                {
-                    _eyebrowLeftInner = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("eyeLeftOuter", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Coordinate EyeLeftOuter
-        {
-            get { return _eyeLeftOuter; }
-            set 
-            {
-                if (_eyeLeftOuter != value)
-                {
-                    _eyeLeftOuter = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("eyeLeftTop", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Coordinate EyeLeftTop
-        {
-            get { return _eyeLeftTop; }
-            set 
-            {
-                if (_eyeLeftTop != value)
-                {
-                    _eyeLeftTop = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("eyeLeftBottom", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Coordinate EyeLeftBottom
-        {
-            get { return _eyeLeftBottom; }
-            set 
-            {
-                if (_eyeLeftBottom != value)
-                {
-                    _eyeLeftBottom = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("eyeLeftInner", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Coordinate EyeLeftInner
-        {
-            get { return _eyeLeftInner; }
-            set 
-            {
-                if (_eyeLeftInner != value)
-                {
-                    _eyeLeftInner = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("eyebrowRightInner", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Coordinate EyebrowRightInner
-        {
-            get { return _eyebrowRightInner; }
-            set 
-            {
-                if (_eyebrowRightInner != value)
-                {
-                    _eyebrowRightInner = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("eyebrowRightOuter", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Coordinate EyebrowRightOuter
-        {
-            get { return _eyebrowRightOuter; }
-            set 
-            {
-                if (_eyebrowRightOuter != value)
-                {
-                    _eyebrowRightOuter = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("eyeRightInner", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Coordinate EyeRightInner
-        {
-            get { return _eyeRightInner; }
-            set 
-            {
-                if (_eyeRightInner != value)
-                {
-                    _eyeRightInner = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("eyeRightTop", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Coordinate EyeRightTop
-        {
-            get { return _eyeRightTop; }
-            set 
-            {
-                if (_eyeRightTop != value)
-                {
-                    _eyeRightTop = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("eyeRightBottom", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Coordinate EyeRightBottom
-        {
-            get { return _eyeRightBottom; }
-            set 
-            {
-                if (_eyeRightBottom != value)
-                {
-                    _eyeRightBottom = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("eyeRightOuter", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Coordinate EyeRightOuter
-        {
-            get { return _eyeRightOuter; }
-            set 
-            {
-                if (_eyeRightOuter != value)
-                {
-                    _eyeRightOuter = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("noseRootLeft", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Coordinate NoseRootLeft
-        {
-            get { return _noseRootLeft; }
-            set 
-            {
-                if (_noseRootLeft != value)
-                {
-                    _noseRootLeft = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("noseRootRight", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Coordinate NoseRootRight
-        {
-            get { return _noseRootRight; }
-            set 
-            {
-                if (_noseRootRight != value)
-                {
-                    _noseRootRight = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("noseLeftAlarTop", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Coordinate NoseLeftAlarTop
-        {
-            get { return _noseLeftAlarTop; }
-            set 
-            {
-                if (_noseLeftAlarTop != value)
-                {
-                    _noseLeftAlarTop = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("noseRightAlarTop", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Coordinate NoseRightAlarTop
-        {
-            get { return _noseRightAlarTop; }
-            set 
-            {
-                if (_noseRightAlarTop != value)
-                {
-                    _noseRightAlarTop = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("noseLeftAlarOutTip", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Coordinate NoseLeftAlarOutTip
-        {
-            get { return _noseLeftAlarOutTip; }
-            set 
-            {
-                if (_noseLeftAlarOutTip != value)
-                {
-                    _noseLeftAlarOutTip = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("noseRightAlarOutTip", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Coordinate NoseRightAlarOutTip
-        {
-            get { return _noseRightAlarOutTip; }
-            set 
-            {
-                if (_noseRightAlarOutTip != value)
-                {
-                    _noseRightAlarOutTip = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("upperLipTop", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Coordinate UpperLipTop
-        {
-            get { return _upperLipTop; }
-            set 
-            {
-                if (_upperLipTop != value)
-                {
-                    _upperLipTop = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("upperLipBottom", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Coordinate UpperLipBottom
-        {
-            get { return _upperLipBottom; }
-            set 
-            {
-                if (_upperLipBottom != value)
-                {
-                    _upperLipBottom = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("underLipTop", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Coordinate UnderLipTop
-        {
-            get { return _underLipTop; }
-            set 
-            {
-                if (_underLipTop != value)
-                {
-                    _underLipTop = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("underLipBottom", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Coordinate UnderLipBottom
-        {
-            get { return _underLipBottom; }
-            set 
-            {
-                if (_underLipBottom != value)
-                {
-                    _underLipBottom = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
     
         public string ToJson() 
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this);
         }
         
-        public static FaceLandmarks FromJson(string data)
+        public static IIdentifyFaceResponse FromJson(string data)
         {
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<FaceLandmarks>(data);
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<IIdentifyFaceResponse>(data);
         }
     
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
@@ -2488,1400 +1390,6 @@ namespace ClientProxy
                 handler(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
         }
     
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.11.0.0 (Newtonsoft.Json v9.0.0.0)")]
-    public partial class Coordinate : System.ComponentModel.INotifyPropertyChanged
-    {
-        private double _x;
-        private double _y;
-    
-        [Newtonsoft.Json.JsonProperty("x", Required = Newtonsoft.Json.Required.Always)]
-        public double X
-        {
-            get { return _x; }
-            set 
-            {
-                if (_x != value)
-                {
-                    _x = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("y", Required = Newtonsoft.Json.Required.Always)]
-        public double Y
-        {
-            get { return _y; }
-            set 
-            {
-                if (_y != value)
-                {
-                    _y = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        public string ToJson() 
-        {
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this);
-        }
-        
-        public static Coordinate FromJson(string data)
-        {
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Coordinate>(data);
-        }
-    
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected virtual void RaisePropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = null)
-        {
-            var handler = PropertyChanged;
-            if (handler != null) 
-                handler(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-        }
-    
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.11.0.0 (Newtonsoft.Json v9.0.0.0)")]
-    public partial class FaceAttributes : System.ComponentModel.INotifyPropertyChanged
-    {
-        private double? _age;
-        private Gender? _gender;
-        private double? _smile;
-        private FacialHair _facialHair;
-        private GlassesType? _glasses;
-        private HeadPose _headPose;
-        private Emotion _emotion;
-        private Hair _hair;
-        private Makeup _makeup;
-        private Occlusion _occlusion;
-        private System.Collections.ObjectModel.ObservableCollection<Accessory> _accessories;
-        private Blur _blur;
-        private Exposure _exposure;
-        private Noise _noise;
-    
-        [Newtonsoft.Json.JsonProperty("age", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public double? Age
-        {
-            get { return _age; }
-            set 
-            {
-                if (_age != value)
-                {
-                    _age = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("gender", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Gender? Gender
-        {
-            get { return _gender; }
-            set 
-            {
-                if (_gender != value)
-                {
-                    _gender = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("smile", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public double? Smile
-        {
-            get { return _smile; }
-            set 
-            {
-                if (_smile != value)
-                {
-                    _smile = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("facialHair", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public FacialHair FacialHair
-        {
-            get { return _facialHair; }
-            set 
-            {
-                if (_facialHair != value)
-                {
-                    _facialHair = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("glasses", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public GlassesType? Glasses
-        {
-            get { return _glasses; }
-            set 
-            {
-                if (_glasses != value)
-                {
-                    _glasses = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("headPose", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public HeadPose HeadPose
-        {
-            get { return _headPose; }
-            set 
-            {
-                if (_headPose != value)
-                {
-                    _headPose = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("emotion", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Emotion Emotion
-        {
-            get { return _emotion; }
-            set 
-            {
-                if (_emotion != value)
-                {
-                    _emotion = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("hair", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Hair Hair
-        {
-            get { return _hair; }
-            set 
-            {
-                if (_hair != value)
-                {
-                    _hair = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("makeup", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Makeup Makeup
-        {
-            get { return _makeup; }
-            set 
-            {
-                if (_makeup != value)
-                {
-                    _makeup = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("occlusion", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Occlusion Occlusion
-        {
-            get { return _occlusion; }
-            set 
-            {
-                if (_occlusion != value)
-                {
-                    _occlusion = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("accessories", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.ObjectModel.ObservableCollection<Accessory> Accessories
-        {
-            get { return _accessories; }
-            set 
-            {
-                if (_accessories != value)
-                {
-                    _accessories = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("blur", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Blur Blur
-        {
-            get { return _blur; }
-            set 
-            {
-                if (_blur != value)
-                {
-                    _blur = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("exposure", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Exposure Exposure
-        {
-            get { return _exposure; }
-            set 
-            {
-                if (_exposure != value)
-                {
-                    _exposure = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("noise", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Noise Noise
-        {
-            get { return _noise; }
-            set 
-            {
-                if (_noise != value)
-                {
-                    _noise = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        public string ToJson() 
-        {
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this);
-        }
-        
-        public static FaceAttributes FromJson(string data)
-        {
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<FaceAttributes>(data);
-        }
-    
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected virtual void RaisePropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = null)
-        {
-            var handler = PropertyChanged;
-            if (handler != null) 
-                handler(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-        }
-    
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.11.0.0 (Newtonsoft.Json v9.0.0.0)")]
-    public enum Gender
-    {
-        [System.Runtime.Serialization.EnumMember(Value = "male")]
-        Male = 0,
-    
-        [System.Runtime.Serialization.EnumMember(Value = "female")]
-        Female = 1,
-    
-        [System.Runtime.Serialization.EnumMember(Value = "genderless")]
-        Genderless = 2,
-    
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.11.0.0 (Newtonsoft.Json v9.0.0.0)")]
-    public partial class FacialHair : System.ComponentModel.INotifyPropertyChanged
-    {
-        private double _moustache;
-        private double _beard;
-        private double _sideburns;
-    
-        [Newtonsoft.Json.JsonProperty("moustache", Required = Newtonsoft.Json.Required.Always)]
-        public double Moustache
-        {
-            get { return _moustache; }
-            set 
-            {
-                if (_moustache != value)
-                {
-                    _moustache = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("beard", Required = Newtonsoft.Json.Required.Always)]
-        public double Beard
-        {
-            get { return _beard; }
-            set 
-            {
-                if (_beard != value)
-                {
-                    _beard = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("sideburns", Required = Newtonsoft.Json.Required.Always)]
-        public double Sideburns
-        {
-            get { return _sideburns; }
-            set 
-            {
-                if (_sideburns != value)
-                {
-                    _sideburns = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        public string ToJson() 
-        {
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this);
-        }
-        
-        public static FacialHair FromJson(string data)
-        {
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<FacialHair>(data);
-        }
-    
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected virtual void RaisePropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = null)
-        {
-            var handler = PropertyChanged;
-            if (handler != null) 
-                handler(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-        }
-    
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.11.0.0 (Newtonsoft.Json v9.0.0.0)")]
-    public enum GlassesType
-    {
-        [System.Runtime.Serialization.EnumMember(Value = "noGlasses")]
-        NoGlasses = 0,
-    
-        [System.Runtime.Serialization.EnumMember(Value = "readingGlasses")]
-        ReadingGlasses = 1,
-    
-        [System.Runtime.Serialization.EnumMember(Value = "sunglasses")]
-        Sunglasses = 2,
-    
-        [System.Runtime.Serialization.EnumMember(Value = "swimmingGoggles")]
-        SwimmingGoggles = 3,
-    
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.11.0.0 (Newtonsoft.Json v9.0.0.0)")]
-    public partial class HeadPose : System.ComponentModel.INotifyPropertyChanged
-    {
-        private double _roll;
-        private double _yaw;
-        private double _pitch;
-    
-        [Newtonsoft.Json.JsonProperty("roll", Required = Newtonsoft.Json.Required.Always)]
-        public double Roll
-        {
-            get { return _roll; }
-            set 
-            {
-                if (_roll != value)
-                {
-                    _roll = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("yaw", Required = Newtonsoft.Json.Required.Always)]
-        public double Yaw
-        {
-            get { return _yaw; }
-            set 
-            {
-                if (_yaw != value)
-                {
-                    _yaw = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("pitch", Required = Newtonsoft.Json.Required.Always)]
-        public double Pitch
-        {
-            get { return _pitch; }
-            set 
-            {
-                if (_pitch != value)
-                {
-                    _pitch = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        public string ToJson() 
-        {
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this);
-        }
-        
-        public static HeadPose FromJson(string data)
-        {
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<HeadPose>(data);
-        }
-    
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected virtual void RaisePropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = null)
-        {
-            var handler = PropertyChanged;
-            if (handler != null) 
-                handler(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-        }
-    
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.11.0.0 (Newtonsoft.Json v9.0.0.0)")]
-    public partial class Emotion : System.ComponentModel.INotifyPropertyChanged
-    {
-        private double _anger;
-        private double _contempt;
-        private double _disgust;
-        private double _fear;
-        private double _happiness;
-        private double _neutral;
-        private double _sadness;
-        private double _surprise;
-    
-        [Newtonsoft.Json.JsonProperty("anger", Required = Newtonsoft.Json.Required.Always)]
-        public double Anger
-        {
-            get { return _anger; }
-            set 
-            {
-                if (_anger != value)
-                {
-                    _anger = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("contempt", Required = Newtonsoft.Json.Required.Always)]
-        public double Contempt
-        {
-            get { return _contempt; }
-            set 
-            {
-                if (_contempt != value)
-                {
-                    _contempt = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("disgust", Required = Newtonsoft.Json.Required.Always)]
-        public double Disgust
-        {
-            get { return _disgust; }
-            set 
-            {
-                if (_disgust != value)
-                {
-                    _disgust = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("fear", Required = Newtonsoft.Json.Required.Always)]
-        public double Fear
-        {
-            get { return _fear; }
-            set 
-            {
-                if (_fear != value)
-                {
-                    _fear = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("happiness", Required = Newtonsoft.Json.Required.Always)]
-        public double Happiness
-        {
-            get { return _happiness; }
-            set 
-            {
-                if (_happiness != value)
-                {
-                    _happiness = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("neutral", Required = Newtonsoft.Json.Required.Always)]
-        public double Neutral
-        {
-            get { return _neutral; }
-            set 
-            {
-                if (_neutral != value)
-                {
-                    _neutral = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("sadness", Required = Newtonsoft.Json.Required.Always)]
-        public double Sadness
-        {
-            get { return _sadness; }
-            set 
-            {
-                if (_sadness != value)
-                {
-                    _sadness = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("surprise", Required = Newtonsoft.Json.Required.Always)]
-        public double Surprise
-        {
-            get { return _surprise; }
-            set 
-            {
-                if (_surprise != value)
-                {
-                    _surprise = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        public string ToJson() 
-        {
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this);
-        }
-        
-        public static Emotion FromJson(string data)
-        {
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Emotion>(data);
-        }
-    
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected virtual void RaisePropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = null)
-        {
-            var handler = PropertyChanged;
-            if (handler != null) 
-                handler(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-        }
-    
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.11.0.0 (Newtonsoft.Json v9.0.0.0)")]
-    public partial class Hair : System.ComponentModel.INotifyPropertyChanged
-    {
-        private double _bald;
-        private bool _invisible;
-        private System.Collections.ObjectModel.ObservableCollection<HairColor> _hairColor;
-    
-        [Newtonsoft.Json.JsonProperty("bald", Required = Newtonsoft.Json.Required.Always)]
-        public double Bald
-        {
-            get { return _bald; }
-            set 
-            {
-                if (_bald != value)
-                {
-                    _bald = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("invisible", Required = Newtonsoft.Json.Required.Always)]
-        public bool Invisible
-        {
-            get { return _invisible; }
-            set 
-            {
-                if (_invisible != value)
-                {
-                    _invisible = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("hairColor", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.ObjectModel.ObservableCollection<HairColor> HairColor
-        {
-            get { return _hairColor; }
-            set 
-            {
-                if (_hairColor != value)
-                {
-                    _hairColor = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        public string ToJson() 
-        {
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this);
-        }
-        
-        public static Hair FromJson(string data)
-        {
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Hair>(data);
-        }
-    
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected virtual void RaisePropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = null)
-        {
-            var handler = PropertyChanged;
-            if (handler != null) 
-                handler(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-        }
-    
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.11.0.0 (Newtonsoft.Json v9.0.0.0)")]
-    public partial class HairColor : System.ComponentModel.INotifyPropertyChanged
-    {
-        private HairColorType _color;
-        private double _confidence;
-    
-        [Newtonsoft.Json.JsonProperty("color", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public HairColorType Color
-        {
-            get { return _color; }
-            set 
-            {
-                if (_color != value)
-                {
-                    _color = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("confidence", Required = Newtonsoft.Json.Required.Always)]
-        public double Confidence
-        {
-            get { return _confidence; }
-            set 
-            {
-                if (_confidence != value)
-                {
-                    _confidence = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        public string ToJson() 
-        {
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this);
-        }
-        
-        public static HairColor FromJson(string data)
-        {
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<HairColor>(data);
-        }
-    
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected virtual void RaisePropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = null)
-        {
-            var handler = PropertyChanged;
-            if (handler != null) 
-                handler(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-        }
-    
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.11.0.0 (Newtonsoft.Json v9.0.0.0)")]
-    public enum HairColorType
-    {
-        [System.Runtime.Serialization.EnumMember(Value = "unknown")]
-        Unknown = 0,
-    
-        [System.Runtime.Serialization.EnumMember(Value = "white")]
-        White = 1,
-    
-        [System.Runtime.Serialization.EnumMember(Value = "gray")]
-        Gray = 2,
-    
-        [System.Runtime.Serialization.EnumMember(Value = "blond")]
-        Blond = 3,
-    
-        [System.Runtime.Serialization.EnumMember(Value = "brown")]
-        Brown = 4,
-    
-        [System.Runtime.Serialization.EnumMember(Value = "red")]
-        Red = 5,
-    
-        [System.Runtime.Serialization.EnumMember(Value = "black")]
-        Black = 6,
-    
-        [System.Runtime.Serialization.EnumMember(Value = "other")]
-        Other = 7,
-    
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.11.0.0 (Newtonsoft.Json v9.0.0.0)")]
-    public partial class Makeup : System.ComponentModel.INotifyPropertyChanged
-    {
-        private bool _eyeMakeup;
-        private bool _lipMakeup;
-    
-        [Newtonsoft.Json.JsonProperty("eyeMakeup", Required = Newtonsoft.Json.Required.Always)]
-        public bool EyeMakeup
-        {
-            get { return _eyeMakeup; }
-            set 
-            {
-                if (_eyeMakeup != value)
-                {
-                    _eyeMakeup = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("lipMakeup", Required = Newtonsoft.Json.Required.Always)]
-        public bool LipMakeup
-        {
-            get { return _lipMakeup; }
-            set 
-            {
-                if (_lipMakeup != value)
-                {
-                    _lipMakeup = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        public string ToJson() 
-        {
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this);
-        }
-        
-        public static Makeup FromJson(string data)
-        {
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Makeup>(data);
-        }
-    
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected virtual void RaisePropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = null)
-        {
-            var handler = PropertyChanged;
-            if (handler != null) 
-                handler(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-        }
-    
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.11.0.0 (Newtonsoft.Json v9.0.0.0)")]
-    public partial class Occlusion : System.ComponentModel.INotifyPropertyChanged
-    {
-        private bool _foreheadOccluded;
-        private bool _eyeOccluded;
-        private bool _mouthOccluded;
-    
-        [Newtonsoft.Json.JsonProperty("foreheadOccluded", Required = Newtonsoft.Json.Required.Always)]
-        public bool ForeheadOccluded
-        {
-            get { return _foreheadOccluded; }
-            set 
-            {
-                if (_foreheadOccluded != value)
-                {
-                    _foreheadOccluded = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("eyeOccluded", Required = Newtonsoft.Json.Required.Always)]
-        public bool EyeOccluded
-        {
-            get { return _eyeOccluded; }
-            set 
-            {
-                if (_eyeOccluded != value)
-                {
-                    _eyeOccluded = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("mouthOccluded", Required = Newtonsoft.Json.Required.Always)]
-        public bool MouthOccluded
-        {
-            get { return _mouthOccluded; }
-            set 
-            {
-                if (_mouthOccluded != value)
-                {
-                    _mouthOccluded = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        public string ToJson() 
-        {
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this);
-        }
-        
-        public static Occlusion FromJson(string data)
-        {
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Occlusion>(data);
-        }
-    
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected virtual void RaisePropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = null)
-        {
-            var handler = PropertyChanged;
-            if (handler != null) 
-                handler(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-        }
-    
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.11.0.0 (Newtonsoft.Json v9.0.0.0)")]
-    public partial class Accessory : System.ComponentModel.INotifyPropertyChanged
-    {
-        private AccessoryType _type;
-        private double _confidence;
-    
-        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public AccessoryType Type
-        {
-            get { return _type; }
-            set 
-            {
-                if (_type != value)
-                {
-                    _type = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("confidence", Required = Newtonsoft.Json.Required.Always)]
-        public double Confidence
-        {
-            get { return _confidence; }
-            set 
-            {
-                if (_confidence != value)
-                {
-                    _confidence = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        public string ToJson() 
-        {
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this);
-        }
-        
-        public static Accessory FromJson(string data)
-        {
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Accessory>(data);
-        }
-    
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected virtual void RaisePropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = null)
-        {
-            var handler = PropertyChanged;
-            if (handler != null) 
-                handler(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-        }
-    
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.11.0.0 (Newtonsoft.Json v9.0.0.0)")]
-    public enum AccessoryType
-    {
-        [System.Runtime.Serialization.EnumMember(Value = "headWear")]
-        HeadWear = 0,
-    
-        [System.Runtime.Serialization.EnumMember(Value = "glasses")]
-        Glasses = 1,
-    
-        [System.Runtime.Serialization.EnumMember(Value = "mask")]
-        Mask = 2,
-    
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.11.0.0 (Newtonsoft.Json v9.0.0.0)")]
-    public partial class Blur : System.ComponentModel.INotifyPropertyChanged
-    {
-        private BlurLevel _blurLevel;
-        private double _value;
-    
-        [Newtonsoft.Json.JsonProperty("blurLevel", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public BlurLevel BlurLevel
-        {
-            get { return _blurLevel; }
-            set 
-            {
-                if (_blurLevel != value)
-                {
-                    _blurLevel = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("value", Required = Newtonsoft.Json.Required.Always)]
-        public double Value
-        {
-            get { return _value; }
-            set 
-            {
-                if (_value != value)
-                {
-                    _value = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        public string ToJson() 
-        {
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this);
-        }
-        
-        public static Blur FromJson(string data)
-        {
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Blur>(data);
-        }
-    
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected virtual void RaisePropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = null)
-        {
-            var handler = PropertyChanged;
-            if (handler != null) 
-                handler(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-        }
-    
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.11.0.0 (Newtonsoft.Json v9.0.0.0)")]
-    public enum BlurLevel
-    {
-        [System.Runtime.Serialization.EnumMember(Value = "Low")]
-        Low = 0,
-    
-        [System.Runtime.Serialization.EnumMember(Value = "Medium")]
-        Medium = 1,
-    
-        [System.Runtime.Serialization.EnumMember(Value = "High")]
-        High = 2,
-    
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.11.0.0 (Newtonsoft.Json v9.0.0.0)")]
-    public partial class Exposure : System.ComponentModel.INotifyPropertyChanged
-    {
-        private ExposureLevel _exposureLevel;
-        private double _value;
-    
-        [Newtonsoft.Json.JsonProperty("exposureLevel", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public ExposureLevel ExposureLevel
-        {
-            get { return _exposureLevel; }
-            set 
-            {
-                if (_exposureLevel != value)
-                {
-                    _exposureLevel = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("value", Required = Newtonsoft.Json.Required.Always)]
-        public double Value
-        {
-            get { return _value; }
-            set 
-            {
-                if (_value != value)
-                {
-                    _value = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        public string ToJson() 
-        {
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this);
-        }
-        
-        public static Exposure FromJson(string data)
-        {
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Exposure>(data);
-        }
-    
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected virtual void RaisePropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = null)
-        {
-            var handler = PropertyChanged;
-            if (handler != null) 
-                handler(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-        }
-    
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.11.0.0 (Newtonsoft.Json v9.0.0.0)")]
-    public enum ExposureLevel
-    {
-        [System.Runtime.Serialization.EnumMember(Value = "UnderExposure")]
-        UnderExposure = 0,
-    
-        [System.Runtime.Serialization.EnumMember(Value = "GoodExposure")]
-        GoodExposure = 1,
-    
-        [System.Runtime.Serialization.EnumMember(Value = "OverExposure")]
-        OverExposure = 2,
-    
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.11.0.0 (Newtonsoft.Json v9.0.0.0)")]
-    public partial class Noise : System.ComponentModel.INotifyPropertyChanged
-    {
-        private NoiseLevel _noiseLevel;
-        private double _value;
-    
-        [Newtonsoft.Json.JsonProperty("noiseLevel", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public NoiseLevel NoiseLevel
-        {
-            get { return _noiseLevel; }
-            set 
-            {
-                if (_noiseLevel != value)
-                {
-                    _noiseLevel = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("value", Required = Newtonsoft.Json.Required.Always)]
-        public double Value
-        {
-            get { return _value; }
-            set 
-            {
-                if (_value != value)
-                {
-                    _value = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        public string ToJson() 
-        {
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this);
-        }
-        
-        public static Noise FromJson(string data)
-        {
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Noise>(data);
-        }
-    
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected virtual void RaisePropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = null)
-        {
-            var handler = PropertyChanged;
-            if (handler != null) 
-                handler(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-        }
-    
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.11.0.0 (Newtonsoft.Json v9.0.0.0)")]
-    public enum NoiseLevel
-    {
-        [System.Runtime.Serialization.EnumMember(Value = "Low")]
-        Low = 0,
-    
-        [System.Runtime.Serialization.EnumMember(Value = "Medium")]
-        Medium = 1,
-    
-        [System.Runtime.Serialization.EnumMember(Value = "High")]
-        High = 2,
-    
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.11.0.0 (Newtonsoft.Json v9.0.0.0)")]
-    public partial class SimilarFace : System.ComponentModel.INotifyPropertyChanged
-    {
-        private System.Guid? _faceId;
-        private System.Guid? _persistedFaceId;
-        private double _confidence;
-    
-        [Newtonsoft.Json.JsonProperty("faceId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Guid? FaceId
-        {
-            get { return _faceId; }
-            set 
-            {
-                if (_faceId != value)
-                {
-                    _faceId = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("persistedFaceId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Guid? PersistedFaceId
-        {
-            get { return _persistedFaceId; }
-            set 
-            {
-                if (_persistedFaceId != value)
-                {
-                    _persistedFaceId = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("confidence", Required = Newtonsoft.Json.Required.Always)]
-        public double Confidence
-        {
-            get { return _confidence; }
-            set 
-            {
-                if (_confidence != value)
-                {
-                    _confidence = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        public string ToJson() 
-        {
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this);
-        }
-        
-        public static SimilarFace FromJson(string data)
-        {
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<SimilarFace>(data);
-        }
-    
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected virtual void RaisePropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = null)
-        {
-            var handler = PropertyChanged;
-            if (handler != null) 
-                handler(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-        }
-    
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.11.0.0 (Newtonsoft.Json v9.0.0.0)")]
-    public partial class IdentifyResult : System.ComponentModel.INotifyPropertyChanged
-    {
-        private System.Guid _faceId;
-        private System.Collections.ObjectModel.ObservableCollection<IdentifyCandidate> _candidates;
-    
-        [Newtonsoft.Json.JsonProperty("faceId", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public System.Guid FaceId
-        {
-            get { return _faceId; }
-            set 
-            {
-                if (_faceId != value)
-                {
-                    _faceId = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("candidates", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.ObjectModel.ObservableCollection<IdentifyCandidate> Candidates
-        {
-            get { return _candidates; }
-            set 
-            {
-                if (_candidates != value)
-                {
-                    _candidates = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        public string ToJson() 
-        {
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this);
-        }
-        
-        public static IdentifyResult FromJson(string data)
-        {
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<IdentifyResult>(data);
-        }
-    
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected virtual void RaisePropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = null)
-        {
-            var handler = PropertyChanged;
-            if (handler != null) 
-                handler(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-        }
-
-        internal object First()
-        {
-            throw new NotImplementedException();
-        }
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.11.0.0 (Newtonsoft.Json v9.0.0.0)")]
-    public partial class IdentifyCandidate : System.ComponentModel.INotifyPropertyChanged
-    {
-        private System.Guid _personId;
-        private double _confidence;
-    
-        [Newtonsoft.Json.JsonProperty("personId", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public System.Guid PersonId
-        {
-            get { return _personId; }
-            set 
-            {
-                if (_personId != value)
-                {
-                    _personId = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        [Newtonsoft.Json.JsonProperty("confidence", Required = Newtonsoft.Json.Required.Always)]
-        public double Confidence
-        {
-            get { return _confidence; }
-            set 
-            {
-                if (_confidence != value)
-                {
-                    _confidence = value; 
-                    RaisePropertyChanged();
-                }
-            }
-        }
-    
-        public string ToJson() 
-        {
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this);
-        }
-        
-        public static IdentifyCandidate FromJson(string data)
-        {
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<IdentifyCandidate>(data);
-        }
-    
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected virtual void RaisePropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = null)
-        {
-            var handler = PropertyChanged;
-            if (handler != null) 
-                handler(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-        }
-    
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NSwag", "11.20.1.0 (NJsonSchema v9.11.0.0 (Newtonsoft.Json v9.0.0.0))")]
-    public partial class SwaggerException : System.Exception
-    {
-        public int StatusCode { get; private set; }
-
-        public string Response { get; private set; }
-
-        public System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>> Headers { get; private set; }
-
-        public SwaggerException(string message, int statusCode, string response, System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>> headers, System.Exception innerException) 
-            : base(message + "\n\nStatus: " + statusCode + "\nResponse: \n" + response.Substring(0, response.Length >= 512 ? 512 : response.Length), innerException)
-        {
-            StatusCode = statusCode;
-            Response = response; 
-            Headers = headers;
-        }
-
-        public override string ToString()
-        {
-            return string.Format("HTTP Response: \n\n{0}\n\n{1}", Response, base.ToString());
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NSwag", "11.20.1.0 (NJsonSchema v9.11.0.0 (Newtonsoft.Json v9.0.0.0))")]
-    public partial class SwaggerException<TResult> : SwaggerException
-    {
-        public TResult Result { get; private set; }
-
-        public SwaggerException(string message, int statusCode, string response, System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>> headers, TResult result, System.Exception innerException) 
-            : base(message, statusCode, response, headers, innerException)
-        {
-            Result = result;
-        }
     }
 
 }

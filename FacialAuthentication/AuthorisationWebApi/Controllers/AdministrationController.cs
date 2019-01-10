@@ -1,16 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
+﻿using System;
 using System.Threading.Tasks;
-using System.IO;
-
-using Microsoft.Azure.CognitiveServices.Vision.Face;
-using Microsoft.Azure.CognitiveServices.Vision.Face.Models;
-
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
-using AuthorisationWebApi.ViewModel;
+
 using Authorisation.Core.Services;
 using Authorisation.Adaptor.Request;
 using Authorisation.Adaptor.Response;
@@ -20,18 +12,6 @@ namespace AuthorisationWebApi.Controllers
     [Route("api/[controller]")]
     public class AdministrationController : Controller
     {
-        // todo 
-        // 1. Add DI
-        //2. Delegate all these ops to a broker service
-        const string _baseUri = "https://australiaeast.api.cognitive.microsoft.com"; // work around for Resource not found
-
-        private const string _subscriptionKey = "";
-
-
-        private readonly IFaceClient _faceClient = new FaceClient(new ApiKeyServiceClientCredentials(_subscriptionKey), new DelegatingHandler[] { })
-        {
-            Endpoint = _baseUri
-        };
 
         private readonly ICognitiveAdminService _cognitiveAdminService;
 
@@ -44,25 +24,6 @@ namespace AuthorisationWebApi.Controllers
         {
             return await Task<string>.Factory.StartNew(() => "ACK");
         }
-
-
-        [HttpPost("[action]")]
-        public async void AddGroup([FromBody] JObject requestData)
-        {
-            var groupId = requestData["groupId"].ToString();
-
-            var groupName = requestData["groupName"].ToString();
-
-            var userData = requestData["userData"];
-
-            var t = _faceClient.PersonGroup.GetAsync(groupId);
-
-            if(t.Id == 0)
-            {
-                await _faceClient.PersonGroup.CreateAsync(groupId,  groupName);
-            }
-        }
-
 
         [HttpPost("[action]")]
         public async Task<IAddPersonResponse> AddPerson([FromBody]string personName, int groupId, object userData)
@@ -78,95 +39,90 @@ namespace AuthorisationWebApi.Controllers
             return await _cognitiveAdminService.Handle(request);
         }
 
-        
-        //[HttpPost("[action]")]
-        //public async Task<PersistedFace> AddFaceToPerson(AddFaceToPersonRequest addFaceToPersonRequest)
-        //{
-        //    string userData = null;
-
-        //    PersistedFace persistedFaceResult = null;
-
-        //    try
-        //    {
-        //        using (var ms = addFaceToPersonRequest.FaceImage.OpenReadStream())
-        //        {
-        //            persistedFaceResult = await _faceClient.PersonGroupPerson.AddFaceFromStreamAsync(addFaceToPersonRequest.GroupId,
-        //                addFaceToPersonRequest.PersonId, ms, userData);
-        //        }
-        //    }
-        //    catch (APIErrorException ex)
-        //    {
-        //        throw; // ex.Response.Content;
-        //    }
-
-        //    return persistedFaceResult;
-        //}
-
         [HttpPost("[action]")]
-       public async Task<PersistedFace> AddFaceToPerson(JObject requestData)
+       public async Task<IAddFaceToPersonResponse> AddFaceToPerson(JObject requestData)
         {
             Guid personId = Guid.Parse(requestData["personId"].ToString());
 
             string groupId = requestData["groupId"].ToString();
 
             byte[] faceImage = Convert.FromBase64String(requestData["faceCapture"].ToString());
-            
-            PersistedFace persistedFaceResult = null;
 
-            try
+            var request = new AddFaceToPersonRequest
             {
-                using (var ms = new MemoryStream(faceImage))
-                {
-            
-                    persistedFaceResult = await _faceClient.PersonGroupPerson.AddFaceFromStreamAsync(groupId.ToString(), personId, ms);
-                }
-            }
-            catch (APIErrorException ex)
-            {
-                throw; // ex.Response.Content;
-            }
+                //FaceImage = faceImage,
+                PersonId = personId,
 
-            return persistedFaceResult;
+                GroupId = Convert.ToInt32(groupId)
+            };
+
+            return await _cognitiveAdminService.Handle(request);
         }
 
-
         [HttpGet("[action]")]
-        public async Task<PersonGroup> GetGroup(string groupId)
+        public async Task<IGetGroupResponse> GetGroup(string groupId)
         {
-            return await _faceClient.PersonGroup.GetAsync(groupId);
+            var request = new GetGroupRequest { GroupId = Convert.ToInt32(groupId) };
+
+            return await _cognitiveAdminService.Handle(request);
         }
 
         [HttpGet("[action]")] // route is specified - may only need Person
-        public async Task<Person> GetPerson(Guid personId, string groupId)
+        public async Task<IGetPersonResponse> GetPerson(Guid personId, string groupId)
         {
-            var person = await _faceClient.PersonGroupPerson.GetAsync(groupId, personId);
+            var request = new GetPersonRequest
+            {
+                PersonId = personId,
 
-            return person;
+                GroupId = Convert.ToInt32(groupId)
+            };
+
+            return await _cognitiveAdminService.Handle(request);
         }
 
-        [HttpPatch("[action]")]
-        public async void UpdatePerson(Guid personId, string groupId, string userData = null)
-        {
-            await _faceClient.PersonGroupPerson.UpdateAsync(groupId, personId, userData);
-        }
+        #region Move to service
 
-        [HttpPatch("[action]")]
-        public async void UpdateGroup(string groupId, string groupName, string userData = null)
-        {
-            await _faceClient.PersonGroup.UpdateAsync(groupId, groupName, userData);
-        }
+        //[HttpPost("[action]")]
+        //public async void AddGroup([FromBody] JObject requestData)
+        //{
+        //    var groupId = requestData["groupId"].ToString();
 
-        [HttpDelete("[action]")]
-        public async void DeletePerson(Guid personId, string groupId)
-        {
-            await _faceClient.PersonGroupPerson.DeleteAsync(groupId, personId);
-        }
+        //    var groupName = requestData["groupName"].ToString();
 
-        [HttpDelete("[action]")]
-        public async void DeleteGroup(string groupId)
-        {
-            await _faceClient.PersonGroup.DeleteAsync(groupId);
-        }
+        //    var userData = requestData["userData"];
+
+        //    var t = _faceClient.PersonGroup.GetAsync(groupId);
+
+        //    if (t.Id == 0)
+        //    {
+        //        await _faceClient.PersonGroup.CreateAsync(groupId, groupName);
+        //    }
+        //}
+
+        //[HttpPatch("[action]")]
+        //public async void UpdatePerson(Guid personId, string groupId, string userData = null)
+        //{
+        //    await _faceClient.PersonGroupPerson.UpdateAsync(groupId, personId, userData);
+        //}
+
+        //[HttpPatch("[action]")]
+        //public async void UpdateGroup(string groupId, string groupName, string userData = null)
+        //{
+        //    await _faceClient.PersonGroup.UpdateAsync(groupId, groupName, userData);
+        //}
+
+        //[HttpDelete("[action]")]
+        //public async void DeletePerson(Guid personId, string groupId)
+        //{
+        //    await _faceClient.PersonGroupPerson.DeleteAsync(groupId, personId);
+        //}
+
+        //[HttpDelete("[action]")]
+        //public async void DeleteGroup(string groupId)
+        //{
+        //    await _faceClient.PersonGroup.DeleteAsync(groupId);
+        //}
+        #endregion
 
     }
 }

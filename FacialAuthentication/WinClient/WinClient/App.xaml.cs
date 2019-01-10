@@ -19,6 +19,7 @@ using FaceAuth.View;
 using FaceAuth.ViewModel;
 using FaceAuth.Model;
 using Autofac;
+using ClientProxy;
 
 namespace FaceAuth
 {
@@ -59,6 +60,8 @@ namespace FaceAuth
             containerBuilder.RegisterInstance(new TrainingProvider(controllerUri));
 
             containerBuilder.RegisterInstance(new FaceProvider(controllerUri));
+
+            containerBuilder.RegisterInstance(new TrainingClient(controllerUri.AbsoluteUri));
             
             return containerBuilder.Build();
 

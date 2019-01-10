@@ -20,18 +20,22 @@ namespace FaceAuth.Model
         }
 
 
-        public async Task<ObservableCollection<IdentifyResult>> IdentifyAsync(Guid faceId, int groupId, int? confidenceThreshold, int? maxPersonsToReturn)
+        public async Task<ObservableCollection<IdentifyFaceResult>> IdentifyAsync(Guid faceId, int groupId, int? confidenceThreshold, int? maxPersonsToReturn)
         {
             var visionClient = new VisionClient(_serviceUri.AbsoluteUri);
 
-            return await visionClient.IdentifyAsync(faceId, groupId.ToString(), null, null);
+            var identifyReponse = await visionClient.IdentifyAsync(faceId, groupId.ToString(), null, null);
+
+            throw new NotImplementedException(); //todo:
         }
 
         public async Task<DetectedFace> DetectAsync(Byte[] imageAsBytes)
         {
             var visionClient = new VisionClient(_serviceUri.AbsoluteUri);
 
-            return await visionClient.DetectAsync(imageAsBytes);
+            var detectedFaceResponse = await visionClient.DetectAsync(imageAsBytes);
+
+            return new DetectedFace(detectedFaceResponse);
         }
 
         

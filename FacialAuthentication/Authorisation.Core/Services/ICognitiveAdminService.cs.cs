@@ -12,11 +12,13 @@ namespace Authorisation.Core.Services
 
         Task<IGetPersonResponse> Handle(IGetPersonRequest getPersonRequest);
 
-        Task<IUpdatePersonResponse> Handle(IUpdatePersonRequest updatePersonRequest);
+        Task Handle(IUpdatePersonRequest updatePersonRequest);
 
         Task<IDeletePersonResponse> Handle(IDeletePersonRequest deletePersonRequest);
 
         Task<ITrainGroupResponse> Handle(ITrainGroupRequest trainGroupRequest);
+
+        Task<IGetGroupResponse> Handle(IGetGroupRequest getGroupRequest);
 
     }
 }

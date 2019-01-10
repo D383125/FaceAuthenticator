@@ -30,6 +30,7 @@
 
   <ItemGroup>
     <Folder Include="Validation\" />
+    <Folder Include="ViewModel\" />
   </ItemGroup>
 
   <ItemGroup>

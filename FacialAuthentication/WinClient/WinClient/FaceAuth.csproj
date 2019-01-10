@@ -96,11 +96,17 @@
     </Compile>
     <Compile Include="ClientProxy\ClientProxy.cs" />
     <Compile Include="Model\CaptureProvider.cs" />
+    <Compile Include="Model\DetectedFace.cs" />
     <Compile Include="Model\FaceProvider.cs" />
+    <Compile Include="Model\IdentifyFaceResult.cs" />
+    <Compile Include="Model\Person.cs" />
     <Compile Include="Model\PersonProvider.cs" />
+    <Compile Include="Model\PersistedFace.cs" />
     <Compile Include="Model\TrainingProvider.cs" />
     <Compile Include="ViewModel\AddPersonPresenter.cs" />
     <Compile Include="ViewModel\DelegateCommand.cs" />
+    <Compile Include="Model\FaceAttributes.cs" />
+    <Compile Include="Model\FaceLandmarks.cs" />
     <Compile Include="ViewModel\MainPageViewModel.cs" />
     <Compile Include="ViewModel\ObservableObject.cs" />
     <Compile Include="ViewModel\StorageFileProvider.cs" />
