@@ -1,5 +1,6 @@
 ﻿using ClientProxy;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
@@ -23,22 +24,24 @@ namespace FaceAuth.Model
 
         public object UserData => _personResponse.UserData;
 
-        private Person(dynamic response)
+        public Person(string responsePayload)
         {
-            _personResponse.Name = response.Name;
+            dynamic response = JObject.Parse(responsePayload);
 
-            _personResponse.PersonId = response.PersonId;
+            _personResponse.Name = response["name"];
 
-            _personResponse.PersistedFaceIds = response.PersistedFaceIds;
+            _personResponse.PersonId = response["PersonId"];
+
+            _personResponse.PersistedFaceIds = response["PersistedFaceIds"];
         }
 
-        public Person(IAddPersonResponse addPersonResponse) : this(JsonConvert.DeserializeObject(addPersonResponse.ToJson()))
-        {            
-        }
+        //public Person(IAddPersonResponse addPersonResponse) : this(JsonConvert.DeserializeObject(addPersonResponse.ToJson()))
+        //{            
+        //}
 
         
-        public Person(IGetPersonResponse getPersonResponse) : this(JsonConvert.DeserializeObject(getPersonResponse.ToJson()))
-        {
-        }
+        //public Person(IGetPersonResponse getPersonResponse) : this(JsonConvert.DeserializeObject(getPersonResponse.ToJson()))
+        //{
+        //}
     }
 }

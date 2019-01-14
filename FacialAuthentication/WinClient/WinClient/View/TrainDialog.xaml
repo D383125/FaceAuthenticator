@@ -15,5 +15,6 @@
 
         <TextBox HorizontalAlignment="Left" Margin="100,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top"  Height="35" Width="184"/>
         <TextBlock HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="Add Name" VerticalAlignment="Top" Height="35"/>
+        <Button Content="Use Capture" Name="UseCapture"  HorizontalAlignment="Left" Height="33" Margin="100,81,0,-54" VerticalAlignment="Top" Width="103"/>
     </Grid>
 </ContentDialog>

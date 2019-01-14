@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Autofac;
 using ClientProxy;
 
 namespace FaceAuth.Model
@@ -27,9 +27,9 @@ namespace FaceAuth.Model
 
         public async Task<Person> GetPersonAsync(Guid candidateId, int groupId)
         {
-            var visionClient = new AdministrationClient(_serviceUri.AbsoluteUri);
+            var adminClient = App.Container.Resolve<AdministrationClient>();
 
-            var getPersonResponse = await visionClient.GetPersonAsync(candidateId, groupId.ToString());
+            var getPersonResponse = await adminClient.GetPersonAsync(candidateId, groupId.ToString());
 
             return new Person(getPersonResponse);
         }

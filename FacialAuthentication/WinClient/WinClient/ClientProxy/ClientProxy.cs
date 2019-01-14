@@ -5,6 +5,7 @@
 //----------------------
 
 using System;
+using Windows.Foundation;
 
 namespace ClientProxy
 {
@@ -117,14 +118,14 @@ namespace ClientProxy
         }
     
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<IAddPersonResponse> AddPersonAsync(string personName, int groupId, object userData)
+        public System.Threading.Tasks.Task<string> AddPersonAsync(string personName, int groupId, object userData)
         {
             return AddPersonAsync(personName, groupId, userData, System.Threading.CancellationToken.None);
         }
     
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        public async System.Threading.Tasks.Task<IAddPersonResponse> AddPersonAsync(string personName, int groupId, object userData, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<string> AddPersonAsync(string personName, int groupId, object userData, System.Threading.CancellationToken cancellationToken)
         {
             if (groupId == null)
                 throw new System.ArgumentNullException("groupId");
@@ -166,26 +167,24 @@ namespace ClientProxy
                         var status_ = ((int)response_.StatusCode).ToString();
                         if (status_ == "200") 
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
-                            var result_ = default(IAddPersonResponse); 
-                            try
-                            {
-                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<IAddPersonResponse>(responseData_, _settings.Value);
-                                return result_; 
-                            } 
-                            catch (System.Exception exception_) 
-                            {
-                                throw new Exception("Could not deserialize the response body.");
-                            }
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            return responseData_;
+                            //var result_ = default(IAddPersonResponse); 
+                            //try
+                            //{
+                            //    result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<IAddPersonResponse>(responseData_, _settings.Value);
+                            //    return result_; 
+                            //} 
+                            //catch (System.Exception exception_) 
+                            //{
+                            //    throw new Exception("Could not deserialize the response body.");
+                            //}
                         }
-                        else
-                        if (status_ != "200" && status_ != "204")
+                        else 
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
                             throw new Exception("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").");
-                        }
-            
-                        return default(IAddPersonResponse);
+                        }          
                     }
                     finally
                     {
@@ -202,14 +201,14 @@ namespace ClientProxy
         }
     
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<IAddFaceToPersonResponse> AddFaceToPersonAsync(object requestData)
+        public System.Threading.Tasks.Task<string> AddFaceToPersonAsync(object requestData)
         {
             return AddFaceToPersonAsync(requestData, System.Threading.CancellationToken.None);
         }
     
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        public async System.Threading.Tasks.Task<IAddFaceToPersonResponse> AddFaceToPersonAsync(object requestData, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<string> AddFaceToPersonAsync(object requestData, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Administration/AddFaceToPerson?");
@@ -245,26 +244,24 @@ namespace ClientProxy
                         var status_ = ((int)response_.StatusCode).ToString();
                         if (status_ == "200") 
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
-                            var result_ = default(IAddFaceToPersonResponse); 
-                            try
-                            {
-                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<IAddFaceToPersonResponse>(responseData_, _settings.Value);
-                                return result_; 
-                            } 
-                            catch (System.Exception exception_) 
-                            {
-                                throw;// new SwaggerException("Could not deserialize the response body.", (int)response_.StatusCode, responseData_, headers_, exception_);
-                            }
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            return responseData_;
+                            //var result_ = default(IAddFaceToPersonResponse); 
+                            //try
+                            //{
+                            //    result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<IAddFaceToPersonResponse>(responseData_, _settings.Value);
+                            //    return result_; 
+                            //} 
+                            //catch (System.Exception exception_) 
+                            //{
+                            //    throw;// new SwaggerException("Could not deserialize the response body.", (int)response_.StatusCode, responseData_, headers_, exception_);
+                            //}
                         }
-                        else
-                        if (status_ != "200" && status_ != "204")
+                        else 
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
                             throw new Exception("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").");
-                        }
-            
-                        return default(IAddFaceToPersonResponse);
+                        }           
                     }
                     finally
                     {
@@ -281,14 +278,14 @@ namespace ClientProxy
         }
     
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<IGetGroupResponse> GetGroupAsync(string groupId)
+        public System.Threading.Tasks.Task<string> GetGroupAsync(string groupId)
         {
             return GetGroupAsync(groupId, System.Threading.CancellationToken.None);
         }
     
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        public async System.Threading.Tasks.Task<IGetGroupResponse> GetGroupAsync(string groupId, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<string> GetGroupAsync(string groupId, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Administration/GetGroup?");
@@ -323,26 +320,25 @@ namespace ClientProxy
                         var status_ = ((int)response_.StatusCode).ToString();
                         if (status_ == "200") 
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
-                            var result_ = default(IGetGroupResponse); 
-                            try
-                            {
-                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<IGetGroupResponse>(responseData_, _settings.Value);
-                                return result_; 
-                            } 
-                            catch (System.Exception exception_) 
-                            {
-                                throw;// new SwaggerException("Could not deserialize the response body.", (int)response_.StatusCode, responseData_, headers_, exception_);
-                            }
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            return responseData_;
+                            //var result_ = default(IGetGroupResponse); 
+                            //try
+                            //{
+                            //    result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<IGetGroupResponse>(responseData_, _settings.Value);
+                            //    return result_; 
+                            //} 
+                            //catch (System.Exception exception_) 
+                            //{
+                            //    throw;// new SwaggerException("Could not deserialize the response body.", (int)response_.StatusCode, responseData_, headers_, exception_);
+                            //}
                         }
                         else
-                        if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
                             throw new Exception("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").");
                         }
-            
-                        return default(IGetGroupResponse);
+           
                     }
                     finally
                     {
@@ -359,14 +355,14 @@ namespace ClientProxy
         }
     
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<IGetPersonResponse> GetPersonAsync(System.Guid personId, string groupId)
+        public System.Threading.Tasks.Task<string> GetPersonAsync(System.Guid personId, string groupId)
         {
             return GetPersonAsync(personId, groupId, System.Threading.CancellationToken.None);
         }
     
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        public async System.Threading.Tasks.Task<IGetPersonResponse> GetPersonAsync(System.Guid personId, string groupId, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<string> GetPersonAsync(System.Guid personId, string groupId, System.Threading.CancellationToken cancellationToken)
         {
             if (personId == null)
                 throw new System.ArgumentNullException("personId");
@@ -405,26 +401,24 @@ namespace ClientProxy
                         var status_ = ((int)response_.StatusCode).ToString();
                         if (status_ == "200") 
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
-                            var result_ = default(IGetPersonResponse); 
-                            try
-                            {
-                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<IGetPersonResponse>(responseData_, _settings.Value);
-                                return result_; 
-                            } 
-                            catch (System.Exception exception_) 
-                            {
-                                throw;// new SwaggerException("Could not deserialize the response body.", (int)response_.StatusCode, responseData_, headers_, exception_);
-                            }
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            return responseData_;
+                            //var result_ = default(IGetPersonResponse); 
+                            //try
+                            //{
+                            //    result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<IGetPersonResponse>(responseData_, _settings.Value);
+                            //    return result_; 
+                            //} 
+                            //catch (System.Exception exception_) 
+                            //{
+                            //    throw;// new SwaggerException("Could not deserialize the response body.", (int)response_.StatusCode, responseData_, headers_, exception_);
+                            //}
                         }
                         else
-                        if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
                             throw new Exception("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").");
-                        }
-            
-                        return default(IGetPersonResponse);
+                        }           
                     }
                     finally
                     {
@@ -580,14 +574,14 @@ namespace ClientProxy
         }
     
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<ITrainGroupResponse> TrainAsync(string groupId)
+        public System.Threading.Tasks.Task<string> TrainAsync(string groupId)
         {
             return TrainAsync(groupId, System.Threading.CancellationToken.None);
         }
     
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        public async System.Threading.Tasks.Task<ITrainGroupResponse> TrainAsync(string groupId, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<string> TrainAsync(string groupId, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Training/Train?");
@@ -622,26 +616,24 @@ namespace ClientProxy
                         var status_ = ((int)response_.StatusCode).ToString();
                         if (status_ == "200") 
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
-                            var result_ = default(ITrainGroupResponse); 
-                            try
-                            {
-                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ITrainGroupResponse>(responseData_, _settings.Value);
-                                return result_; 
-                            } 
-                            catch (System.Exception exception_) 
-                            {
-                                throw; // new SwaggerException("Could not deserialize the response body.", (int)response_.StatusCode, responseData_, headers_, exception_);
-                            }
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            return responseData_;
+                            //var result_ = default(ITrainGroupResponse); 
+                            //try
+                            //{
+                            //    result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ITrainGroupResponse>(responseData_, _settings.Value);
+                            //    return result_; 
+                            //} 
+                            //catch (System.Exception exception_) 
+                            //{
+                            //    throw; // new SwaggerException("Could not deserialize the response body.", (int)response_.StatusCode, responseData_, headers_, exception_);
+                            //}
                         }
                         else
-                        if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
                             throw new Exception("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").");
                         }
-            
-                        return default(ITrainGroupResponse);
                     }
                     finally
                     {
@@ -701,7 +693,7 @@ namespace ClientProxy
             BaseUrl = baseUrl; 
             _settings = new System.Lazy<Newtonsoft.Json.JsonSerializerSettings>(() => 
             {
-                var settings = new Newtonsoft.Json.JsonSerializerSettings();
+                var settings = new Newtonsoft.Json.JsonSerializerSettings();                
                 UpdateJsonSerializerSettings(settings);
                 return settings;
             });
@@ -797,14 +789,14 @@ namespace ClientProxy
         }
     
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<IVerifyPersonResponse> VerifyAsync(System.Guid faceId, System.Guid personId, int groupId)
+        public System.Threading.Tasks.Task<string> VerifyAsync(System.Guid faceId, System.Guid personId, int groupId)
         {
             return VerifyAsync(faceId, personId, groupId, System.Threading.CancellationToken.None);
         }
     
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        public async System.Threading.Tasks.Task<IVerifyPersonResponse> VerifyAsync(System.Guid faceId, System.Guid personId, int groupId, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<string> VerifyAsync(System.Guid faceId, System.Guid personId, int groupId, System.Threading.CancellationToken cancellationToken)
         {
             if (faceId == null)
                 throw new System.ArgumentNullException("faceId");
@@ -851,26 +843,24 @@ namespace ClientProxy
                         var status_ = ((int)response_.StatusCode).ToString();
                         if (status_ == "200") 
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
-                            var result_ = default(IVerifyPersonResponse); 
-                            try
-                            {
-                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<IVerifyPersonResponse>(responseData_, _settings.Value);
-                                return result_; 
-                            } 
-                            catch (System.Exception exception_) 
-                            {
-                                throw new Exception("Could not deserialize the response body.");
-                            }
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            return responseData_;
+                            //var result_ = default(IVerifyPersonResponse); 
+                            //try
+                            //{
+                            //    result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<IVerifyPersonResponse>(responseData_, _settings.Value);
+                            //    return result_; 
+                            //} 
+                            //catch (System.Exception exception_) 
+                            //{
+                            //    throw new Exception("Could not deserialize the response body.");
+                            //}
                         }
                         else
-                        if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
                             throw new Exception("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").");
                         }
-            
-                        return default(IVerifyPersonResponse);
                     }
                     finally
                     {
@@ -887,14 +877,17 @@ namespace ClientProxy
         }
     
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<IDetectFaceResponse> DetectAsync(byte[] faceCapture)
+        public System.Threading.Tasks.Task<string> DetectAsync(byte[] faceCapture)
         {
             return DetectAsync(faceCapture, System.Threading.CancellationToken.None);
         }
-    
+
+        // Todo:  Start here: 
+        // Use DetectedFace model ? 
+
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        public async System.Threading.Tasks.Task<IDetectFaceResponse> DetectAsync(byte[] faceCapture, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<string> DetectAsync(byte[] faceCapture, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Vision/Detect");
@@ -930,26 +923,29 @@ namespace ClientProxy
                         var status_ = ((int)response_.StatusCode).ToString();
                         if (status_ == "200") 
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
-                            var result_ = default(IDetectFaceResponse); 
-                            try
-                            {
-                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<IDetectFaceResponse>(responseData_, _settings.Value);
-                                return result_; 
-                            } 
-                            catch (System.Exception exception_) 
-                            {
-                                throw new Exception("Could not deserialize the response body.");
-                            }
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+                            return responseData_;
+
+                            //var result_ = default(IDetectFaceResponse); 
+                            //try
+                            //{
+                            //    result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<IDetectFaceResponse>(responseData_, _settings.Value);
+                            //    return result_; 
+                            //} 
+                            //catch (System.Exception exception_) 
+                            //{
+                            //    throw new Exception("Could not deserialize the response body.");
+                            //}
                         }
-                        else
-                        if (status_ != "200" && status_ != "204")
+                        else 
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
                             throw new Exception("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").");
                         }
             
-                        return default(IDetectFaceResponse);
+                        //return default(IDetectFaceResponse);
+
                     }
                     finally
                     {
@@ -966,14 +962,14 @@ namespace ClientProxy
         }
     
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<IFindSimilarFacesResponse> FindSimilarAsync(System.Guid faceId)
+        public System.Threading.Tasks.Task<string> FindSimilarAsync(System.Guid faceId)
         {
             return FindSimilarAsync(faceId, System.Threading.CancellationToken.None);
         }
     
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        public async System.Threading.Tasks.Task<IFindSimilarFacesResponse> FindSimilarAsync(System.Guid faceId, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<string> FindSimilarAsync(System.Guid faceId, System.Threading.CancellationToken cancellationToken)
         {
             if (faceId == null)
                 throw new System.ArgumentNullException("faceId");
@@ -1012,26 +1008,24 @@ namespace ClientProxy
                         var status_ = ((int)response_.StatusCode).ToString();
                         if (status_ == "200") 
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
-                            var result_ = default(IFindSimilarFacesResponse); 
-                            try
-                            {
-                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<IFindSimilarFacesResponse>(responseData_, _settings.Value);
-                                return result_; 
-                            } 
-                            catch (System.Exception exception_) 
-                            {
-                                throw new Exception("Could not deserialize the response body.");
-                            }
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            return responseData_;
+                            //var result_ = default(IFindSimilarFacesResponse); 
+                            //try
+                            //{
+                            //    result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<IFindSimilarFacesResponse>(responseData_, _settings.Value);
+                            //    return result_; 
+                            //} 
+                            //catch (System.Exception exception_) 
+                            //{
+                            //    throw new Exception("Could not deserialize the response body.");
+                            //}
                         }
                         else
-                        if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
                             throw new Exception("The HTTP status code of the response was not expected (");
-                        }
-            
-                        return default(IFindSimilarFacesResponse);
+                        }           
                     }
                     finally
                     {
@@ -1320,7 +1314,17 @@ namespace ClientProxy
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.11.0.0 (Newtonsoft.Json v9.0.0.0)")]
     public abstract partial class IDetectFaceResponse : System.ComponentModel.INotifyPropertyChanged
     {
-    
+
+        public Guid? FaceId { get; set; }
+
+        public Object Rectangle { get; set; }
+
+        public double? Age { get; set; }
+
+        public double? Smile { get; set; }
+
+        public string Emotion { get; set; }
+
         public string ToJson() 
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this);
@@ -1341,7 +1345,36 @@ namespace ClientProxy
         }
     
     }
+
     
+    public class DetectFaceResponse : IDetectFaceResponse
+    {
+
+        //public Guid? FaceId { get; set; }
+
+        //public Object Rectangle { get; set; }
+
+        //public double? Age { get; set; }
+
+        //public double? Smile { get; set; }
+
+        //public string Emotion { get; set; }
+
+        /*
+          "faceId": "55df591d-05c0-488d-ac78-a11eaa5bf755",
+  "rectangle": "319, 319",
+  "age": 49.0,
+  "smile": 0.0,
+  "emotion": "Microsoft.Azure.CognitiveServices.Vision.Face.Models.Emotion"
+  */
+
+
+        public DetectFaceResponse()
+        {
+        }
+    }
+
+
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.11.0.0 (Newtonsoft.Json v9.0.0.0)")]
     public abstract partial class IFindSimilarFacesResponse : System.ComponentModel.INotifyPropertyChanged
     {

@@ -14,8 +14,6 @@ namespace Authorisation.Adaptor.Response
 
         double? Age { get; }
 
-        int Confidence { get; }
-
         double? Smile { get; }
 
         string Emotion { get; }

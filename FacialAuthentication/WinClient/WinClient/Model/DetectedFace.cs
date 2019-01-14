@@ -1,33 +1,41 @@
 ﻿using System;
 using System.Dynamic;
-
+using Windows.UI.Xaml.Shapes;
 using ClientProxy;
+using Newtonsoft.Json.Linq;
 
 namespace FaceAuth.Model
 {
     public class DetectedFace
     {
-        private readonly dynamic _detectedFace = new ExpandoObject();
+        public Guid FaceId { get; }
 
-        public Guid? FaceId => _detectedFace.FaceId;
+        public double Age { get; }
 
-        public FaceLandmarks FaceLandmarks => _detectedFace.FaceLandmarks;
+        public Rectangle FaceRectangle { get; }
 
-        public dynamic FaceRectangle { get; set; }
+        public double Smile { get; }
 
-        public FaceAttributes FaceAttributes => _detectedFace.FaceAttributes;
+        public dynamic Emotion { get; }
 
-        //public Point Rectangle { get; set; }
 
-        public DetectedFace(IDetectFaceResponse detectFaceResponse)
+        public DetectedFace(string detectFaceResponse)
         {
-            dynamic response = detectFaceResponse.ToJson();
+            dynamic response = JObject.Parse(detectFaceResponse);
 
-            _detectedFace.FaceId = response.FaceId;
+            FaceId = Guid.Parse(response["faceId"].ToString());
 
-            _detectedFace.FaceLandmarks = response.FaceLandmarks;
+            Age = Convert.ToDouble(response["age"].ToString());
 
-            _detectedFace.FaceAttributes = response.FaceAttributes;
+            Smile = Convert.ToDouble(response["smile"].ToString());
+
+            Emotion = response["emotion"];
+
+            FaceRectangle = new Rectangle()
+            {
+                Width = Convert.ToDouble(response["rectangle"].Value.Split(',')[0]),
+                Height = Convert.ToDouble(response["rectangle"].Value.Split(',')[1])
+        };
         }
     }
 }

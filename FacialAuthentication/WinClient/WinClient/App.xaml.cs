@@ -62,6 +62,8 @@ namespace FaceAuth
             containerBuilder.RegisterInstance(new FaceProvider(controllerUri));
 
             containerBuilder.RegisterInstance(new TrainingClient(controllerUri.AbsoluteUri));
+
+            containerBuilder.RegisterInstance(new VisionClient(controllerUri.AbsoluteUri));
             
             return containerBuilder.Build();
 

@@ -17,9 +17,9 @@ namespace FaceAuth.Model
 
         public IEnumerable<dynamic> Candidates => _identifyFaceResult.Candidates;
 
-        public IdentifyFaceResult(IIdentifyFaceResponse identifyFaceResponse)
+        public IdentifyFaceResult(string identifyFaceResponse)
         {
-            dynamic response = JsonConvert.DeserializeObject(identifyFaceResponse.ToJson());
+            dynamic response = JsonConvert.DeserializeObject(identifyFaceResponse);
 
             _identifyFaceResult.FaceId = response.FaceId;
 

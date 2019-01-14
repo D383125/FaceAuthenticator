@@ -204,7 +204,7 @@ namespace FaceAuth.ViewModel
  
             if (identifyResult == null || !identifyResult.Any() || !identifyResult.FirstOrDefault().Candidates.Any())
             {
-                message = $"Failed to identify FaceId {detectedFace.FaceId.Value}. Do you wish to be added to the system?";
+                message = $"Failed to identify FaceId {detectedFace.FaceId}. Do you wish to be added to the system?";
 
                 AuthenticationStatus = message;
 
@@ -251,7 +251,7 @@ namespace FaceAuth.ViewModel
         {
             var faceProvider = App.Container.Resolve<FaceProvider>();
 
-            return await faceProvider.IdentifyAsync(detectedFace.FaceId.Value, groupId, null, null);
+            return await faceProvider.IdentifyAsync(detectedFace.FaceId, groupId, null, null);
         }
 
         private async Task<Person> AddUnIdentifiedPersonAsync(string message, Byte[] capturedImageBytes, int groupId = 1)

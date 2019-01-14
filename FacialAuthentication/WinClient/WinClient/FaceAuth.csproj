@@ -95,7 +95,6 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="ClientProxy\ClientProxy.cs" />
-    <Compile Include="Model\CaptureProvider.cs" />
     <Compile Include="Model\DetectedFace.cs" />
     <Compile Include="Model\FaceProvider.cs" />
     <Compile Include="Model\IdentifyFaceResult.cs" />
@@ -184,7 +183,6 @@
   <ItemGroup>
     <Reference Include="netstandard" />
   </ItemGroup>
-  <ItemGroup />
   <PropertyGroup>
     <ValidateFrameworkCompatibility>false</ValidateFrameworkCompatibility>
   </PropertyGroup>

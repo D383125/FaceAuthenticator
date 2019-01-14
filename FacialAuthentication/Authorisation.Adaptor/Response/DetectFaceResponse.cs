@@ -21,8 +21,6 @@ namespace Authorisation.Adaptor.Response
 
         public double? Age => _detectedFace.FaceAttributes.Age;
 
-        public int Confidence => throw new NotImplementedException();
-
         public double? Smile => _detectedFace.FaceAttributes.Smile;
 
         public string Emotion => _detectedFace.FaceAttributes.Emotion.ToString();

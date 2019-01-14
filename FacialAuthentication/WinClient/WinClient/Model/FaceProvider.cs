@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Autofac;
 using ClientProxy;
 
 namespace FaceAuth.Model
@@ -22,16 +22,16 @@ namespace FaceAuth.Model
 
         public async Task<ObservableCollection<IdentifyFaceResult>> IdentifyAsync(Guid faceId, int groupId, int? confidenceThreshold, int? maxPersonsToReturn)
         {
-            var visionClient = new VisionClient(_serviceUri.AbsoluteUri);
+            var visionClient = App.Container.Resolve<VisionClient>(); 
 
             var identifyReponse = await visionClient.IdentifyAsync(faceId, groupId.ToString(), null, null);
 
-            throw new NotImplementedException(); //todo:
+            return identifyReponse;
         }
 
         public async Task<DetectedFace> DetectAsync(Byte[] imageAsBytes)
         {
-            var visionClient = new VisionClient(_serviceUri.AbsoluteUri);
+            var visionClient = App.Container.Resolve<VisionClient>();
 
             var detectedFaceResponse = await visionClient.DetectAsync(imageAsBytes);
 

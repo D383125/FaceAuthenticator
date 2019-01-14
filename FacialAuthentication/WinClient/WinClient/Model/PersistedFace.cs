@@ -16,9 +16,9 @@ namespace FaceAuth.Model
 
         public Guid PersistedFaceId { get; }
 
-        public PersistedFace(IAddFaceToPersonResponse addFaceToPersonResponse)
+        public PersistedFace(string addFaceToPersonResponse)
         {
-            dynamic response = JsonConvert.DeserializeObject(addFaceToPersonResponse.ToJson());
+            dynamic response = JsonConvert.DeserializeObject(addFaceToPersonResponse);
 
             _persistedFace.PersistedFaceId = response.PersistedFaceId;
         }
