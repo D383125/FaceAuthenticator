@@ -20,5 +20,6 @@ namespace Authorisation.Core.Services
 
         Task<IGetGroupResponse> Handle(IGetGroupRequest getGroupRequest);
 
+        Task Handle(IAddGroupRequest addGroupRequest);
     }
 }

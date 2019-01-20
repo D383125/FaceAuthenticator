@@ -6,6 +6,6 @@ namespace Authorisation.Adaptor.Request
 {
     public class GetGroupRequest : IGetGroupRequest
     {
-        public int GroupId {get; set;}
+        public int Id {get; set;}
     }
 }

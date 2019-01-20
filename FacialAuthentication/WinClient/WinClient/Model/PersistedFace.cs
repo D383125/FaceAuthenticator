@@ -7,6 +7,7 @@ using System.Dynamic;
 
 using ClientProxy;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace FaceAuth.Model
 {

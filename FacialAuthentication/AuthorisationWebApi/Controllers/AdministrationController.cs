@@ -62,7 +62,7 @@ namespace AuthorisationWebApi.Controllers
         [HttpGet("[action]")]
         public async Task<IGetGroupResponse> GetGroup(string groupId)
         {
-            var request = new GetGroupRequest { GroupId = Convert.ToInt32(groupId) };
+            var request = new GetGroupRequest { Id = Convert.ToInt32(groupId) };
 
             return await _cognitiveAdminService.Handle(request);
         }

@@ -6,25 +6,24 @@ using System.Dynamic;
 
 using ClientProxy;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace FaceAuth.Model
 {
     public sealed class IdentifyFaceResult
-    {
-        private readonly dynamic _identifyFaceResult = new ExpandoObject();
+    {        
+        public Guid FaceId { get; }
 
-        public Guid FaceId => _identifyFaceResult.FaceId;
-
-        public IEnumerable<dynamic> Candidates => _identifyFaceResult.Candidates;
+        public IEnumerable<dynamic> Candidates { get; }
 
         public IdentifyFaceResult(string identifyFaceResponse)
         {
-            dynamic response = JsonConvert.DeserializeObject(identifyFaceResponse);
+            dynamic response = JObject.Parse(identifyFaceResponse);
 
-            _identifyFaceResult.FaceId = response.FaceId;
+            FaceId = response.FaceId;
 
-            //todo: convert
-            _identifyFaceResult.Candidates = response.Candidates;
+            //todo: convert via select
+            Candidates = response["Candidates"];
         }
     }
 }

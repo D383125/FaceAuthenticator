@@ -26,7 +26,7 @@ namespace FaceAuth.Model
 
             var identifyReponse = await visionClient.IdentifyAsync(faceId, groupId.ToString(), null, null);
 
-            return identifyReponse;
+            return new ObservableCollection<IdentifyFaceResult>(identifyReponse.Select(ir => new IdentifyFaceResult(ir)));            
         }
 
         public async Task<DetectedFace> DetectAsync(Byte[] imageAsBytes)

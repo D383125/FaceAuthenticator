@@ -34,14 +34,5 @@ namespace FaceAuth.Model
 
             _personResponse.PersistedFaceIds = response["PersistedFaceIds"];
         }
-
-        //public Person(IAddPersonResponse addPersonResponse) : this(JsonConvert.DeserializeObject(addPersonResponse.ToJson()))
-        //{            
-        //}
-
-        
-        //public Person(IGetPersonResponse getPersonResponse) : this(JsonConvert.DeserializeObject(getPersonResponse.ToJson()))
-        //{
-        //}
     }
 }

@@ -15,7 +15,7 @@ namespace Authorisation.Core.Services
     {
         private const string _baseUri = "https://australiaeast.api.cognitive.microsoft.com";
 
-        private const string _subscriptionKey = "0998c75abb2342c492ef4506dee28217";
+        private const string _subscriptionKey = "";
 
         private readonly IFaceClient _faceClient = new FaceClient(new ApiKeyServiceClientCredentials(_subscriptionKey), new DelegatingHandler[] { })
         {
@@ -23,7 +23,7 @@ namespace Authorisation.Core.Services
         };
 
         public async Task<IAddPersonResponse> Handle(IAddPersonRequest addPersonRequest)
-        {
+        {            
             var addedPerson = await _faceClient.PersonGroupPerson.CreateAsync(addPersonRequest.GroupId.ToString(), addPersonRequest.PersonName, addPersonRequest?.UserData?.ToString());
 
             return new AddPersonResponse(addedPerson);
@@ -81,9 +81,11 @@ namespace Authorisation.Core.Services
 
         public async Task<IGetGroupResponse> Handle(IGetGroupRequest getGroupRequest)
         {
-            var group = await _faceClient.PersonGroup.GetAsync(getGroupRequest.GroupId.ToString());
+            var group = await _faceClient.PersonGroup.GetAsync(getGroupRequest.Id.ToString());
 
             return new GetGroupResponse(group);
         }
+
+        public async Task Handle(IAddGroupRequest addGroupRequest) => await _faceClient.PersonGroup.CreateAsync(addGroupRequest.Id.ToString(), addGroupRequest.Name, addGroupRequest.UserData);
     }
 }

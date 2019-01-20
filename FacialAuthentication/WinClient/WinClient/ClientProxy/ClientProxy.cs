@@ -1042,14 +1042,14 @@ namespace ClientProxy
         }
     
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<System.Collections.ObjectModel.ObservableCollection<IIdentifyFaceResponse>> IdentifyAsync(System.Guid faceId, string groupId, int? maxNumOfCandidatesReturned, double? confidenceThreshold)
+        public System.Threading.Tasks.Task<System.Collections.ObjectModel.ObservableCollection<string>> IdentifyAsync(System.Guid faceId, string groupId, int? maxNumOfCandidatesReturned, double? confidenceThreshold)
         {
             return IdentifyAsync(faceId, groupId, maxNumOfCandidatesReturned, confidenceThreshold, System.Threading.CancellationToken.None);
         }
     
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        public async System.Threading.Tasks.Task<System.Collections.ObjectModel.ObservableCollection<IIdentifyFaceResponse>> IdentifyAsync(System.Guid faceId, string groupId, int? maxNumOfCandidatesReturned, double? confidenceThreshold, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<System.Collections.ObjectModel.ObservableCollection<string>> IdentifyAsync(System.Guid faceId, string groupId, int? maxNumOfCandidatesReturned, double? confidenceThreshold, System.Threading.CancellationToken cancellationToken)
         {
             if (faceId == null)
                 throw new System.ArgumentNullException("faceId");
@@ -1091,26 +1091,24 @@ namespace ClientProxy
                         var status_ = ((int)response_.StatusCode).ToString();
                         if (status_ == "200") 
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
-                            var result_ = default(System.Collections.ObjectModel.ObservableCollection<IIdentifyFaceResponse>); 
-                            try
-                            {
-                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<System.Collections.ObjectModel.ObservableCollection<IIdentifyFaceResponse>>(responseData_, _settings.Value);
-                                return result_; 
-                            } 
-                            catch (System.Exception exception_) 
-                            {
-                                throw new Exception("Could not deserialize the response body.");
-                            }
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            return new System.Collections.ObjectModel.ObservableCollection<string>(new [] { responseData_ });
+                            //var result_ = default(System.Collections.ObjectModel.ObservableCollection<IIdentifyFaceResponse>); 
+                            //try
+                            //{
+                            //    result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<System.Collections.ObjectModel.ObservableCollection<IIdentifyFaceResponse>>(responseData_, _settings.Value);
+                            //    return result_; 
+                            //} 
+                            //catch (System.Exception exception_) 
+                            //{
+                            //    throw new Exception("Could not deserialize the response body.");
+                            //}
                         }
                         else
-                        if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
                             throw new Exception("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").");
-                        }
-            
-                        return default(System.Collections.ObjectModel.ObservableCollection<IIdentifyFaceResponse>);
+                        }           
                     }
                     finally
                     {
