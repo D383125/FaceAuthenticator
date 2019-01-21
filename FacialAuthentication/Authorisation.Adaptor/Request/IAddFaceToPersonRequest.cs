@@ -6,7 +6,7 @@ namespace Authorisation.Adaptor.Request
 {
     public interface IAddFaceToPersonRequest
     {
-        byte[] faceCapture { get; }
+        byte[] FaceCapture { get; }
 
         int GroupId { get; }
 

@@ -26,13 +26,13 @@ namespace AuthorisationWebApi.Controllers
         }
 
         [HttpPost("[action]")]
-        public async Task<IAddPersonResponse> AddPerson([FromBody]string personName, int groupId, object userData)
+        public async Task<IAddPersonResponse> AddPerson([FromBody]string personName, int groupId, string userData)
         {
             //todo: mapping
             var request = new AddPersonRequest
             {
                 GroupId = groupId,
-                PersonName = personName,
+                Name = personName,
                 UserData = userData
             };
 

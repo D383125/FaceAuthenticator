@@ -42,8 +42,6 @@ namespace Authorisation.Core.Services
                     FaceAttributeType.Glasses, FaceAttributeType.Hair
                 };
 
-
-            // Call the Face API.
             try
             {
                 using (Stream imageFileStream = new MemoryStream(detectFaceRequest.FaceCapture))

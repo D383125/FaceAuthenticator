@@ -10,14 +10,14 @@ namespace Authorisation.Adaptor.Response
 
         public AddFaceToPersonResponse(PersistedFace persistedFace)
         {            
-            _persistedFace.Validate();
+            persistedFace.Validate();
 
-            _persistedFace = persistedFace;
+            _persistedFace = persistedFace;             
         }
 
         public Guid PersistedFaceId => _persistedFace.PersistedFaceId;
 
-        public object UserData => _persistedFace.UserData;
+        public string UserData => _persistedFace.UserData;
 
     }
 }

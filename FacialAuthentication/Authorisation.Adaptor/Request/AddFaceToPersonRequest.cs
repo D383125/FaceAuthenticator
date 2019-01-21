@@ -13,7 +13,7 @@ namespace Authorisation.Adaptor.Request
 
         public int GroupId { get; set; }
 
-        public byte[] faceCapture { get; }                
+        public byte[] FaceCapture { get; set; }                
     }
            
 }

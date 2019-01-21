@@ -6,5 +6,9 @@ namespace Authorisation.Adaptor.Response
 {
     public interface IAddFaceToPersonResponse
     {
+        Guid PersistedFaceId { get; }
+
+        string UserData { get; }
+
     }
 }

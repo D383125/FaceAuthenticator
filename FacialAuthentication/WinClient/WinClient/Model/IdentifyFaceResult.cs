@@ -18,7 +18,7 @@ namespace FaceAuth.Model
 
         public IdentifyFaceResult(string identifyFaceResponse)
         {
-            dynamic response = JObject.Parse(identifyFaceResponse);
+            dynamic response = JsonConvert.DeserializeObject(identifyFaceResponse);
 
             FaceId = response.FaceId;
 

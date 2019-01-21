@@ -8,8 +8,8 @@ namespace Authorisation.Adaptor.Request
     {       
         public int GroupId { get; set; }
 
-        public string PersonName { get; set; }
+        public string Name { get; set; }
 
-        public object UserData { get; set; }
+        public string UserData { get; set; }
     }
 }

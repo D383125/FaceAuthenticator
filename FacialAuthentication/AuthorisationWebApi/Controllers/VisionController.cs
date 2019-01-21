@@ -49,12 +49,8 @@ namespace AuthorisationWebApi.Controllers
         [HttpPost("Detect")]
         public async Task<IDetectFaceResponse> Detect([FromBody]byte[] faceCapture)
         {
-            // validation
-
-            // USe infrasturcute to convert
             var detectFaceRequest = new DetectFaceRequest(faceCapture);
-
-            // convert otJson response
+            
             return await _cognitiveFaceService.Handle(detectFaceRequest);
         }
 

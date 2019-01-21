@@ -24,7 +24,7 @@ namespace Authorisation.Core.Services
 
         public async Task<IAddPersonResponse> Handle(IAddPersonRequest addPersonRequest)
         {            
-            var addedPerson = await _faceClient.PersonGroupPerson.CreateAsync(addPersonRequest.GroupId.ToString(), addPersonRequest.PersonName, addPersonRequest?.UserData?.ToString());
+            var addedPerson = await _faceClient.PersonGroupPerson.CreateAsync(addPersonRequest.GroupId.ToString(), addPersonRequest.Name, addPersonRequest?.UserData);
 
             return new AddPersonResponse(addedPerson);
         }
@@ -33,7 +33,7 @@ namespace Authorisation.Core.Services
         {
             PersistedFace persistedFaceResult = null;
 
-            using (var ms = new MemoryStream(addFaceToPersonRequest.faceCapture))
+            using (var ms = new MemoryStream(addFaceToPersonRequest.FaceCapture))
             {
                 persistedFaceResult = await _faceClient.PersonGroupPerson.AddFaceFromStreamAsync(addFaceToPersonRequest.GroupId.ToString(), addFaceToPersonRequest.PersonId, ms);
             }
