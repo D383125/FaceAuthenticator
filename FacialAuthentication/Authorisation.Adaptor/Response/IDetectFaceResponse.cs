@@ -16,8 +16,8 @@ namespace Authorisation.Adaptor.Response
 
         double? Smile { get; }
 
-        string Emotion { get; }
+        dynamic FaceAttributes { get; }
 
-        //todo: complete
+        dynamic FacialLandmarks { get; }
     }
 }

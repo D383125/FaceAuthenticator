@@ -16,7 +16,9 @@ namespace FaceAuth.Model
 
         public double Smile { get; }
 
-        public dynamic Emotion { get; }
+        public dynamic FaceAttributes { get; }
+
+        public dynamic FacialLandmarks { get; }
 
 
         public DetectedFace(string detectFaceResponse)
@@ -29,7 +31,9 @@ namespace FaceAuth.Model
 
             Smile = Convert.ToDouble(response["smile"].ToString());
 
-            Emotion = response["emotion"];
+            FaceAttributes = response["faceAttributes"];
+
+            FacialLandmarks = response["facialLandmarks"];
 
             FaceRectangle = new Rectangle()
             {

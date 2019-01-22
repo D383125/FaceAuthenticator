@@ -23,6 +23,8 @@ namespace Authorisation.Adaptor.Response
 
         public double? Smile => _detectedFace.FaceAttributes.Smile;
 
-        public string Emotion => _detectedFace.FaceAttributes.Emotion.ToString();
+        public dynamic FaceAttributes => _detectedFace.FaceAttributes;
+
+        public dynamic FacialLandmarks => _detectedFace.FaceLandmarks;        
     }
 }

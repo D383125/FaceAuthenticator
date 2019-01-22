@@ -15,7 +15,7 @@ namespace Authorisation.Core.Services
     {
         private const string _baseUri = "https://australiaeast.api.cognitive.microsoft.com";
 
-        private const string _subscriptionKey = "";
+        private const string _subscriptionKey = "0998c75abb2342c492ef4506dee28217";
 
         private readonly IFaceClient _faceClient = new FaceClient(new ApiKeyServiceClientCredentials(_subscriptionKey), new DelegatingHandler[] { })
         {
@@ -55,6 +55,8 @@ namespace Authorisation.Core.Services
 
         public async Task<IDeletePersonResponse> Handle(IDeletePersonRequest deletePersonRequest)
         {
+            await Task.Delay(500);
+            
             throw new NotImplementedException();
         }
 

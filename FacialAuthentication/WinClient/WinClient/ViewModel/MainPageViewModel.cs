@@ -198,6 +198,8 @@ namespace FaceAuth.ViewModel
                 return;
             }
 
+            // todo: asyc log of detectface
+
             var identifyResult = await InternalIdentifyFaceAsync(detectedFace);
 
             Person detectedPerson = null;
@@ -208,9 +210,6 @@ namespace FaceAuth.ViewModel
 
                 AuthenticationStatus = message;
 
-                // todo [low]: log {detectFace.ToJson()} in richtext window
-                //var json = @"{ personId:" + personId + ", groupId: " + groupId + ", faceCapture:" + asBase64 + "}";
-                
                 detectedPerson = await AddUnIdentifiedPersonAsync(message, capturedImageBytes);
 
                 if (detectedFace == null) // User has decided not to add person or couldnt be done.
