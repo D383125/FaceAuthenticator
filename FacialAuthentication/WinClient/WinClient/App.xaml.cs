@@ -35,10 +35,10 @@ namespace FaceAuth
         public App()
         {
             this.InitializeComponent();
+
             this.Suspending += OnSuspending;
             // register Autofac classes
             Container = ConfigureServices();
-
         }
 
         public static IContainer Container { get; private set; }
@@ -64,6 +64,8 @@ namespace FaceAuth
             containerBuilder.RegisterInstance(new TrainingClient(controllerUri.AbsoluteUri));
 
             containerBuilder.RegisterInstance(new VisionClient(controllerUri.AbsoluteUri));
+
+            containerBuilder.RegisterInstance(new AdministrationClient(controllerUri.AbsoluteUri));
             
             return containerBuilder.Build();
 

@@ -168,7 +168,7 @@ namespace ClientProxy
                         if (status_ == "200") 
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            return responseData_;
+                            return responseData_.TrimStart(new[] { '[' }).TrimEnd(new[] { ']' });
                             //var result_ = default(IAddPersonResponse); 
                             //try
                             //{
@@ -245,7 +245,7 @@ namespace ClientProxy
                         if (status_ == "200") 
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            return responseData_;
+                            return responseData_.TrimStart(new[] { '[' }).TrimEnd(new[] { ']' });
                             //var result_ = default(IAddFaceToPersonResponse); 
                             //try
                             //{
@@ -321,7 +321,7 @@ namespace ClientProxy
                         if (status_ == "200") 
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            return responseData_;
+                            return responseData_.TrimStart(new[] { '[' }).TrimEnd(new[] { ']' });
                             //var result_ = default(IGetGroupResponse); 
                             //try
                             //{
@@ -402,7 +402,7 @@ namespace ClientProxy
                         if (status_ == "200") 
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            return responseData_;
+                            return responseData_.TrimStart(new[] { '[' }).TrimEnd(new[] { ']' });
                             //var result_ = default(IGetPersonResponse); 
                             //try
                             //{
@@ -617,7 +617,7 @@ namespace ClientProxy
                         if (status_ == "200") 
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            return responseData_;
+                            return responseData_.TrimStart(new[] { '[' }).TrimEnd(new[] { ']' });
                             //var result_ = default(ITrainGroupResponse); 
                             //try
                             //{
@@ -1092,7 +1092,7 @@ namespace ClientProxy
                         if (status_ == "200") 
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            return new System.Collections.ObjectModel.ObservableCollection<string>(new [] { responseData_ });
+                            return new System.Collections.ObjectModel.ObservableCollection<string>(new [] { responseData_.TrimStart(new [] { '['}).TrimEnd( new [] { ']' }) });
                             //var result_ = default(System.Collections.ObjectModel.ObservableCollection<IIdentifyFaceResponse>); 
                             //try
                             //{

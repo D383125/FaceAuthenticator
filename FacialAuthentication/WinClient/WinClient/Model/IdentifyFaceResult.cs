@@ -7,6 +7,7 @@ using System.Dynamic;
 using ClientProxy;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Converters;
 
 namespace FaceAuth.Model
 {
@@ -17,13 +18,16 @@ namespace FaceAuth.Model
         public IEnumerable<dynamic> Candidates { get; }
 
         public IdentifyFaceResult(string identifyFaceResponse)
-        {
-            dynamic response = JsonConvert.DeserializeObject(identifyFaceResponse);
+        {            
+            var jsonResponse = JObject.Parse(identifyFaceResponse);
 
-            FaceId = response.FaceId;
+            var json = jsonResponse.ToString(Formatting.None);
 
-            //todo: convert via select
-            Candidates = response["Candidates"];
+            var parsedResponse = JObject.Parse(json);
+
+            FaceId = Guid.Parse(parsedResponse["faceId"].ToString());
+
+            Candidates = parsedResponse["candidates"].Select(c => new { PersonId = Guid.Parse(c["personId"].ToString()), Confidence = Convert.ToDouble(c["confidence"].ToString()) } );
         }
     }
 }
