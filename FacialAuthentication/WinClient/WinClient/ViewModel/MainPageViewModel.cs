@@ -19,7 +19,10 @@ using System.Collections.Generic;
 
 namespace FaceAuth.ViewModel
 {
-    // Type breches SRP?
+    // Start here:
+    // Resize main windeow
+    // Mouse over show facedetect.ToJson
+    // Add PErson dialog
     public class MainPageViewModel : ObservableObject
     {
         public MainPageViewModel()
@@ -198,7 +201,8 @@ namespace FaceAuth.ViewModel
                 return;
             }
 
-            // todo: asyc log of detectface
+            // todo: Display on Mouse over
+            var detectedFaceAsJson = detectedFace.ToJson();
 
             var identifyResult = await InternalIdentifyFaceAsync(detectedFace);
 

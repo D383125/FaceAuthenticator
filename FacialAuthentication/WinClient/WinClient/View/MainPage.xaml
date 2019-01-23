@@ -5,7 +5,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="using:FaceAuth.ViewModel"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    Width="Auto" Height="Auto">
     <Page.DataContext>
         <vm:MainPageViewModel />
     </Page.DataContext>
@@ -23,7 +24,6 @@
         </AppBar>
     </Page.BottomAppBar>
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <!-- <Image Name="captureImage" HorizontalAlignment="Left" Height="503"  VerticalAlignment="Top" Width="360"/> -->
         <Image Name="FacePhoto" Source="{Binding CaptureImage}" Stretch="Uniform" Margin="2,2,2,192" />
     </Grid>
 </Page>
