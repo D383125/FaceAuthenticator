@@ -51,7 +51,7 @@ namespace FaceAuth
 
             containerBuilder.RegisterInstance(new MainPageViewModel() );
 
-            containerBuilder.RegisterType<PersonViewModel>();
+            containerBuilder.RegisterType<AddPersonViewModel>();
 
             containerBuilder.RegisterType(typeof(StorageFileProvider));
 

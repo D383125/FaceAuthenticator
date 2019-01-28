@@ -102,7 +102,7 @@ namespace FaceAuth.Model
 
         public string ToJson()
         {
-            return _jsonResponse;
+            return _jsonResponse.ToString();
         }
 
     }
