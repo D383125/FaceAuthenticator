@@ -208,7 +208,8 @@ namespace FaceAuth.ViewModel
 
             Person detectedPerson = null;
  
-            if (identifyResult == null || !identifyResult.Any() || !identifyResult.FirstOrDefault().Candidates.Any())
+            //if (identifyResult == null || !identifyResult.Any() || !identifyResult.FirstOrDefault().Candidates.Any())
+            if(true)
             {
                 message = $"Failed to identify FaceId {detectedFace.FaceId}. Do you wish to be added to the system?";
 
@@ -217,7 +218,7 @@ namespace FaceAuth.ViewModel
                 detectedPerson = await AddUnIdentifiedPersonAsync(message, capturedImageBytes);
 
                 if (detectedFace == null) // User has decided not to add person or couldnt be done.
-                    return;
+                    return; // todo: show status on banner. Exiting..
             }
             else
             {
@@ -274,10 +275,11 @@ namespace FaceAuth.ViewModel
                 // save bitmap. Carry forward
                 AddPersonDialog addPersonDialog = new AddPersonDialog();
 
-                // todo: invoke voice activation to register name via voice/nat luangue
+                // todo: invoke voice activation to register name via voice/nat lang
                 ContentDialogResult dialogResult = await addPersonDialog.ShowAsync();
 
                 var bail = 10;
+
                 while (addPersonDialog.NewlyCreatedPerson == null && --bail > 0)
                 {
                     await Task.Delay(1000);

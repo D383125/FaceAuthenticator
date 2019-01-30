@@ -25,10 +25,9 @@ namespace FaceAuth.Model
         {
             var adminClient = App.Container.Resolve<AdministrationClient>();
             
-            // Add face to person.
             var asBase64 = Convert.ToBase64String(image);
 
-            string json = @"{ personId:" + personId + ", groupId: " + groupId + ", faceCapture:" + asBase64 + "}";
+            string json = "{" + $"\"personId\":\"{personId}\", \"groupId\":\"{groupId}\", \"faceCapture\":\"{asBase64}\"" + "}";
 
             var request = JObject.Parse(json);
 
@@ -51,7 +50,6 @@ namespace FaceAuth.Model
 
             foreach (var photo in photos)
             {
-                // Add face to person.
                 byte[] image = File.ReadAllBytes(photo);
 
                 var asBase64 = Convert.ToBase64String(image);

@@ -40,23 +40,29 @@ namespace AuthorisationWebApi.Controllers
         }
 
         [HttpPost("[action]")]
-       public async Task<IAddFaceToPersonResponse> AddFaceToPerson(JObject requestData)
+       public async Task<IAddFaceToPersonResponse> AddFaceToPerson([FromBody]JObject requestData)
         {
-            Guid personId = Guid.Parse(requestData["personId"].ToString());
+            var personId = Guid.Parse(requestData["personId"].ToString());
 
-            string groupId = requestData["groupId"].ToString();
+            var groupId = requestData["groupId"].ToString();
+            
 
-            byte[] faceImage = Convert.FromBase64String(requestData["faceCapture"].ToString());
+            var faceImage = Convert.FromBase64String(requestData["faceCapture"].ToString());            
 
             var request = new AddFaceToPersonRequest
             {
-                //FaceImage = faceImage,
                 PersonId = personId,
 
-                GroupId = Convert.ToInt32(groupId)
+                GroupId = Convert.ToInt32(groupId),
+
+                FaceCapture = faceImage
             };
 
             return await _cognitiveAdminService.Handle(request);
+
+             //await Task.Delay(100);
+
+             //return null;
         }
 
         [HttpGet("[action]")]
