@@ -20,14 +20,19 @@ using System.Collections.Generic;
 namespace FaceAuth.ViewModel
 {
     // Start here:
-    // Resize main windeow
+    // Resize main windeow 
     // Mouse over show facedetect.ToJson
-    // Add PErson dialog
+    // Place confidence slider on window
+    // encrpy subscription key etc - see https://dzone.com/articles/using-built-in-uwp-data-protection-for-data-encryp
     public class MainPageViewModel : ObservableObject
     {
         public MainPageViewModel()
         {
         }
+
+
+        // toto: set as command/observable or make observsable
+        public static string TempDetectedFaceData { get; private set; }
 
         private BitmapImage _bitmapImage;
         public BitmapImage CaptureImage
@@ -84,9 +89,20 @@ namespace FaceAuth.ViewModel
             get { return new DelegateCommand(ShowAddPersonDialogAsync, () => false); }
         }
 
+        public ICommand ValidatePersonCommand { get; set; } // todo:
+
         public ICommand ExitApplicationCommand
         {
             get { return new DelegateCommand(() => Application.Current.Exit(), () => false); }
+        }
+
+        public ICommand FacePhotoPointerMoved => new DelegateCommand(MouseMove, () => false);
+
+        // Start Here: https://stackoverflow.com/questions/32669964/where-to-put-events-when-using-mvvm
+        private async void MouseMove()
+        {
+            System.Diagnostics.Debugger.Break();
+            await Task.Delay(1);
         }
 
         private async void ShowAddPersonDialogAsync()
@@ -176,7 +192,7 @@ namespace FaceAuth.ViewModel
         {
             //var appView = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView();
 
-            //appView.Title = "Detecting...";
+            //this.appView.Title = "Detecting...";
             AuthenticationStatus = "Detecting..."; 
             // todo: Use DI to new up model providers
 
@@ -202,14 +218,15 @@ namespace FaceAuth.ViewModel
             }
 
             // todo: Display on Mouse over
-            var detectedFaceAsJson = detectedFace.ToJson();
+            TempDetectedFaceData = detectedFace.ToJson(); //todo: update tostring
 
             var identifyResult = await InternalIdentifyFaceAsync(detectedFace);
 
-            Person detectedPerson = null;
- 
-            //if (identifyResult == null || !identifyResult.Any() || !identifyResult.FirstOrDefault().Candidates.Any())
-            if(true)
+
+            Person detectedPerson;
+
+            if (identifyResult == null || !identifyResult.Any() || !identifyResult.FirstOrDefault().Candidates.Any())
+            // if(true) // uncomment to test unidentified person
             {
                 message = $"Failed to identify FaceId {detectedFace.FaceId}. Do you wish to be added to the system?";
 

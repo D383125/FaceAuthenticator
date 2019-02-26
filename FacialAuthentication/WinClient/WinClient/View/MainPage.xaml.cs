@@ -17,6 +17,9 @@ using Windows.UI.Xaml.Media.Imaging;
 
 
 using FaceAuth.View;
+using Windows.UI.Xaml.Input;
+using Windows.Foundation;
+using Autofac;
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
 namespace FaceAuth
@@ -26,17 +29,15 @@ namespace FaceAuth
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        
-        //private const string CachedCaptureKey = "InSessionCapture"; 
+        // todo: move toi viewmodel
+        //public event PointerEventHandler PointerMoved;
 
-        
-        private readonly Uri _controllerUri = new Uri(@"http://localhost:5000/");
-
-
+        private readonly MainPageViewModel _mainPageViewModel;
 
         public MainPage()
         {
             this.InitializeComponent();
+
         }
 
         // todo: Recuce size of image. Either save or see https://stackoverflow.com/questions/23926454/reducing-byte-size-of-jpeg-file
@@ -246,75 +247,111 @@ namespace FaceAuth
             //await messageDialog.ShowAsync();
         }
 
-        //private async void CacheCaptureAsync(StorageFile file)
-        //{
-        //    //Create dataFile.txt in LocalFolder and write “My text” to it 
-        //    StorageFolder localFolder = ApplicationData.Current.LocalFolder;
-        //    await file.CopyAsync(ApplicationData.Current.LocalFolder, CachedCaptureKey, NameCollisionOption.ReplaceExisting);
-        //}
+        private void FacePhoto_PointerMoved(object sender, PointerRoutedEventArgs e)
+        {
+            
+            //// Find the mouse position relative to the image.
+            //Point mouseXY = e.GetPosition(FacePhoto);
 
-        //private async void PurgeLocalCacheAsync()
-        //{
-        //    var localFolder = ApplicationData.Current.LocalFolder;
+            //ImageSource imageSource = FacePhoto.Source;
+            //BitmapSource bitmapSource = (BitmapSource)imageSource;
 
-        //    await localFolder.DeleteAsync(StorageDeleteOption.PermanentDelete);
-        //}
+            //// Scale adjustment between the actual size and displayed size.
+            //var scale = FacePhoto.ActualWidth / (bitmapSource.PixelWidth / resizeFactor);
 
-        //private async Task<StorageFile> GetCachedFileAsync()
-        //{
-        //    var localFolder = ApplicationData.Current.LocalFolder;
+            //// Check if this mouse position is over a face rectangle.
+            //bool mouseOverFace = false;
 
-        //    return await localFolder.GetFileAsync(CachedCaptureKey);
-        //}
+            //for (int i = 0; i < faceList.Count; ++i)
+            //{
+            //    FaceRectangle fr = faceList[i].FaceRectangle;
+            //    double left = fr.Left * scale;
+            //    double top = fr.Top * scale;
+            //    double width = fr.Width * scale;
+            //    double height = fr.Height * scale;
+
+            //    // Display the face description if the mouse is over this face rectangle.
+            //    if (mouseXY.X >= left && mouseXY.X <= left + width &&
+            //        mouseXY.Y >= top && mouseXY.Y <= top + height)
+            //    {
+            //        faceDescriptionStatusBar.Text = faceDescriptions[i];
+            //        mouseOverFace = true;
+            //        break;
+            //    }
+            //}
+
+            //// String to display when the mouse is not over a face rectangle.
+            //if (!mouseOverFace) faceDescriptionStatusBar.Text = defaultStatusBarText;
+                
+            // Start here:
+            // https://docs.microsoft.com/en-us/azure/cognitive-services/Face/Tutorials/FaceAPIinCSharpTutorial
+
+            //todo: change to an event instead oif DI
+            Windows.UI.Xaml.Input.Pointer ptr = e.Pointer;
+
+            if (ptr.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Mouse)
+            {                
+                Windows.UI.Input.PointerPoint ptrPt = e.GetCurrentPoint(FacePhoto);                
+
+                txtBoxCaptureStatus.Text = MainPageViewModel.TempDetectedFaceData ?? string.Empty;                
+            }
+
+            // Prevent most handlers along the event route from handling the same event again.
+            e.Handled = true;
+            
+        }
 
 
-      //  private async void RenderResult(DetectedFace detectedFace)
-      //  {
+        #region Unused Code that could be useful
+
+        //  private async void RenderResult(DetectedFace detectedFace)
+        //  {
         //    if (detectedFace != null)
         //    {
-                //var faceBitmap = new Bitmap imgBox.Image);
+        //var faceBitmap = new Bitmap imgBox.Image);
 
-                //using (var g = Graphics.FromImage(faceBitmap))
-                //{
-                //    // Alpha-black rectangle on entire image
-                //    g.FillRectangle(new SolidBrush(Color.FromArgb(200, 0, 0, 0)), g.ClipBounds);
+        //using (var g = Graphics.FromImage(faceBitmap))
+        //{
+        //    // Alpha-black rectangle on entire image
+        //    g.FillRectangle(new SolidBrush(Color.FromArgb(200, 0, 0, 0)), g.ClipBounds);
 
-                //    var br = new SolidBrush(Color.FromArgb(200, Color.LightGreen));
+        //    var br = new SolidBrush(Color.FromArgb(200, Color.LightGreen));
 
-                //    // Loop each face recognized
+        //    // Loop each face recognized
 
-                //        var fr = detectedFace.FaceRectangle;
-                //        var fa = detectedFace.FaceAttributes;
+        //        var fr = detectedFace.FaceRectangle;
+        //        var fa = detectedFace.FaceAttributes;
 
-                //        // Get original face image (color) to overlap the grayed image
-                //        var faceRect = new Rectangle(fr.Left, fr.Top, fr.Width, fr.Height);
-                //        g.DrawImage(imgBox.Image, faceRect, faceRect, GraphicsUnit.Pixel);
-                //        g.DrawRectangle(Pens.LightGreen, faceRect);
+        //        // Get original face image (color) to overlap the grayed image
+        //        var faceRect = new Rectangle(fr.Left, fr.Top, fr.Width, fr.Height);
+        //        g.DrawImage(imgBox.Image, faceRect, faceRect, GraphicsUnit.Pixel);
+        //        g.DrawRectangle(Pens.LightGreen, faceRect);
 
-                //        // Loop face.FaceLandmarks properties for drawing landmark spots
-                //        var pts = new List<Point>();
-                //        Type type = detectedFace.FaceLandmarks.GetType();
-                //        foreach (PropertyInfo property in type.GetProperties())
-                //        {
-                //            g.DrawRectangle(Pens.LightGreen, GetRectangle((FeatureCoordinate)property.GetValue(detectedFace.FaceLandmarks, null)));
-                //        }
+        //        // Loop face.FaceLandmarks properties for drawing landmark spots
+        //        var pts = new List<Point>();
+        //        Type type = detectedFace.FaceLandmarks.GetType();
+        //        foreach (PropertyInfo property in type.GetProperties())
+        //        {
+        //            g.DrawRectangle(Pens.LightGreen, GetRectangle((FeatureCoordinate)property.GetValue(detectedFace.FaceLandmarks, null)));
+        //        }
 
-                //        // Calculate where to position the detail rectangle
-                //        int rectTop = fr.Top + fr.Height + 10;
-                //        if (rectTop + 45 > faceBitmap.Height) rectTop = fr.Top - 30;
+        //        // Calculate where to position the detail rectangle
+        //        int rectTop = fr.Top + fr.Height + 10;
+        //        if (rectTop + 45 > faceBitmap.Height) rectTop = fr.Top - 30;
 
-                //        // Draw detail rectangle and write face informations                     
-                //        g.FillRectangle(br, fr.Left - 10, rectTop, fr.Width < 120 ? 120 : fr.Width + 20, 25);
-                //        g.DrawString(string.Format("{0:0.0} / {1} / {2}", fa.Age, fa.Gender, fa.Emotion.OrderByDescending(x => x.Value).First().Key),
-                //                     this.Font, Brushes.Black,
-                //                     fr.Left - 8,
-                //                     rectTop + 4);
+        //        // Draw detail rectangle and write face informations                     
+        //        g.FillRectangle(br, fr.Left - 10, rectTop, fr.Width < 120 ? 120 : fr.Width + 20, 25);
+        //        g.DrawString(string.Format("{0:0.0} / {1} / {2}", fa.Age, fa.Gender, fa.Emotion.OrderByDescending(x => x.Value).First().Key),
+        //                     this.Font, Brushes.Black,
+        //                     fr.Left - 8,
+        //                     rectTop + 4);
 
-                //}
-
-                //imgBox.Image = faceBitmap;
-          //  }
         //}
+
+        //imgBox.Image = faceBitmap;
+        //  }
+        //}
+        #endregion
 
     }
 }
