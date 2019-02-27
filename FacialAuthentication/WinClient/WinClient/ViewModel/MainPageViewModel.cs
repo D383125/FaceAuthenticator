@@ -32,7 +32,11 @@ namespace FaceAuth.ViewModel
 
 
         // toto: set as command/observable or make observsable
-        public static string TempDetectedFaceData { get; private set; }
+        public static string TempDetectedFaceData { get;  set; }
+
+        public string AuthenticationLog { get; set; }
+
+
 
         private BitmapImage _bitmapImage;
         public BitmapImage CaptureImage
@@ -218,8 +222,8 @@ namespace FaceAuth.ViewModel
             }
 
             // todo: Display on Mouse over
-            TempDetectedFaceData = detectedFace.ToJson(); //todo: update tostring
-
+            AuthenticationLog = detectedFace.ToJson(); //todo: update tostring
+            
             var identifyResult = await InternalIdentifyFaceAsync(detectedFace);
 
 

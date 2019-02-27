@@ -248,41 +248,7 @@ namespace FaceAuth
         }
 
         private void FacePhoto_PointerMoved(object sender, PointerRoutedEventArgs e)
-        {
-            
-            //// Find the mouse position relative to the image.
-            //Point mouseXY = e.GetPosition(FacePhoto);
-
-            //ImageSource imageSource = FacePhoto.Source;
-            //BitmapSource bitmapSource = (BitmapSource)imageSource;
-
-            //// Scale adjustment between the actual size and displayed size.
-            //var scale = FacePhoto.ActualWidth / (bitmapSource.PixelWidth / resizeFactor);
-
-            //// Check if this mouse position is over a face rectangle.
-            //bool mouseOverFace = false;
-
-            //for (int i = 0; i < faceList.Count; ++i)
-            //{
-            //    FaceRectangle fr = faceList[i].FaceRectangle;
-            //    double left = fr.Left * scale;
-            //    double top = fr.Top * scale;
-            //    double width = fr.Width * scale;
-            //    double height = fr.Height * scale;
-
-            //    // Display the face description if the mouse is over this face rectangle.
-            //    if (mouseXY.X >= left && mouseXY.X <= left + width &&
-            //        mouseXY.Y >= top && mouseXY.Y <= top + height)
-            //    {
-            //        faceDescriptionStatusBar.Text = faceDescriptions[i];
-            //        mouseOverFace = true;
-            //        break;
-            //    }
-            //}
-
-            //// String to display when the mouse is not over a face rectangle.
-            //if (!mouseOverFace) faceDescriptionStatusBar.Text = defaultStatusBarText;
-                
+        {                           
             // Start here:
             // https://docs.microsoft.com/en-us/azure/cognitive-services/Face/Tutorials/FaceAPIinCSharpTutorial
 
@@ -293,7 +259,8 @@ namespace FaceAuth
             {                
                 Windows.UI.Input.PointerPoint ptrPt = e.GetCurrentPoint(FacePhoto);                
 
-                txtBoxCaptureStatus.Text = MainPageViewModel.TempDetectedFaceData ?? string.Empty;                
+                //txtBoxCaptureStatus.Text = MainPageViewModel.TempDetectedFaceData ?? string.Empty;                
+                
             }
 
             // Prevent most handlers along the event route from handling the same event again.
@@ -303,7 +270,38 @@ namespace FaceAuth
 
 
         #region Unused Code that could be useful
+        //// Find the mouse position relative to the image.
+        //Point mouseXY = e.GetPosition(FacePhoto);
 
+        //ImageSource imageSource = FacePhoto.Source;
+        //BitmapSource bitmapSource = (BitmapSource)imageSource;
+
+        //// Scale adjustment between the actual size and displayed size.
+        //var scale = FacePhoto.ActualWidth / (bitmapSource.PixelWidth / resizeFactor);
+
+        //// Check if this mouse position is over a face rectangle.
+        //bool mouseOverFace = false;
+
+        //for (int i = 0; i < faceList.Count; ++i)
+        //{
+        //    FaceRectangle fr = faceList[i].FaceRectangle;
+        //    double left = fr.Left * scale;
+        //    double top = fr.Top * scale;
+        //    double width = fr.Width * scale;
+        //    double height = fr.Height * scale;
+
+        //    // Display the face description if the mouse is over this face rectangle.
+        //    if (mouseXY.X >= left && mouseXY.X <= left + width &&
+        //        mouseXY.Y >= top && mouseXY.Y <= top + height)
+        //    {
+        //        faceDescriptionStatusBar.Text = faceDescriptions[i];
+        //        mouseOverFace = true;
+        //        break;
+        //    }
+        //}
+
+        //// String to display when the mouse is not over a face rectangle.
+        //if (!mouseOverFace) faceDescriptionStatusBar.Text = defaultStatusBarText;
         //  private async void RenderResult(DetectedFace detectedFace)
         //  {
         //    if (detectedFace != null)

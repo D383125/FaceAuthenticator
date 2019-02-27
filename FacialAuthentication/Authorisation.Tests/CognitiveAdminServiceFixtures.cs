@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Authorisation.Adaptor.Request;
 using Authorisation.Core.Services;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NUnit.Framework;
 
 
@@ -83,6 +84,14 @@ namespace Authorisation.Tests
             Assert.IsNotNull(persistedPerson.PersonId);
 
             Assert.IsNotNull(persistedPerson.Name);
+        }
+
+        [Test]
+        public void RemovePerson()
+        {
+            // todo: 
+
+
         }
 
         [Test]

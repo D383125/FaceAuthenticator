@@ -29,9 +29,12 @@
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Image Name="FacePhoto" Source="{Binding CaptureImage}" Stretch="Uniform" Margin="2,2,2,192" PointerEntered="FacePhoto_PointerMoved">
             <ToolTipService.ToolTip>
-                <ToolTip Name="captureToolTip" Placement="Mouse"  />
+                <TextBlock Text="{Binding AuthenticationLog, Mode=TwoWay}" />
             </ToolTipService.ToolTip>
         </Image>
-        <TextBox x:Name="txtBoxCaptureStatus" TextAlignment="Center" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="690" Height="85" IsReadOnly="True" Margin="305,0,0,65"/>
+        <TextBlock Name = "confidenceLabel" Margin = "705,615,490,80" >Confidence:</TextBlock>
+        <Slider Minimum = "0" Maximum = "100" StepFrequency = "2"   x:Name = "confidenceSlider" Margin="855,608,140,57" Tag="Confidence"/>
+        <TextBlock Name = "statusLabel" Margin = "50,615,1100,80" >Status:</TextBlock>
+        <TextBox Name = "statusText"  Margin = "135,615,930,65" Text = "{Binding AuthenticationStatus, Mode = TwoWay}" IsReadOnly="True"/>
     </Grid>
 </Page>
